@@ -19,7 +19,7 @@ class CreateEmployeesTable extends Migration
             $table->increments('id_employee');
             $table->unsignedInteger('id_designation')->nullable();
             $table->unsignedInteger('id_department')->nullable();
-            $table->integer('id_employment_form');
+            $table->unsignedInteger('id_employment_form');
             $table->date('hiring_date');
             $table->date('termination_date');
             $table->string('name');
@@ -42,7 +42,7 @@ class CreateEmployeesTable extends Migration
             $table->foreign('id_designation', 'fk_employees_designations_idx')
                 ->references('id_designation')->on('designations')
                 ->onDelete('set null')
-                ->onUpdate('set cascade');
+                ->onUpdate('cascade');
 
             $table->foreign('id_department', 'fk_employees_departments1_idx')
                 ->references('id_department')->on('departments')
