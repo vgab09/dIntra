@@ -18,4 +18,8 @@ class Department extends Model
 
     protected $fillable = ['name','id_leader','id_parent','active','description'];
 
+    public function employees(){
+        return $this->belongsTo(Employee::class,'id_department','id_department',Department::class);
+    }
+
 }

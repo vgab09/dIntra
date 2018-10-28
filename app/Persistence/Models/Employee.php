@@ -30,4 +30,30 @@ class Employee extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function department(){
+        return $this->hasOne(Department::class,'id_department','id_department');
+    }
+
+    public function designation(){
+        return $this->hasOne(Designation::class,'id_designation','id_designation');
+    }
+
+    public function employmentForm(){
+        return $this->hasOne(EmploymentForm::class,'id_employment_form','id_employment_form');
+    }
+
+    public function leavePolicies(){
+        return $this->belongsToMany(LeavePolicy::class,'employee_has_leave_policies','id_employee','id_leave_policy',null,null,Employee::class);
+    }
+
+    public function leaveRequests(){
+        return $this->hasMany(LeaveRequest::class,'id_employee','id_employee');
+    }
+
+    public function leaveRequestHistories(){
+        return $this->hasMany(LeaveRequestHistory::class,'id_employee','id_employee');
+    }
+
+
+
 }

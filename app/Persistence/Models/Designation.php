@@ -18,4 +18,8 @@ class Designation extends Model
 
     protected $fillable = ['name','description','active'];
 
+    public function employees(){
+        return $this->belongsTo(Employee::classm,'id_designation','id_designation',Designation::class);
+    }
+
 }

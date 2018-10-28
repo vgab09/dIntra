@@ -11,7 +11,7 @@ namespace App\Persistence\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class LeavePolicies extends Model
+class LeavePolicy extends Model
 {
     protected $primaryKey = 'id_leave_policy';
 
@@ -22,11 +22,11 @@ class LeavePolicies extends Model
     }
 
     public function leaveRequests(){
-        return $this->belongsTo(LeaveRequest::class,'id_leave_policy','id_leave_policy',LeavePolicies::class);
+        return $this->belongsTo(LeaveRequest::class,'id_leave_policy','id_leave_policy',LeavePolicy::class);
     }
 
     public function employees(){
-        return $this->belongsToMany(Employee::class,'employee_has_leave_policies','id_leave_policy','id_employee');
+        return $this->belongsToMany(Employee::class,'employee_has_leave_policies','id_leave_policy','id_employee',null,null,LeavePolicy::class);
     }
 
 }

@@ -18,4 +18,8 @@ class LeaveType extends Model
 
     protected $fillable = ['name'];
 
+    public function leavePolicies(){
+        return $this->belongsTo(LeavePolicy::class,'id_leave_type','id_leave_type',LeavePolicy::class);
+    }
+
 }

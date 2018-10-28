@@ -18,4 +18,16 @@ class LeaveRequest extends Model
 
     protected $fillable = ['id_employee','id_leave_policy','start_date','end_date','days','comment','status','reason'];
 
+    public function leavePolicy(){
+        return $this->hasOne(LeavePolicy::class,'id_leave_policy','id_leave_policy');
+    }
+
+    public function employee(){
+        return $this->belongsTo(Employee::class,'id_employee','id_employee',Employee::class);
+    }
+
+    public function history(){
+        return $this->hasMany(LeaveRequestHistory::class,'id_leave_request','id_leave_request');
+    }
+
 }

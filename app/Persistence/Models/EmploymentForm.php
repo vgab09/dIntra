@@ -18,4 +18,8 @@ class EmploymentForm extends Model
 
     protected $fillable = 'name';
 
+    public function employees(){
+        return $this->belongsTo(Employee::class,'id_employment_form','id_employment_form',EmploymentForm::class);
+    }
+
 }
