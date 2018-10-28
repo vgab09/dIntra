@@ -17,7 +17,7 @@ class CreateWorkDaysTable extends Migration
     {
         Schema::create('work_days', function (Blueprint $table) {
             $table->increments('id_work_day');
-            $table->string('title');
+            $table->string('name');
             $table->date('start');
             $table->date('end');
             $table->text('description')->nullable();
