@@ -17,7 +17,7 @@ class CreateLeaveRequestHistoryTable extends Migration
     {
         Schema::create('leave_request_history', function (Blueprint $table) {
             $table->increments('id_leave_requests_history');
-            $table->unsignedInteger('id_request');
+            $table->unsignedInteger('id_leave_request');
             $table->text('event')->nullable();
             $table->unsignedInteger('created_by');
             $table->nullableTimestamps();
