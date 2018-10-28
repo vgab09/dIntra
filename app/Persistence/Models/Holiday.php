@@ -11,11 +11,11 @@ namespace App\Persistance\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WorkDay extends Model
+class Holiday extends Model
 {
-    protected $primaryKey = 'id_work_days';
+    protected $primaryKey = 'id_holiday';
 
-    protected $fillable = ['title','start','end','description'];
+    protected $fillable = ['name','start','end','description'];
 
 
 
