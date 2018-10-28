@@ -9,7 +9,15 @@
 namespace App\Persistance\Models;
 
 
-class WorkDay
+use Illuminate\Database\Eloquent\Model;
+
+class WorkDay extends Model
 {
+    protected $primaryKey = 'id_work_days';
+
+    protected $fillable = ['name','start','end','description'];
+
+
+
 
 }
