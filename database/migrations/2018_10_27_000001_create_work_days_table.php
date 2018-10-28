@@ -21,7 +21,7 @@ class CreateWorkDaysTable extends Migration
             $table->date('start');
             $table->date('end');
             $table->text('description')->nullable();
-            $table->timestamp('crated_at')->nullable();
+            $table->nullableTimestamps();
         });
     }
 

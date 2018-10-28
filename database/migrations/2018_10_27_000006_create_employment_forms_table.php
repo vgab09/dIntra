@@ -18,6 +18,7 @@ class CreateEmploymentFormsTable extends Migration
         Schema::create('employment_forms', function (Blueprint $table) {
             $table->increments('id_employment_form');
             $table->string('name');
+            $table->nullableTimestamps();
         });
     }
 

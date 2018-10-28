@@ -20,7 +20,7 @@ class CreateLeaveRequestHistoryTable extends Migration
             $table->unsignedInteger('id_request');
             $table->text('event')->nullable();
             $table->unsignedInteger('created_by');
-            $table->timestamp('created_at')->nullable();
+            $table->nullableTimestamps();
         });
     }
 
