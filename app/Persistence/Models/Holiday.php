@@ -6,7 +6,7 @@
  * Time: 10:09
  */
 
-namespace App\Persistance\Models;
+namespace App\Persistence\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
