@@ -18,7 +18,7 @@ use Illuminate\Support\Carbon;
 
 $factory->define(\App\Persistence\Models\Designation::class, function (Faker $faker) {
     return [
-        'name' => $faker->text(191),
+        'name' => $faker->text(30),
         'description' => $faker->text('400'),
         'active' => $faker->boolean(90),
 
@@ -27,7 +27,7 @@ $factory->define(\App\Persistence\Models\Designation::class, function (Faker $fa
 
 $factory->define(\App\Persistence\Models\Department::class, function (Faker $faker) {
     return [
-        'name' => $faker->text(191),
+        'name' => $faker->text(30),
         'description' => $faker->text('400'),
         'active' => $faker->boolean(90),
     ];
@@ -50,7 +50,7 @@ $factory->define(\App\Persistence\Models\Holiday::class, function (Faker $faker)
     $start = Carbon::instance($faker->dateTimeThisYear());
 
     return [
-        'name' => $faker->text(191),
+        'name' => $faker->text(60),
         'start' => $start->format('Y-d-m'),
         'end' => $start->addDays(rand(1,3))->format('Y-d-m'),
         'description' => $faker->text(400),
@@ -66,7 +66,7 @@ $factory->define(\App\Persistence\Models\Employee::class, function (Faker $faker
         'hiring_date' => $hiringDate,
         'termination_date' => $faker->boolean(20) ? $date->addWeeks(rand(1, 52))->format('Y-m-d') : null,
         'name' => $faker->name(),
-        'email' => $faker->unique($faker->email()),
+        'email' => $faker->unique()->safeEmail(),
         'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
         'date_of_birth' => $faker->dateTimeThisCentury($date->subYear(18))->format('Y-m-d'),
         'active' => $faker->boolean(90)
