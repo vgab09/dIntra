@@ -30,9 +30,6 @@ $factory->define(\App\Persistence\Models\Department::class, function (Faker $fak
         'name' => $faker->text(191),
         'description' => $faker->text('400'),
         'active' => $faker->boolean(90),
-        //'id_leader' => '',
-        //'id_parent' =>  $faker->boolean(30) ? factory(\App\Persistence\Models\Department::class)->create()->id : null,
-
     ];
 });
 
@@ -50,7 +47,7 @@ $factory->define(\App\Persistence\Models\LeaveType::class, function (Faker $fake
 
 $factory->define(\App\Persistence\Models\Holiday::class, function (Faker $faker) {
 
-    $start = new Carbon($faker->dateTimeThisYear());
+    $start = Carbon::instance($faker->dateTimeThisYear());
 
     return [
         'name' => $faker->text(191),

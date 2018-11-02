@@ -79,8 +79,6 @@ class DatabaseSeeder extends Seeder
      */
     private function assignPermissionsToRoles($permissions, ...$roles)
     {
-
-        $permissions = collect($permissions);
         $roles = collect($roles);
 
         foreach ($roles as $role) {
@@ -114,9 +112,8 @@ class DatabaseSeeder extends Seeder
 
     private function addAdministrator()
     {
-
-        $admin = factory(Employee::class)->create(['name' => 'Administrator', 'hiring_date' => Carbon::now(), 'termination_date' => null, 'email' => 'web@erppartner.hu', 'active' => 1]);
-        $admin - assignRole($this->administratorRole);
+        $admin = factory(Employee::class)->create(['name' => 'Administrator', 'id_employment_form'=>'1', 'hiring_date' => Carbon::now(), 'termination_date' => null, 'email' => 'web@erppartner.hu', 'active' => 1]);
+        $admin->assignRole($this->administratorRole);
     }
 
     private function addRoles()

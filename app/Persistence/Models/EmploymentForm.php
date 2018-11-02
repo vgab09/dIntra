@@ -16,7 +16,7 @@ class EmploymentForm extends Model
 
     protected $primaryKey = 'id_employment_form';
 
-    protected $fillable = 'name';
+    protected $fillable = ['name'];
 
     public function employees(){
         return $this->belongsTo(Employee::class,'id_employment_form','id_employment_form',EmploymentForm::class);
