@@ -32,15 +32,15 @@ class Employee extends Authenticatable
     ];
 
     public function department(){
-        return $this->hasOne(Department::class,'id_department','id_department');
+        return $this->belongsTo(Department::class,'id_department','id_department',Employee::class);
     }
 
     public function designation(){
-        return $this->hasOne(Designation::class,'id_designation','id_designation');
+        return $this->belongsTo(Designation::class,'id_designation','id_designation',Employee::class);
     }
 
     public function employmentForm(){
-        return $this->hasOne(EmploymentForm::class,'id_employment_form','id_employment_form');
+        return $this->belongsTo(EmploymentForm::class,'id_employment_form','id_employment_form',Employee::class);
     }
 
     public function leavePolicies(){
