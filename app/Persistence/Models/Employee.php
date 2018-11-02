@@ -5,10 +5,11 @@ namespace App\Persistence\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
 class Employee extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasRoles;
 
     protected $primaryKey = 'id_employee';
 

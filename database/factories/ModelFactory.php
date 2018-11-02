@@ -48,9 +48,15 @@ $factory->define(\App\Persistence\Models\LeaveType::class, function (Faker $fake
     ];
 });
 
-$factory->define(\App\Persistence\Models\LeaveType::class, function (Faker $faker) {
+$factory->define(\App\Persistence\Models\Holiday::class, function (Faker $faker) {
+
+    $start = new Carbon($faker->dateTimeThisYear());
+
     return [
-        'name' => $faker->domainWord,
+        'name' => $faker->text(191),
+        'start' => $start->format('Y-d-m'),
+        'end' => $start->addDays(rand(1,3))->format('Y-d-m'),
+        'description' => $faker->text(400),
     ];
 });
 
@@ -64,8 +70,8 @@ $factory->define(\App\Persistence\Models\Employee::class, function (Faker $faker
         'termination_date' => $faker->boolean(20) ? $date->addWeeks(rand(1, 52))->format('Y-m-d') : null,
         'name' => $faker->name(),
         'email' => $faker->unique($faker->email()),
-        'passowrd' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
-        'date_of_birth' => $faker->dateTimeThisCentury($date->subYear(18)),
+        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
+        'date_of_birth' => $faker->dateTimeThisCentury($date->subYear(18))->format('Y-m-d'),
         'active' => $faker->boolean(90)
     ];
 });
