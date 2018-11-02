@@ -21,7 +21,7 @@ class CreateEmployeesTable extends Migration
             $table->unsignedInteger('id_department')->nullable();
             $table->unsignedInteger('id_employment_form');
             $table->date('hiring_date');
-            $table->date('termination_date');
+            $table->date('termination_date')->nullable();
             $table->string('name');
             $table->string('email', 127);
             $table->string('password');
