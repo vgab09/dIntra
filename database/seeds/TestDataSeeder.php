@@ -8,159 +8,96 @@ use App\Persistence\Models\Holiday;
 use App\Persistence\Models\LeavePolicy;
 use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\LeaveRequestHistory;
+use App\Persistence\Models\LeaveType;
 use App\Persistence\Models\WorkDay;
 use Illuminate\Database\Seeder;
+use Faker\Generator as Faker;
 use Illuminate\Support\Carbon;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
-class DatabaseSeeder extends Seeder
+class TestDataSeeder extends Seeder
 {
 
-    /**
-     * @var Role Administrator group
-     */
-    private $administratorRole;
+    private const designationCount = 8;
+    private const departmentCount = 5;
+    private const leaveTypeCount = 2;
+    private const employeeCount = 100;
+    private const workDayCount = 4;
 
     /**
-     * @var Role Manager group
+     * @var Department[]
      */
-    private $managerRole;
+    private $departments;
 
     /**
-     * @var Role leader group
+     * @var Designation[]
      */
-    private $leaderRole;
+    private $designations;
 
     /**
-     * @var Role employee group
+     * @var EmploymentForm[]
      */
-    private $employeeRole;
+    private $employmentForms;
+
+    /**
+     * @var Employee[]
+     */
+    private $employees;
+
+    /**
+     * @var LeaveType[]
+     */
+    private $leaveTypes;
+
+
+    /**
+     * @var WorkDay[]
+     */
+    private $workDays;
+
+    /**
+     * @var Faker
+     */
+    private $faker;
 
     /**
      * Seed the application's database.
      *
      * @return void
      */
-    public function run()
+    public function run(Faker $faker)
     {
-        app()['cache']->forget('spatie.permission.cache');
-        $this->addRoles();
-        $this->addPermissions();
+        $this->faker = $faker;
 
-        $this->addEmploymentForms();
-        $this->addAdministrator();
-        $this->addConstantHolidays();
-
+        $this->employmentForms = EmploymentForm::all();
+        $this->createDesignations();
+        $this->createDepartments();
+        $this->createLeaveTypes();
+        $this->createEmployees();
+        $this->createWorkDays();
     }
 
-    /**
-     * Create default CRUD permission given resource.
-     * @param string $modelName
-     *
-     * @return array Created permissions
-     */
-    private function createCRUDPermissions($modelName)
-    {
-        $permissions = [];
-
-        $permissions['create'] = Permission::create(['name' => sprintf('create %s', $modelName)]);
-        $permissions['list'] = Permission::create(['name' => sprintf('list %s', $modelName)]);
-        $permissions['update'] = Permission::create(['name' => sprintf('update %s', $modelName)]);
-        $permissions['delete'] = Permission::create(['name' => sprintf('delete %s', $modelName)]);
-
-        return $permissions;
+    private function createDesignations(){
+        $this->designations = factory(Designation::class,self::designationCount)->create();
     }
 
-    /**
-     * Assign permissions to multiple rules
-     * @param Role ...$roles
-     * @param array|mixed $permissions
-     */
-    private function assignPermissionsToRoles($permissions, ...$roles)
-    {
-        $roles = collect($roles);
-
-        foreach ($roles as $role) {
-            $role->givePermissionTo($permissions);
-        }
-
+    private function createDepartments(){
+        $this->departments = factory(Department::class,self::departmentCount)->create();
     }
 
-    /**
-     * get the date in current year, and default format
-     * @param int $month
-     * @param int $day
-     *
-     * @return string
-     */
-    private function getDate(int $month, int $day)
-    {
-        return Carbon::createFromDate(null, $month, $day)->format('Y-m-d');
+    private function createLeaveTypes(){
+        $this->leaveTypes = factory(LeaveType::class,self::leaveTypeCount)->create();
     }
 
-    private function addEmploymentForms()
-    {
-
-        factory(EmploymentForm::class)->create(['name' => 'Teljes munkaidős']);
-        factory(EmploymentForm::class)->create(['name' => 'Részmunkaidős']);
-        factory(EmploymentForm::class)->create(['name' => 'Szerződéses']);
-        factory(EmploymentForm::class)->create(['name' => 'Ideiglenes']);
-        factory(EmploymentForm::class)->create(['name' => 'Gyakornok']);
-
+    private function createEmployees(){
+        $this->employees = factory(Employee::class,self::employeeCount)->make()->each(function (Employee $employee){
+            $employee->designation()->associate($this->faker->randomElement($this->designations));
+            $employee->department()->associate($this->faker->randomElement($this->departments));
+            $employee->employmentForm()->associate($this->faker->randomElement($this->employmentForms));
+            $employee->save();
+        });
     }
 
-    private function addAdministrator()
-    {
-        $admin = factory(Employee::class)->create(['name' => 'Administrator', 'id_employment_form'=>'1', 'hiring_date' => Carbon::now(), 'termination_date' => null, 'email' => 'web@erppartner.hu', 'active' => 1]);
-        $admin->assignRole($this->administratorRole);
+    private function createWorkDays(){
+        $this->workDays = factory(WorkDay::class,self::workDayCount)->create();
     }
-
-    private function addRoles()
-    {
-        $this->administratorRole = Role::create(['name' => 'Adminisztrátor']);
-        $this->managerRole = Role::create(['name' => 'Manager']);
-        $this->leaderRole = Role::create(['name' => 'Vezető']);
-        $this->employeeRole = Role::create(['name' => 'Munkatárs']);
-    }
-
-    private function addPermissions()
-    {
-        $this->assignPermissionsToRoles($this->createCRUDPermissions(Role::class), $this->administratorRole);
-        $this->assignPermissionsToRoles($this->createCRUDPermissions(Permission::class), $this->administratorRole);
-
-        $this->assignPermissionsToRoles($this->createCRUDPermissions(EmploymentForm::class), $this->administratorRole, $this->managerRole);
-        $this->assignPermissionsToRoles($this->createCRUDPermissions(Designation::class), $this->administratorRole, $this->managerRole);
-        $this->assignPermissionsToRoles($this->createCRUDPermissions(Department::class), $this->administratorRole, $this->managerRole);
-        $this->assignPermissionsToRoles($this->createCRUDPermissions(Employee::class), $this->administratorRole, $this->managerRole);
-        $this->assignPermissionsToRoles($this->createCRUDPermissions(LeaveType::class), $this->administratorRole, $this->managerRole);
-        $this->assignPermissionsToRoles($this->createCRUDPermissions(WorkDay::class), $this->administratorRole, $this->managerRole);
-        $this->assignPermissionsToRoles($this->createCRUDPermissions(Holiday::class), $this->administratorRole, $this->managerRole);
-        $this->assignPermissionsToRoles($this->createCRUDPermissions(LeavePolicy::class), $this->administratorRole, $this->managerRole);
-
-        $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('request %s', LeaveRequest::class)]), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
-        $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('withdraw %s', LeaveRequest::class)]), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
-
-        $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('accept %s', LeaveRequest::class)]), $this->administratorRole, $this->managerRole, $this->leaderRole);
-        $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('denny %s', LeaveRequest::class)]), $this->administratorRole, $this->managerRole, $this->leaderRole);
-
-        $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('list %s', LeaveRequestHistory::class)]), $this->administratorRole, $this->managerRole, $this->leaderRole);
-
-    }
-
-    private function addConstantHolidays()
-    {
-
-        factory(Holiday::class)->create(['name' => 'Újév', 'start' => $this->getDate(1, 1), 'end' => $this->getDate(1, 1), 'description' => 'B.U.É.K']);
-        //factory(Holiday::class)->create(['name'=>'Húsvét','start'=>$this->getDate(3,30),'end'=>$this->getDate(4,2),'description'=>'']);
-        factory(Holiday::class)->create(['name' => 'Munka ünnepe', 'start' => $this->getDate(5, 1), 'end' => $this->getDate(5, 1), 'description' => '']);
-        //factory(Holiday::class)->create(['name'=>'Pünkösd','start'=>$this->getDate(5,21),'end'=>$this->getDate(5,21),'description'=>'']);
-        factory(Holiday::class)->create(['name' => 'Államalapítás Ünnepe', 'start' => $this->getDate(8, 20), 'end' => $this->getDate(8, 20), 'description' => '']);
-        factory(Holiday::class)->create(['name' => '56-os Forradalom Ünnepe', 'start' => $this->getDate(10, 23), 'end' => $this->getDate(10, 23), 'description' => '']);
-        factory(Holiday::class)->create(['name' => 'Mindenszentek', 'start' => $this->getDate(11, 01), 'end' => $this->getDate(11, 01), 'description' => '']);
-        factory(Holiday::class)->create(['name' => 'Szenteste', 'start' => $this->getDate(12, 24), 'end' => $this->getDate(12, 24), 'description' => '']);
-        factory(Holiday::class)->create(['name' => 'Karácsony', 'start' => $this->getDate(12, 25), 'end' => $this->getDate(12, 26), 'description' => '']);
-    }
-
-
 }
