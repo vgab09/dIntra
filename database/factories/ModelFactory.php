@@ -72,3 +72,19 @@ $factory->define(\App\Persistence\Models\Employee::class, function (Faker $faker
         'active' => $faker->boolean(90)
     ];
 });
+
+$factory->define(\App\Persistence\Models\WorkDay::class, function (Faker $faker) {
+
+    $saturday = Carbon::instance($faker->dateTimeThisYear())->nextWeekendDay()->format('Y-m-d');
+
+    return[
+        'name' => $faker->text(60),
+        'start' => $saturday,
+        'end' => $saturday,
+        'description' => $faker->text(100),
+    ];
+});
+
+$factory->define(\App\Persistence\Models\LeavePolicy::class, function (Faker $faker) {
+
+});
