@@ -87,4 +87,18 @@ $factory->define(\App\Persistence\Models\WorkDay::class, function (Faker $faker)
 
 $factory->define(\App\Persistence\Models\LeavePolicy::class, function (Faker $faker) {
 
+    /**
+     * @todo: Évközi szabályt is kell generálni
+     */
+    $startAt =  Carbon::instance($faker->dateTimeBetween('-2 years','+2 years'))->firstOfYear();
+
+    return[
+        'name' => $faker->text(60),
+        'day' => rand(20,37),
+        'color' => $faker->hexColor(),
+        'description' => $faker->text(),
+        'start_at' => $startAt->format('Y-m-d'),
+        'end_at' => $startAt->addYear(1)->format('Y-m-d'),
+        'active' => $faker->boolean(70),
+    ];
 });

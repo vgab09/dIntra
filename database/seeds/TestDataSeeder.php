@@ -22,6 +22,7 @@ class TestDataSeeder extends Seeder
     private const leaveTypeCount = 2;
     private const employeeCount = 100;
     private const workDayCount = 4;
+    private const leavePoliciesCount = 20;
 
     /**
      * @var Department[]
@@ -55,6 +56,11 @@ class TestDataSeeder extends Seeder
     private $workDays;
 
     /**
+     * @var LeavePolicy[]
+     */
+    private $leavePolicies;
+
+    /**
      * @var Faker
      */
     private $faker;
@@ -72,6 +78,7 @@ class TestDataSeeder extends Seeder
         $this->createDesignations();
         $this->createDepartments();
         $this->createLeaveTypes();
+        $this->createLeavePolicies();
         $this->createEmployees();
         $this->createWorkDays();
     }
@@ -88,11 +95,23 @@ class TestDataSeeder extends Seeder
         $this->leaveTypes = factory(LeaveType::class,self::leaveTypeCount)->create();
     }
 
+    private function createLeavePolicies(){
+        $this->leavePolicies = factory(LeavePolicy::class,self::leavePoliciesCount)->make()->each(function (LeavePolicy $leavePolicy){
+            $leavePolicy->leaveType()->associate($this->faker->randomElement($this->leaveTypes));
+            $leavePolicy->save();
+        });
+    }
+
     private function createEmployees(){
         $this->employees = factory(Employee::class,self::employeeCount)->make()->each(function (Employee $employee){
             $employee->designation()->associate($this->faker->randomElement($this->designations));
             $employee->department()->associate($this->faker->randomElement($this->departments));
             $employee->employmentForm()->associate($this->faker->randomElement($this->employmentForms));
+
+            foreach ($this->faker->randomElements($this->leavePolicies,rand(1,4),false) as $leavePolicy){
+                $employee->leavePolicies()->attach($leavePolicy->id_leave_policy);
+            }
+
             $employee->save();
         });
     }
