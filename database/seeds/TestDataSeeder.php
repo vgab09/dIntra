@@ -23,6 +23,7 @@ class TestDataSeeder extends Seeder
     private const employeeCount = 100;
     private const workDayCount = 4;
     private const leavePoliciesCount = 20;
+    private const leaveRequestCount = 300;
 
     /**
      * @var Department[]
@@ -61,13 +62,20 @@ class TestDataSeeder extends Seeder
     private $leavePolicies;
 
     /**
+     * @var LeaveRequest[]
+     */
+    private $leaveRequests;
+
+    /**
      * @var Faker
      */
     private $faker;
 
+
     /**
      * Seed the application's database.
      *
+     * @param Faker $faker
      * @return void
      */
     public function run(Faker $faker)
@@ -81,6 +89,7 @@ class TestDataSeeder extends Seeder
         $this->createLeavePolicies();
         $this->createEmployees();
         $this->createWorkDays();
+        $this->createLeaveRequest();
     }
 
     private function createDesignations(){
@@ -118,5 +127,13 @@ class TestDataSeeder extends Seeder
 
     private function createWorkDays(){
         $this->workDays = factory(WorkDay::class,self::workDayCount)->create();
+    }
+
+    private function createLeaveRequest(){
+        $this->leaveRequests = factory(LeaveRequest::class,self::leaveRequestCount)->make()->each(function(LeaveRequest $leaveRequest){
+            $leaveRequest->employee()->associate($this->faker->randomElement($this->employees));
+            $leaveRequest->leavePolicy()->associate($this->faker->randomElement($this->leavePolicies));
+            $leaveRequest->save();
+        });
     }
 }

@@ -15,7 +15,7 @@ class LeavePolicy extends Model
 {
     protected $primaryKey = 'id_leave_policy';
 
-    protected $fillable = ['id_leave_type','name','day','color','description','start_at','end_at','active'];
+    protected $fillable = ['id_leave_type','name','days','color','description','start_at','end_at','active'];
 
     public function leaveType(){
         return $this->belongsTo(LeaveType::class,'id_leave_type','id_leave_type',LeavePolicy::class);

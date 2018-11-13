@@ -19,7 +19,7 @@ class CreateLeavePoliciesTable extends Migration
             $table->increments('id_leave_policy');
             $table->unsignedInteger('id_leave_type');
             $table->string('name', 191);
-            $table->integer('day');
+            $table->integer('days');
             $table->string('color', 7);
             $table->text('description')->nullable();
             $table->date('start_at');

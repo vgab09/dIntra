@@ -16,14 +16,14 @@ class LeaveRequest extends Model
 
     protected $primaryKey = 'id_leave_request';
 
-    protected $fillable = ['id_employee','id_leave_policy','start_date','end_date','days','comment','status','reason'];
+    protected $fillable = ['id_employee','id_leave_policy','start_at','end_at','days','comment','status','reason'];
 
     public function leavePolicy(){
-        return $this->hasOne(LeavePolicy::class,'id_leave_policy','id_leave_policy');
+        return $this->belongsTo(LeavePolicy::class,'id_leave_policy','id_leave_policy',LeaveRequest::class);
     }
 
     public function employee(){
-        return $this->belongsTo(Employee::class,'id_employee','id_employee',Employee::class);
+        return $this->belongsTo(Employee::class,'id_employee','id_employee',LeaveRequest::class);
     }
 
     public function history(){

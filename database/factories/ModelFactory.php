@@ -90,15 +90,30 @@ $factory->define(\App\Persistence\Models\LeavePolicy::class, function (Faker $fa
     /**
      * @todo: Évközi szabályt is kell generálni
      */
-    $startAt =  Carbon::instance($faker->dateTimeBetween('-2 years','+2 years'))->firstOfYear();
+    $startAt = Carbon::instance($faker->dateTimeBetween('-2 years', '+2 years'))->firstOfYear();
 
-    return[
+    return [
         'name' => $faker->text(60),
-        'day' => rand(20,37),
+        'days' => rand(20, 37),
         'color' => $faker->hexColor(),
         'description' => $faker->text(),
         'start_at' => $startAt->format('Y-m-d'),
         'end_at' => $startAt->addYear(1)->format('Y-m-d'),
         'active' => $faker->boolean(70),
     ];
+});
+
+$factory->define(\App\Persistence\Models\LeaveRequest::class, function (Faker $faker) {
+
+        $startAt = Carbon::instance($faker->dateTimeBetween('-2 years'));
+        $days = rand(1,13);
+
+        return[
+            'start_at' => $startAt->format('Y-m-d'),
+            'end_at' => $startAt->addday($days),
+            'days' => $days,
+            'comment' => $faker->text(120),
+            'status' => $faker->randomElement(['accepted','denied','pending']),
+            'reason' => $faker->text(60),
+        ];
 });
