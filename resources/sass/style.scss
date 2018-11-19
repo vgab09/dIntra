@@ -15,7 +15,8 @@
 @import "switches";
 @import "widgets";
 @import "socials";
-@import "../../vendors/animate.css/animate.min.css";
+@import '~bootstrap/scss/bootstrap';
+
 
 .bg-flat-color-1 {
     background: #20a8d8;
@@ -1065,11 +1066,11 @@ header .form-inline {
 }
 
 .black-ribon {
-    background: url("../../images/twitter_corner_black.png") no-repeat;
+    background: url("../images/twitter_corner_black.png") no-repeat;
 }
 
 .blue-ribon {
-    background: url("../../images/twitter_corner_blue.png") no-repeat;
+    background: url("../images/twitter_corner_blue.png") no-repeat;
 }
 
 .twt-feed .wtt-mark {
