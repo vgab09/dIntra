@@ -49,7 +49,7 @@
 body {
     background: $container-bg;
     display: table;
-    font-family: 'Open Sans' sans-serif !important;
+    font-family: 'Open Sans', sans-serif !important;
     font-size: 16px;
     width: 100%;
 }
@@ -60,7 +60,7 @@ div[class*="col-"] {
 
 p {
     font-size: 16px;
-    font-family: 'Open Sans' sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-weight: 400;
     line-height: 24px;
     color: #878787;
@@ -924,7 +924,7 @@ header .form-inline {
                 float: left;
                 width: 50px;
                 padding: 0.75rem 0;
-                margin: 0!important !important;
+                margin: 0 !important;
                 color: #fff;
                 outline: 0;
                 text-align: center;
@@ -1195,7 +1195,7 @@ header .form-inline {
     }
 
     i {
-        font-style: 16px;
+        font-size: 16px;
         padding-right: 10px;
     }
 }
