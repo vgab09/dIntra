@@ -15,8 +15,6 @@
 @import "switches";
 @import "widgets";
 @import "socials";
-@import '~bootstrap/scss/bootstrap';
-
 
 .bg-flat-color-1 {
     background: #20a8d8;
@@ -49,7 +47,7 @@
 body {
     background: $container-bg;
     display: table;
-    font-family: 'Open Sans', sans-serif !important;
+    font-family: 'Open Sans', sans-serif ;
     font-size: 16px;
     width: 100%;
 }
@@ -74,7 +72,7 @@ p:focus {
 a,
 button {
     text-decoration: none;
-    outline: none!important;
+    outline: none;
     color: #878787;
     -webkit-transition: all 0.25s ease;
     -moz-transition: all 0.25s ease;
@@ -105,7 +103,7 @@ ul {
 
 .btn:focus,
 button:focus {
-    box-shadow: none !important;
+    box-shadow: none ;
     outline: 0;
 }
 
@@ -118,11 +116,11 @@ button,
 input,
 textarea {
     box-shadow: none;
-    outline: 0 !important;
+    outline: 0 ;
 }
 
 .no-padding {
-    padding: 0 !important;
+    padding: 0 ;
 }
 /* Global Styles */
 /* Main Styles */
@@ -160,7 +158,7 @@ aside.left-panel {
 
     .navbar-brand {
         border-bottom: 1px solid #4e4e52;
-        color: #f1f2f7 !important;
+        color: #f1f2f7 ;
         font-family: 'Open Sans';
         font-size: 22px;
         float: none;
@@ -213,7 +211,7 @@ aside.left-panel {
             &.active .menu-icon,
             &:hover .toggle_nav_button:before,
             .toggle_nav_button.nav-open:before {
-                color: #fff !important;
+                color: #fff ;
             }
 
             .dropdown-toggle:after {
@@ -221,8 +219,8 @@ aside.left-panel {
             }
 
             > a {
-                background: none !important;
-                color: #c8c9ce !important;
+                background: none ;
+                color: #c8c9ce ;
                 display: inline-block;
                 font-family: 'Open Sans';
                 font-size: 14px;
@@ -233,7 +231,7 @@ aside.left-panel {
 
                 &:hover,
                 &:hover .menu-icon {
-                    color: #fff !important;
+                    color: #fff ;
                 }
 
                 .menu-icon {
@@ -268,7 +266,7 @@ aside.left-panel {
                     &:before {
                         content: "\f105";
                         color: #c8c9ce;
-                        font-family: 'Fontawesome';
+                        font-family: 'Font Awesome\ 5 Free';
                         font-size: 16px;
                         position: absolute;
                         top: 10px;
@@ -331,7 +329,7 @@ aside.left-panel {
                     .sub-menu {
                         max-height: 1000px;
                         opacity: 1;
-                        position: static !important;
+                        position: static ;
                     }
                 }
             }
@@ -342,7 +340,7 @@ aside.left-panel {
 .navbar .navbar-nav > .active > a,
 .navbar .navbar-nav > .active > a:focus,
 .navbar .navbar-nav > .active > a:hover {
-    color: #d7d9e3 !important;
+    color: #d7d9e3 ;
 }
 
 .navbar-nav li span.count {
@@ -379,7 +377,7 @@ body.open {
             display: none;
 
             &.hidden {
-                display: flex !important;
+                display: flex ;
                 justify-content: center;
                 align-items: center;
                 padding-left: 0;
@@ -393,7 +391,7 @@ body.open {
             }
 
             &.d-md-none {
-                display: block !important;
+                display: block ;
                 margin: 13px 0 0;
                 min-height: 67px;
                 padding: 0;
@@ -403,7 +401,7 @@ body.open {
 
         .navbar-nav {
             &:before {
-                display: none !important;
+                display: none ;
             }
 
             li {
@@ -473,7 +471,7 @@ body.open {
                         overflow: visible;
 
                         .sub-menu {
-                            position: absolute !important;
+                            position: absolute ;
                         }
                     }
                 }
@@ -504,7 +502,7 @@ body.open {
 /* Right panel */
 .right-panel {
     display: table-cell;
-    padding-left: 0 !important;
+    padding-left: 0 ;
     -webkit-transition: all 0.35s ease;
     -moz-transition: all 0.35s ease;
     -ms-transition: all 0.35s ease;
@@ -575,14 +573,14 @@ header.fixed-top {
 }
 
 .menutoggle {
+    display: inline-block;
     background: #e74c3c;
     border-radius: 50%;
-    color: #fff !important;
+    color: #fff ;
     cursor: pointer;
     font-size: 18px;
     height: 43px;
     line-height: 44px;
-    margin: -2px 20px 0 -57px;
     text-align: center;
     width: 43px;
 }
@@ -627,7 +625,7 @@ header .form-inline {
             color: #d3d3d3;
             font-size: 16px;
             height: inherit;
-            margin-right: 0 !important;
+            margin-right: 0 ;
             padding: 10px 36px 10px 15px;
             width: 100%;
         }
@@ -646,7 +644,7 @@ header .form-inline {
             position: absolute;
             right: 15px;
             top: 50%;
-            margin-top: -14px !important;
+            margin-top: -14px ;
         }
 
         .btn-outline-success:hover,
@@ -654,9 +652,9 @@ header .form-inline {
         button:focus,
         button:visited {
             background: transparent;
-            border: none !important;
+            border: none ;
             box-shadow: none;
-            outline: 0 !important;
+            outline: 0 ;
         }
 
         &.close {
@@ -665,11 +663,19 @@ header .form-inline {
     }
 }
 
-.header-left.open .form-inline {
-    display: block;
+.header-left{
+    float: left;
+
+    .open .form-inline {
+        display: block;
+    }
 }
 
-.header-left .dropdown {
+.header-right{
+    float: right;
+}
+
+.for-notification{
     display: inline-block;
 
     .dropdown-toggle {
@@ -697,9 +703,9 @@ header .form-inline {
         &:active,
         &:focus,
         &:visited {
-            background: none !important;
-            border-color: transparent !important;
-            color: #272c33 !important;
+            background: none ;
+            border-color: transparent ;
+            color: #272c33 ;
         }
     }
 
@@ -708,7 +714,7 @@ header .form-inline {
         border: none;
         border-radius: 0;
         box-shadow: none;
-        top: 49px !important;
+        top: 49px ;
 
         p {
             font-size: 15px;
@@ -755,13 +761,16 @@ header .form-inline {
 
 .dropdown-menu {
     border-radius: 0;
-    transform: none !important;
+    transform: none ;
 }
 
 .for-notification {
+    .dropdown{
+        display: inline-block;
+    }
     .dropdown-menu {
         .dropdown-item {
-            padding: 5px 15px !important;
+            padding: 5px 15px ;
             text-overflow: ellipsis;
 
             i {
@@ -773,7 +782,7 @@ header .form-inline {
             }
 
             p {
-                padding: 0 !important;
+                padding: 0 ;
                 text-overflow: ellipsis;
             }
         }
@@ -781,17 +790,17 @@ header .form-inline {
 }
 
 .user-area {
-    float: right;
     padding-right: 0;
     position: relative;
+    display: inline-block;
 
     .user-menu {
         background: $header-bg;
         border: none;
         font-family: 'Open Sans';
-        left: inherit !important;
+        left: inherit ;
         right: 0;
-        top: 55px !important;
+        top: 55px ;
         margin: 0;
         max-width: 150px;
         padding: 5px 10px;
@@ -865,10 +874,10 @@ header .form-inline {
         background: $header-bg;
         border: none;
         border-radius: 0;
-        left: -8px !important;
+        left: -8px ;
         min-width: inherit;
         padding: 0 5px;
-        top: 46px !important;
+        top: 46px ;
 
         .dropdown-item {
             margin-right: 0;
@@ -924,7 +933,7 @@ header .form-inline {
                 float: left;
                 width: 50px;
                 padding: 0.75rem 0;
-                margin: 0 !important;
+                margin: 0 ;
                 color: #fff;
                 outline: 0;
                 text-align: center;
@@ -963,7 +972,7 @@ header .form-inline {
 
     .dropdown {
         .dropdown-menu {
-            top: 100% !important;
+            top: 100% ;
         }
     }
 }
@@ -1032,7 +1041,7 @@ header .form-inline {
 
     .social i {
         padding: 0 10px;
-        width: inherit !important;
+        width: inherit ;
     }
 
     .only-text {
@@ -1440,11 +1449,11 @@ header .form-inline {
     color: #666;
     background: rgba(0, 0, 0, 0.7);
     border: none;
-    color: #fff!important;
+    color: #fff;
 }
 
 .morris-hover-point {
-    color: rgba(255, 255, 255, 0.8) !important;
+    color: rgba(255, 255, 255, 0.8) ;
 }
 
 #morris-bar-chart {
@@ -1458,7 +1467,7 @@ header .form-inline {
 }
 
 .btn-toolbar {
-    float: left !important;
+    float: left ;
 
     .btn-outline-secondary:not([disabled]):not(.disabled).active,
     .btn-outline-secondary:not([disabled]):not(.disabled):active,
@@ -1821,7 +1830,7 @@ header .form-inline {
 }
 
 .widget-ten p {
-    color: #ffffff !important;
+    color: #ffffff ;
     opacity: 0.75;
 }
 /* Mixed Styles */
@@ -1845,9 +1854,9 @@ header .form-inline {
 
 .card .dropdown.float-right {
     .dropdown-menu {
-        left: inherit !important;
-        right: 0 !important;
-        top: 93% !important;
+        left: inherit ;
+        right: 0 ;
+        top: 93% ;
     }
 }
 
@@ -1856,10 +1865,10 @@ header .form-inline {
         border-radius: 0;
 
         li {
-            border-radius: 0 !important;
+            border-radius: 0 ;
 
             a {
-                border-radius: 0 !important;
+                border-radius: 0 ;
                 color: #272c33;
             }
 
@@ -2102,7 +2111,7 @@ header .form-inline {
             }
 
             .tab-content.pl-3 {
-                padding-left: 0 !important;
+                padding-left: 0 ;
             }
 
             #bootstrap-data-table_wrapper {
