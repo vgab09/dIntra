@@ -18,6 +18,14 @@ class Alert
 
     protected $types = ['info', 'success', 'warning', 'danger'];
 
+    public const INFO = 'info';
+
+    public const SUCCESS = 'success';
+
+    public const WARNING = 'warning';
+
+    public const ERROR = 'danger';
+
     /**
      * Alert constructor.
      * @param string $message
@@ -25,8 +33,8 @@ class Alert
      */
     public function __construct($message, $type)
     {
-        $this->message = $message;
-        $this->type = $this->setType($type);
+        $this->setMessage($message);
+        $this->setType($type);
     }
 
     /**
@@ -39,9 +47,9 @@ class Alert
 
     /**
      * @param string $message
-     * @return SimpleAlert
+     * @return Alert
      */
-    public function setMessage(string $message): SimpleAlert
+    public function setMessage(string $message): Alert
     {
         $this->message = $message;
         return $this;
@@ -57,17 +65,41 @@ class Alert
 
     /**
      * @param string $type
-     * @return SimpleAlert
+     * @return Alert
      */
-    public function setType(string $type): SimpleAlert
+    public function setType(string $type): Alert
     {
 
-        if(!in_array($type,$this->types)){
+        if (!in_array($type, $this->types)) {
             $type = 'information';
         }
 
         $this->type = $type;
         return $this;
+    }
+
+    /**
+     * Render Alert message
+     * @return string
+     */
+    public function render()
+    {
+        switch ($this->getType()) {
+            case self::SUCCESS:
+                return sprintf('<div class="alert alert-success" role="alert">%s</div>',$this->getMessage());
+                break;
+            case self::WARNING:
+                return sprintf('<div class="alert alert-warning" role="alert">%s</div>',$this->getMessage());
+                break;
+            case self::ERROR:
+                return sprintf('<div class="alert alert-danger" role="alert">%s</div>',$this->getMessage());
+                break;
+            case self::INFO:
+            default:
+                return sprintf('<div class="alert alert-primary" role="alert">%s</div>',$this->getMessage());
+                break;
+        }
+
     }
 
 }

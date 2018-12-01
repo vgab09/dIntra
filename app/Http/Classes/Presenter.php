@@ -10,30 +10,48 @@ namespace App\Http\Classes;
 
 
 use App\Http\Classes\Alert\Alert;
-
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\MessageBag;
+use Illuminate\Support\ViewErrorBag;
+use Illuminate\Session\SessionManager;
 class Presenter
 {
-    protected $alerts = [];
+
+    /**
+     * @var ViewErrorBag
+     */
+    protected $viewErrorBag;
+
+    /**
+     * @var Collection
+     */
+    protected $alerts;
+
+    public function init(){
+        $this->alerts = collect();
+    }
+
 
     public function getAlerts($group = false)
     {
-        if (empty($this->alerts)) {
-            return [];
-        }
-
-        $alerts = $this->alerts['alerts'];
 
         if ($group) {
-            $alerts = collect($alerts)->groupBy('type')->toArray();
+            return $this->alerts->groupBy('type');
         }
 
-        return $alerts;
+        return $this->alerts;
 
     }
 
-    public function alert($message, $type)
+    public function addAlert($message, $type)
     {
-        $this->alerts[] = new Alert($message,$type);
+        $this->alerts->push( new Alert($message,$type));
     }
 
+    public function mergeSessionErrors($messages,$type){
+        foreach ($messages as $message){
+            $this->alerts->push(new Alert($message,$type));
+        }
+    }
 }

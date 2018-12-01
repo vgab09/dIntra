@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use App\Http\Classes\Presenter;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\MessageBag;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ViewErrorBag;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        $presenter = $this->app->make('Presenter');
+        $presenter->init();
+        View::share('presenter',$presenter);
+
     }
 
     /**
@@ -25,8 +32,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('Presenter', function($app)
-        {
+        $this->app->singleton('Presenter', function ($app) {
             return new Presenter();
         });
     }

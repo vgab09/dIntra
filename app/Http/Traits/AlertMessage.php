@@ -8,37 +8,38 @@
 
 namespace App\Http\Traits;
 
+use App\Http\Classes\Alert\Alert;
 trait AlertMessage
 {
 
     protected function getAlerts($group = false)
     {
-      App('Presenter')->getAlerts($group);
+      app('Presenter')->getAlerts($group);
     }
 
     protected function alert($message, $type)
     {
-        App('Presenter')->alert($message, $type);
+      app('Presenter')->addAlert($message, $type);
     }
 
     protected function alertSuccess($message)
     {
-        $this->alert($message, 'success');
+        $this->alert($message, Alert::SUCCESS);
     }
 
     protected function alertInfo($message)
     {
-        $this->alert($message, 'info');
+        $this->alert($message, Alert::INFO);
     }
 
     protected function alertWarning($message)
     {
-        $this->alert($message, 'warning');
+        $this->alert($message, Alert::WARNING);
     }
 
     protected function alertError($message)
     {
-        $this->alert($message, 'error');
+        $this->alert($message, Alert::ERROR);
     }
 
     protected function alertException(\Exception $e, $prefixMessage = '')
