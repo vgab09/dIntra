@@ -13,6 +13,7 @@ use App\Persistence\Models\WorkDay;
 use Illuminate\Database\Seeder;
 use Faker\Generator as Faker;
 use Illuminate\Support\Carbon;
+use Spatie\Permission\Models\Role;
 
 class TestDataSeeder extends Seeder
 {
@@ -112,7 +113,8 @@ class TestDataSeeder extends Seeder
     }
 
     private function createEmployees(){
-        $this->employees = factory(Employee::class,self::employeeCount)->make()->each(function (Employee $employee){
+        $roles = $this->getRoles();
+        $this->employees = factory(Employee::class,self::employeeCount)->make()->each(function (Employee $employee) use ($roles){
             $employee->designation()->associate($this->faker->randomElement($this->designations));
             $employee->department()->associate($this->faker->randomElement($this->departments));
             $employee->employmentForm()->associate($this->faker->randomElement($this->employmentForms));
@@ -120,7 +122,7 @@ class TestDataSeeder extends Seeder
             foreach ($this->faker->randomElements($this->leavePolicies,rand(1,4),false) as $leavePolicy){
                 $employee->leavePolicies()->attach($leavePolicy->id_leave_policy);
             }
-
+            $employee->assignRole($this->faker->randomElement($roles));
             $employee->save();
         });
     }
@@ -135,5 +137,12 @@ class TestDataSeeder extends Seeder
             $leaveRequest->leavePolicy()->associate($this->faker->randomElement($this->leavePolicies));
             $leaveRequest->save();
         });
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection|Role[]
+     */
+    private function getRoles(){
+        return Role::all();
     }
 }
