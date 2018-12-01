@@ -9,7 +9,29 @@
 namespace App\Http\Middleware;
 
 
+use App\Http\Classes\Alert\Alert;
+use Closure;
+use Illuminate\Support\ViewErrorBag;
+
 class CollectSessionErrors
 {
+
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
+    public function handle($request, Closure $next)
+    {
+        $viewBag = $request->session()->get('errors');
+
+        if(!empty($viewBag)){
+            app('Presenter')->mergeSessionErrors($viewBag->all(),Alert::ERROR);
+        }
+
+        return $next($request);
+    }
 
 }
