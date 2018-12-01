@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Classes\Presenter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
@@ -24,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton('Presenter', function($app)
+        {
+            return new Presenter();
+        });
     }
 }
