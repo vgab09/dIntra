@@ -6,7 +6,7 @@
  * Time: 19:39
  */
 
-namespace App\Http\Classes\Alert;
+namespace App\Http\Components\Alert;
 
 
 class Alert

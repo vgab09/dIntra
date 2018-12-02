@@ -2,12 +2,13 @@
 
 namespace App\Providers;
 
-use App\Http\Classes\Presenter;
+use App\Http\Components\Presenter;
+use App\Http\Components\Providers\AlertProvider;
+use App\Http\Components\Providers\MenuProvider;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\MessageBag;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\ViewErrorBag;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+
+        $this->app->singleton('MenuProvider', function ($app) {
+            return new MenuProvider();
+        });
+
+        $this->app->singleton('AlertProvider', function ($app) {
+            return new AlertProvider();
+        });
+
         $this->app->singleton('Presenter', function ($app) {
             return new Presenter();
         });

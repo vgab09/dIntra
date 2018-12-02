@@ -1608,7 +1608,7 @@ aside.left-panel {
   -webkit-box-shadow: none;
           box-shadow: none;
   overflow-y: hidden;
-  padding: 0 0 0 35px;
+  padding: 0 0 0 15px;
 }
 
 .navbar .navbar-nav li.menu-item-has-children .sub-menu li {

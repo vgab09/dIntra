@@ -9,7 +9,7 @@
 namespace App\Http\Middleware;
 
 
-use App\Http\Classes\Alert\Alert;
+use App\Http\Components\Alert\Alert;
 use Closure;
 use Illuminate\Support\ViewErrorBag;
 

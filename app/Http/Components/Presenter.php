@@ -6,10 +6,10 @@
  * Time: 20:06
  */
 
-namespace App\Http\Classes;
+namespace App\Http\Components;
 
 
-use App\Http\Classes\Alert\Alert;
+use App\Http\Components\Alert\Alert;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\MessageBag;
@@ -53,5 +53,9 @@ class Presenter
         foreach ($messages as $message){
             $this->alerts->push(new Alert($message,$type));
         }
+    }
+
+    public function getLeftMenu(){
+       return app('MenuProvider')->getLeftMenu();
     }
 }

@@ -8,7 +8,7 @@
 
 namespace App\Http\Traits;
 
-use App\Http\Classes\Alert\Alert;
+use App\Http\Components\Alert\Alert;
 trait AlertMessage
 {
 

@@ -9,6 +9,7 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.7.*",
         "laravel/tinker": "^1.0",
+        "spatie/laravel-menu": "^3.2",
         "spatie/laravel-permission": "^2.23"
     },
     "require-dev": {
