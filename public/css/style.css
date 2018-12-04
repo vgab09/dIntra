@@ -1558,10 +1558,10 @@ aside.left-panel {
 .navbar .navbar-nav li > a .menu-icon {
   color: #8b939b;
   float: left;
-  margin-top: 8px;
-  width: 55px;
-  text-align: left;
+  width: 30px;
+  text-align: center;
   z-index: 9;
+  line-height: 30px;
 }
 
 .navbar .navbar-nav li > a .menu-title-text {
@@ -1608,25 +1608,15 @@ aside.left-panel {
   -webkit-box-shadow: none;
           box-shadow: none;
   overflow-y: hidden;
-  padding: 0 0 0 15px;
+  padding: 0px;
 }
 
 .navbar .navbar-nav li.menu-item-has-children .sub-menu li {
   position: relative;
 }
 
-.navbar .navbar-nav li.menu-item-has-children .sub-menu i {
-  color: #c8c9ce;
-  float: left;
-  padding: 0;
-  position: absolute;
-  left: 0;
-  font-size: 14px;
-  top: 9px;
-}
-
 .navbar .navbar-nav li.menu-item-has-children .sub-menu a {
-  padding: 2px 0 2px 30px;
+  padding: 2px 0 2px 15px;
 }
 
 .navbar .navbar-nav li.menu-item-has-children .sub-menu a:before {
@@ -1635,9 +1625,8 @@ aside.left-panel {
 }
 
 .navbar .navbar-nav li.menu-item-has-children .sub-menu a .menu-icon {
-  top: 13px;
-  text-align: left;
-  width: 25px;
+  text-align: center;
+  width: 30px;
 }
 
 .navbar .navbar-nav li.menu-item-has-children.show a:before {

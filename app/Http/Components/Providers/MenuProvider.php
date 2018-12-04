@@ -73,8 +73,5 @@ class MenuProvider
         return $this->buildLeftMenu()->render();
     }
 
-    public function getUserMenu(){
-
-    }
 
 }
