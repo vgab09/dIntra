@@ -9,7 +9,7 @@
 namespace App\Http\Components\Alert;
 
 
-class Alert
+class Alert implements AlertInterface
 {
 
     protected $message;
