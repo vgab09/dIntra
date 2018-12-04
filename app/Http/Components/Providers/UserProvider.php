@@ -10,12 +10,12 @@ namespace App\Http\Components\Providers;
 
 
 use App\Persistence\Models\Employee;
-use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Menu\Laravel\Link;
 use Spatie\Menu\Laravel\Menu;
 
-class Userprovider
+class UserProvider
 {
 
     /**
@@ -31,13 +31,35 @@ class Userprovider
     }
 
     protected function buildUserMenu(){
-        $menu = Menu::new()
+        $menu = Menu::new([
+            Link::to('#', sprintf('%s <span class="caret"></span>',$this->currentUser->name))
+                ->addClass('dropdown-toggle')
+                ->setAttributes(['data-toggle' => 'dropdown', 'role' => 'button']),
+                ]
+            )
+            ->submenu(
+              Menu::new([
+                      Link::to('#','Profil')
+                          ->addClass('nav-link'),
+                      Link::toRoute('logout','Kijelentkezés')
+                          ->addClass('nav-link'),
+                    ]
+              )
+              ->withoutParentTag()
+              ->withoutWrapperTag()
+              ->wrap('div',['class' => 'user-menu dropdown-menu'])
+            )
+            ->withoutParentTag()
+            ->withoutWrapperTag()
             ->wrap('div',['class' => 'user-area dropdown']);
+
+
+        return $menu;
     }
 
 
     public function getUserMenu(){
-        return $this->buildUserMenu();
+        return $this->buildUserMenu()->render();
     }
 
 }

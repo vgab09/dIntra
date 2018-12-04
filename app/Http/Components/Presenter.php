@@ -30,6 +30,7 @@ class Presenter
 
     public function init(){
         $this->alerts = collect();
+        //app('UserProvider')->init();
     }
 
 
@@ -57,5 +58,10 @@ class Presenter
 
     public function getLeftMenu(){
        return app('MenuProvider')->getLeftMenu();
+    }
+
+    public function getUserMenu(){
+        app('UserProvider')->init();
+        return app('UserProvider')->getUserMenu();
     }
 }

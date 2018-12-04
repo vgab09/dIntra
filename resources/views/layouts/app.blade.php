@@ -28,18 +28,7 @@
                             </div>
                         </div>
                     </div>
-                <div class="user-area dropdown ">
-
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-user"></i>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                        <a class="nav-link" href="#"><i class="fa fa-user"></i> My Profile</a>
-                        <a class="nav-link" href="#"><i class="fa fa-user"></i> Notifications <span class="count">13</span></a>
-                        <a class="nav-link" href="#"><i class="fa fa-cog"></i> Settings</a>
-                        <a class="nav-link" href="#"><i class="fa fa-power-off"></i> Logout</a>
-                    </div>
-                </div>
+                    {!! $presenter->getUserMenu() !!}
             </div>
         </div>
     </div>
