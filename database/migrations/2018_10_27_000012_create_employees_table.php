@@ -28,7 +28,7 @@ class CreateEmployeesTable extends Migration
             $table->date('date_of_birth');
             $table->unsignedInteger('reporting_to_id_employee')->nullable();
             $table->tinyInteger('active')->default('1');
-            $table->string('remember_token', 40)->nullable();
+            $table->string('remember_token', 100)->nullable();
 
             $table->index(["id_department"], 'fk_employees_departments1_idx');
 
