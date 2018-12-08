@@ -18,13 +18,13 @@ use Spatie\Permission\Models\Role;
 class TestDataSeeder extends Seeder
 {
 
-    private const designationCount = 8;
-    private const departmentCount = 5;
-    private const leaveTypeCount = 2;
-    private const employeeCount = 100;
-    private const workDayCount = 4;
-    private const leavePoliciesCount = 20;
-    private const leaveRequestCount = 300;
+    private const DESIGNATION_COUNT = 8;
+    private const DEPARTMENT_COUNT = 5;
+    private const LEAVE_TYPE_COUNT = 2;
+    private const EMPLOYEE_COUNT = 100;
+    private const WORK_DAY_COUNT = 4;
+    private const LEAVE_POLICY_COUNT = 20;
+    private const LEAVE_REQUEST_COUNT = 300;
 
     /**
      * @var Department[]
@@ -94,19 +94,19 @@ class TestDataSeeder extends Seeder
     }
 
     private function createDesignations(){
-        $this->designations = factory(Designation::class,self::designationCount)->create();
+        $this->designations = factory(Designation::class,self::DESIGNATION_COUNT)->create();
     }
 
     private function createDepartments(){
-        $this->departments = factory(Department::class,self::departmentCount)->create();
+        $this->departments = factory(Department::class,self::DEPARTMENT_COUNT)->create();
     }
 
     private function createLeaveTypes(){
-        $this->leaveTypes = factory(LeaveType::class,self::leaveTypeCount)->create();
+        $this->leaveTypes = factory(LeaveType::class,self::LEAVE_TYPE_COUNT)->create();
     }
 
     private function createLeavePolicies(){
-        $this->leavePolicies = factory(LeavePolicy::class,self::leavePoliciesCount)->make()->each(function (LeavePolicy $leavePolicy){
+        $this->leavePolicies = factory(LeavePolicy::class,self::LEAVE_POLICY_COUNT)->make()->each(function (LeavePolicy $leavePolicy){
             $leavePolicy->leaveType()->associate($this->faker->randomElement($this->leaveTypes));
             $leavePolicy->save();
         });
@@ -114,7 +114,7 @@ class TestDataSeeder extends Seeder
 
     private function createEmployees(){
         $roles = $this->getRoles();
-        $this->employees = factory(Employee::class,self::employeeCount)->make()->each(function (Employee $employee) use ($roles){
+        $this->employees = factory(Employee::class,self::EMPLOYEE_COUNT)->make()->each(function (Employee $employee) use ($roles){
             $employee->designation()->associate($this->faker->randomElement($this->designations));
             $employee->department()->associate($this->faker->randomElement($this->departments));
             $employee->employmentForm()->associate($this->faker->randomElement($this->employmentForms));
@@ -128,11 +128,11 @@ class TestDataSeeder extends Seeder
     }
 
     private function createWorkDays(){
-        $this->workDays = factory(WorkDay::class,self::workDayCount)->create();
+        $this->workDays = factory(WorkDay::class,self::WORK_DAY_COUNT)->create();
     }
 
     private function createLeaveRequest(){
-        $this->leaveRequests = factory(LeaveRequest::class,self::leaveRequestCount)->make()->each(function(LeaveRequest $leaveRequest){
+        $this->leaveRequests = factory(LeaveRequest::class,self::LEAVE_REQUEST_COUNT)->make()->each(function(LeaveRequest $leaveRequest){
             $leaveRequest->employee()->associate($this->faker->randomElement($this->employees));
             $leaveRequest->leavePolicy()->associate($this->faker->randomElement($this->leavePolicies));
             $leaveRequest->save();
