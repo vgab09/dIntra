@@ -28,7 +28,7 @@ class CollectSessionErrors
         $viewBag = $request->session()->get('errors');
 
         if(!empty($viewBag)){
-            app('Presenter')->mergeSessionErrors($viewBag->all(),Alert::ERROR);
+            app('AlertProvider')->mergeSessionErrors($viewBag->all(),Alert::ERROR);
         }
 
         return $next($request);

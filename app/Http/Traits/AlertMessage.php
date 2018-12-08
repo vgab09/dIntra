@@ -14,12 +14,12 @@ trait AlertMessage
 
     protected function getAlerts($group = false)
     {
-      app('Presenter')->getAlerts($group);
+      app('AlertProvider')->getAlerts($group);
     }
 
     protected function alert($message, $type)
     {
-      app('Presenter')->addAlert($message, $type);
+      app('AlertProvider')->addAlert($message, $type);
     }
 
     protected function alertSuccess($message)

@@ -21,9 +21,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-        $presenter = $this->app->make('Presenter');
-        $presenter->init();
-        View::share('presenter',$presenter);
+        View::share('presenter',$this->app->make('Presenter'));
 
     }
 
