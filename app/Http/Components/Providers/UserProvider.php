@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\Menu\Laravel\Link;
 use Spatie\Menu\Laravel\Menu;
 
-class UserProvider
+class UserProvider implements ProviderInterface
 {
 
     /**
@@ -31,6 +31,9 @@ class UserProvider
     }
 
     protected function buildUserMenu(){
+
+        $this->init();
+
         $menu = Menu::new([
             Link::to('#', sprintf('%s <span class="caret"></span>',$this->currentUser->name))
                 ->addClass('dropdown-toggle')
@@ -58,7 +61,7 @@ class UserProvider
     }
 
 
-    public function getUserMenu(){
+    public function provide(){
         return $this->buildUserMenu()->render();
     }
 

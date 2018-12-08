@@ -11,7 +11,7 @@ namespace App\Http\Components\Providers;
 
 use App\Http\Components\Alert\Alert;
 
-class AlertProvider
+class AlertProvider implements ProviderInterface
 {
 
     /**
@@ -36,6 +36,10 @@ class AlertProvider
         }
     }
 
+    /**
+     * @param bool $group
+     * @return Alert[]|\Illuminate\Support\Collection
+     */
     public function getAlerts($group = false)
     {
 
@@ -46,5 +50,17 @@ class AlertProvider
         return $this->alerts;
 
     }
+
+    public function provide()
+    {
+        $renderedAlert = '';
+
+        foreach ($this->getAlerts(false) as $alert){
+            $renderedAlert .= $alert->render();
+        }
+
+        return $renderedAlert;
+    }
+
 
 }

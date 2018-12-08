@@ -13,7 +13,7 @@ namespace App\Http\Components\Providers;
 use Spatie\Menu\Laravel\Link;
 use Spatie\Menu\Laravel\Menu;
 
-class MenuProvider
+class MenuProvider implements ProviderInterface
 {
 
     protected function buildLeftMenu(){
@@ -69,7 +69,7 @@ class MenuProvider
     }
 
 
-    public function getLeftMenu(){
+    public function provide(){
         return $this->buildLeftMenu()->render();
     }
 

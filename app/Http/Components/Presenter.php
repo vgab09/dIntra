@@ -25,12 +25,16 @@ class Presenter
         return app('AlertProvider')->getAlerts($group);
     }
 
+    public function renderAlerts()
+    {
+        return app('AlertProvider')->provide();
+    }
+
     public function getLeftMenu(){
-       return app('MenuProvider')->getLeftMenu();
+       return app('MenuProvider')->provide();
     }
 
     public function getUserMenu(){
-        app('UserProvider')->init();
-        return app('UserProvider')->getUserMenu();
+        return app('UserProvider')->provide();
     }
 }
