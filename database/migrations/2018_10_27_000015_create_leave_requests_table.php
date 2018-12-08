@@ -25,7 +25,7 @@ class CreateLeaveRequestsTable extends Migration
             $table->unsignedInteger('days');
             $table->text('comment')->nullable();
             $table->enum('status', ['accepted', 'denied', 'pending'])->default('pending');
-            $table->text('reason');
+            $table->text('reason')->nullable();
             $table->nullableTimestamps();
         });
     }
