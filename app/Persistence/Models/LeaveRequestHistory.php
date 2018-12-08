@@ -11,11 +11,29 @@ namespace App\Persistence\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class LeaveRequestHistory
+ * @package App\Persistence\Models
+ *
+ * @property int id_leave_request_history
+ * @property int id_leave_request
+ * @property string event
+ * @property int created_by
+ */
 class LeaveRequestHistory extends Model
 {
     protected $primaryKey = 'id_leave_request_history';
 
     protected $fillable = ['id_leave_request','event','created_by'];
+
+    protected function getValidationRules(): array
+    {
+        return [
+            'id_leave_request' => 'required|int|exists:leave_requests',
+            'event' => 'nullable|string',
+            'created_by' => 'required|int|exists:employees',
+        ];
+    }
 
     public function leaveRequest(){
         return $this->belongsTo(LeaveRequest::class,'id_leave_request','id_leave_request',LeaveRequestHistory::class);

@@ -2,14 +2,31 @@
 
 namespace App\Persistence\Models;
 
+use App\Traits\ValidatableModel;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * Class Employee
+ * @package App\Persistence\Models
+ *
+ * @property int id_employee
+ * @property int id_designation
+ * @property int id_department
+ * @property int id_employment_form
+ * @property string hiring_date
+ * @property string termination_date
+ * @property string name
+ * @property string email
+ * @property string date_of_birth
+ * @property int reporting_to_id_employee
+ * @property bool active
+ *
+ */
 class Employee extends Authenticatable
 {
-    use Notifiable, HasRoles;
+    use Notifiable, HasRoles, ValidatableModel;
 
     protected $primaryKey = 'id_employee';
 
@@ -30,6 +47,28 @@ class Employee extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected function getValidationRules(): array
+    {
+        return [
+            'id_designation' => 'nullable|int|exists:departments',
+            'id_department' => 'nullable|int|exists:departments',
+            'id_employment_form' => 'required|int|exists:departments',
+            'hiring_date' => 'required|date',
+            'termination_date' => 'nullable|date',
+            'name' => 'required|string',
+            'password'=>'required|string|min:6',
+            'date_of_birth' => 'required|date',
+            'reporting_to_id_employee' => 'nullable|int|exists:employees',
+            'active' => 'required|boolean',
+            'email' => [
+                'required',
+                'email',
+                $this->isUnique(),
+                'max:127'
+            ]
+        ];
+    }
 
     public function department(){
         return $this->belongsTo(Department::class,'id_department','id_department',Employee::class);

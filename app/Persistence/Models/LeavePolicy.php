@@ -11,11 +11,43 @@ namespace App\Persistence\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class LeavePolicy
+ * @package App\Persistence\Models
+ *
+ * @property int id_leave_policy
+ * @property int id_leave_type
+ * @property string name
+ * @property int days
+ * @property string color
+ * @property string description
+ * @property string start_at
+ * @property string end_at
+ * @property bool active
+ */
 class LeavePolicy extends Model
 {
     protected $primaryKey = 'id_leave_policy';
 
     protected $fillable = ['id_leave_type','name','days','color','description','start_at','end_at','active'];
+
+    protected function getValidationRules(): array
+    {
+        return [
+            'id_leave_type' => 'required|int|exists:leave_types',
+            'name' => 'required|string',
+            'days' => 'required|int',
+            'color' => [
+                'required',
+                'string',
+                'regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i'
+            ],
+            'description' => 'nullable|string',
+            'start_at' => 'required|date',
+            'end_at' => 'required|date',
+            'active' => 'required|boolean',
+        ];
+    }
 
     public function leaveType(){
         return $this->belongsTo(LeaveType::class,'id_leave_type','id_leave_type',LeavePolicy::class);
