@@ -6,9 +6,10 @@
  * Time: 19:31
  */
 
-namespace App\Http\Traits;
+namespace App\Traits;
 
 use App\Http\Components\Alert\Alert;
+
 trait AlertMessage
 {
 
