@@ -42,7 +42,7 @@ class UserProvider implements ProviderInterface
             )
             ->submenu(
               Menu::new([
-                      Link::to('#','Profil')
+                      Link::toRoute('editProfile','Profil')
                           ->addClass('nav-link'),
                       Link::toRoute('logout','Kijelentkezés')
                           ->addClass('nav-link'),

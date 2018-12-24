@@ -8,6 +8,7 @@
 
 namespace App\Http\Components\FormHelper;
 
+use Collective\Html\FormFacade as Form;
 
 class FormFieldHelper
 {
@@ -22,9 +23,27 @@ class FormFieldHelper
     protected $name;
 
     /**
-     * @var string input type: 'text', 'password', 'select', 'textarea', 'radio', 'checkbox', 'file', 'color', number, date
+     * @var string input type: text, password, range, hidden, search, tel, email, number, date, datetime,
+     * datetimeLocal, time, url, week, file, textarea, select, selectRange, selectYear, selectMonth, checkbox, radio, image, month color, submit
      */
     protected $type;
+    // custom: select,selectMonth ,
+    // custom: selectRange, selectYear
+
+    // custom radio: checkbox ,checkbox
+    // custom button: button
+
+    public const TEXT_TYPE = 'text';
+    public const EMAIL_TYPE = 'email';
+    public const PASSWORD_TYPE = 'password';
+    public const SELECT_TYPE = 'select';
+    public const TEXTAREA_TYPE = 'textarea';
+    public const RADIO_TYPE = 'radio';
+    public const CHECKBOX_TYPE = 'checkbox';
+    public const FILE_TYPE = 'file';
+    public const COLOR_TYPE = 'color';
+    public const NUMBER_TYPE = 'number';
+    public const DATE_TYPE = 'date';
 
     /**
      * @var bool If true, it will be required item. The label will append by a star
@@ -62,34 +81,42 @@ class FormFieldHelper
     protected $disabled = false;
 
     /**
+     * @var mixed|null field value
+     */
+    protected $value = null;
+
+    /**
+     * @var string|null fontAwesome icon full class
+     */
+    protected $iconClass = null;
+
+    /**
      * @var array field error messages
      */
     protected $errors = [];
-
-    /**
-     * @var array Select options
-     */
-    protected $options = [];
-
-    /**
-     * @var mixed selected value
-     */
-    protected $selectedOption;
 
     /**
      * FormFieldHelper constructor.
      * @param $name string Field name
      * @param $type string Field Type
      * @param string $label Field label
-     * @param array $options Field attributes
-     * @throws \Exception
      */
-    public function __construct($name, $type, $label = '', $options = [])
+    public function __construct($name, $type, $label = '')
     {
         $this->setName($name);
         $this->setType($type);
         $this->setLabel($label);
-        $this->fill($options);
+    }
+
+    /**
+     * Create new FormFieldHelper instance
+     * @param string $name
+     * @param string $type
+     * @param string $label
+     * @return FormFieldHelper
+     */
+    public static function to(string $name, string $type, string $label){
+        return new static($name,$type,$label);
     }
 
     /**
@@ -102,9 +129,9 @@ class FormFieldHelper
 
     /**
      * @param string $label
-     * @return ListFieldHelper
+     * @return FormFieldHelper
      */
-    public function setLabel(string $label): ListFieldHelper
+    public function setLabel(string $label): FormFieldHelper
     {
         $this->label = $label;
         return $this;
@@ -120,9 +147,9 @@ class FormFieldHelper
 
     /**
      * @param string $name
-     * @return ListFieldHelper
+     * @return FormFieldHelper
      */
-    public function setName(string $name): ListFieldHelper
+    public function setName(string $name): FormFieldHelper
     {
         $this->name = $name;
         return $this;
@@ -138,9 +165,9 @@ class FormFieldHelper
 
     /**
      * @param string $type
-     * @return ListFieldHelper
+     * @return FormFieldHelper
      */
-    public function setType(string $type): ListFieldHelper
+    public function setType(string $type): FormFieldHelper
     {
         $this->type = $type;
         return $this;
@@ -156,9 +183,9 @@ class FormFieldHelper
 
     /**
      * @param bool $required
-     * @return ListFieldHelper
+     * @return FormFieldHelper
      */
-    public function setRequired(bool $required): ListFieldHelper
+    public function setRequired(bool $required): FormFieldHelper
     {
         $this->required = $required;
         return $this;
@@ -174,9 +201,9 @@ class FormFieldHelper
 
     /**
      * @param string $description
-     * @return ListFieldHelper
+     * @return FormFieldHelper
      */
-    public function setDescription(string $description): ListFieldHelper
+    public function setDescription(string $description): FormFieldHelper
     {
         $this->description = $description;
         return $this;
@@ -192,9 +219,9 @@ class FormFieldHelper
 
     /**
      * @param string $hint
-     * @return ListFieldHelper
+     * @return FormFieldHelper
      */
-    public function setHint(string $hint): ListFieldHelper
+    public function setHint(string $hint): FormFieldHelper
     {
         $this->hint = $hint;
         return $this;
@@ -210,9 +237,9 @@ class FormFieldHelper
 
     /**
      * @param string $suffix
-     * @return ListFieldHelper
+     * @return FormFieldHelper
      */
-    public function setSuffix(string $suffix): ListFieldHelper
+    public function setSuffix(string $suffix): FormFieldHelper
     {
         $this->suffix = $suffix;
         return $this;
@@ -228,9 +255,9 @@ class FormFieldHelper
 
     /**
      * @param string $placeholder
-     * @return ListFieldHelper
+     * @return FormFieldHelper
      */
-    public function setPlaceholder(string $placeholder): ListFieldHelper
+    public function setPlaceholder(string $placeholder): FormFieldHelper
     {
         $this->placeholder = $placeholder;
         return $this;
@@ -246,15 +273,16 @@ class FormFieldHelper
 
     /**
      * @param int $maxLength
-     * @return ListFieldHelper
+     * @return FormFieldHelper
      */
-    public function setMaxLength(int $maxLength): ListFieldHelper
+    public function setMaxLength(int $maxLength): FormFieldHelper
     {
         $this->maxLength = $maxLength;
         return $this;
     }
 
     /**
+     * return true if field is disabled
      * @return bool
      */
     public function isDisabled(): bool
@@ -264,89 +292,76 @@ class FormFieldHelper
 
     /**
      * @param bool $disabled
-     * @return ListFieldHelper
+     * @return FormFieldHelper
      */
-    public function setDisabled(bool $disabled): ListFieldHelper
+    public function setDisabled(bool $disabled): FormFieldHelper
     {
         $this->disabled = $disabled;
         return $this;
     }
 
     /**
-     * Add one option to select
-     * @param $name
-     * @param $value
-     * @param bool $selected default: false
+     * @return mixed|null
      */
-    public function AddSelectOption($name, $value, $selected = false)
+    public function getValue(): ?mixed
     {
-        $this->options[$value] = $name;
-        if ($selected) {
-            $this->setSelectedOption($value);
-        }
+        return $this->value;
     }
 
     /**
-     * Add multiple option
-     * @param iterable $options
-     * Format: [[name=>'sth',value=>'val',selected=>false],[name=>'sth',value=>'val',selected=>false]]
-     *
+     * @param mixed|null $value
+     * @return FormFieldHelper
      */
-    public function AddSelectOptions($options)
+    public function setValue(?mixed $value): FormFieldHelper
     {
-        foreach ($options as $option) {
-            $this->AddSelectOption($option['name'], $option['value']);
-        }
+        $this->value = $value;
+        return $this;
     }
 
     /**
-     * Set selected option
-     * @param $value mixed Option value
-     * @return bool true is success
+     * @return null|string
      */
-    public function setSelectedOption($value)
+    public function getIconClass(): ?string
     {
-        if (!empty($this->options[$value])) {
-            $this->selectedOption = $value;
-            return true;
-        }
-        return false;
+        return $this->iconClass;
+    }
+
+    public function hasIcon(){
+        return !empty($this->iconClass);
     }
 
     /**
-     * Return select options
-     * [[name=>'sth',value=>'val',selected=>false],[name=>'sth',value=>'val',selected=>false]]
+     * @param null|string $iconClass
+     * @return FormFieldHelper
+     */
+    public function setIconClass(?string $iconClass): FormFieldHelper
+    {
+        $this->iconClass = $iconClass;
+        return $this;
+    }
+
+
+
+    /**
      * @return array
      */
-    public function getOptions()
+    public function getErrors(): array
     {
-        return $this->options;
+        return $this->errors;
     }
-
 
     /**
-     * Fill the model with an array of attributes.
-     *
-     * @param  array $attributes
-     * @throws \Exception
-     * @return $this
-     *
+     * @param array $errors
+     * @return FormFieldHelper
      */
-    public function fill(array $attributes)
+    public function setErrors(array $errors): FormFieldHelper
     {
-
-        foreach ($attributes as $property => $value) {
-
-            $methodName = camel_case('set_' . $this, $property);
-
-            if (method_exists($methodName)) {
-                $this->$methodName($value);
-            } else {
-                throw new Exception('Property not exists:' . strip_tags($property));
-            }
-        }
-
+        $this->errors = $errors;
         return $this;
-
     }
+
+    public function render(){
+        return Form::inputWithLabel($this);
+    }
+
 }

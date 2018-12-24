@@ -9,7 +9,7 @@ use App\Http\Components\Providers\UserProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
-
+use Collective\Html\FormFacade as Form;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        $this->registerFormComponents();
         View::share('presenter',$this->app->make('Presenter'));
 
     }
@@ -48,5 +49,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('Presenter', function ($app) {
             return new Presenter();
         });
+    }
+
+    private function registerFormComponents(){
+        Form::component('inputWithLabel', 'form.partials.inputWithLabel', ['field']);
     }
 }
