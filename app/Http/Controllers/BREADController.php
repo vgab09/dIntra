@@ -9,7 +9,38 @@
 namespace App\Http\Controllers;
 
 
-class BREADController
+use App\Traits\DataTable;
+
+abstract class BREADController extends Controller
 {
+    use DataTable;
+
+    /**
+     * @var string unique resource name
+     */
+    protected $slug;
+
+    /**
+     * @var string
+     */
+    protected $modelClass;
+
+    /**
+     * (B)READ Browse data
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function index(){
+        return $this->buildListHelper()->render();
+    }
+
+
+    /**
+     * Get data to dataTable
+     *
+     * @return \Eloquent|Collection|QueryBuilder
+     */
+    protected function collectListData(){
+        return App::make($this->modelClass)->newQuery();
+    }
 
 }

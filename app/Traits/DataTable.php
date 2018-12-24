@@ -17,7 +17,7 @@ trait DataTable
 {
 
     public function getData(){
-        $list = $this->getListHelper();
+        $list = $this->buildListHelper();
         return $list->createDataTables($this->collectListData())->make(true);
     }
 

@@ -9,6 +9,8 @@
 namespace App\Http\Components\ListHelper;
 
 
+use phpDocumentor\Reflection\Types\Iterable_;
+use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Facades\DataTables;
 
 class ListHelper
@@ -21,7 +23,7 @@ class ListHelper
     /**
      * @var string Used model class name
      */
-    public $modelName;
+    public $modelClass;
 
     /**
      * @var string display title
@@ -46,7 +48,7 @@ class ListHelper
     /**
      * @var array Bulk actions
      */
-    public $bulkActions;
+    public $bulkActions = [];
 
     /**
      * @var array list of required actions for each list row
@@ -71,36 +73,40 @@ class ListHelper
      */
     public $dataUrl;
 
+
     /**
-     * @var array Table columns visibility settings 0 - hidden ; 1 - shown
+     * ListHelper constructor.
+     * @param $name
+     * @param $modelClass
      */
-    private $TableColumnsVisibility;
-
-
-    public function __construct($name, $modelName)
+    public function __construct($name, $modelClass)
     {
-        $this->baseFolder = 'vendor/adminlte';
-        $this->baseTemplate = 'list';
+        $this->baseFolder = 'bread';
+        $this->baseTemplate = 'browse';
         $this->listName = $name;
-        $this->modelName = $modelName;
+        $this->modelClass = $modelClass;
         $this->baseUrl = url()->current();
         $this->dataUrl = $this->baseUrl . '/data/';
-        $this->setAvailablePagination();
+    }
 
-        //  key example: name=TableColumnsVisibility.category.created_at value='0'/'1'
-        $this->TableColumnsVisibility = [];
+    /**
+     * Create new ListHelper instance
+     *
+     * @param $name
+     * @param $modelClass
+     * @param iterable $fields default []
+     * @return ListHelper
+     */
+    public static function to($name,$modelClass,iterable $fields = []){
+        $instance = new static($name,$modelClass);
+        $instance->addFields($fields);
+        return $instance;
     }
 
     public function render()
     {
-        $P['P'] = [
-            'Columns' => $this->getListItems(),
-            'listName' => $this->listName,
-        ];
-        $this->setInitialSearch();
-
         $view = $this->baseFolder . '.' . $this->baseTemplate;
-        return view($view, $P);
+        return view($view, $this);
 
     }
 
@@ -165,43 +171,6 @@ class ListHelper
         }
     }
 
-    public function processFilters()
-    {
-        $columns = request('columns', []);
-        $prefix = 'ActiveSearch-' . $this->listName . '-';
-
-        foreach ($columns as $column) {
-
-            if (!empty($column['name']) && array_key_exists($column['name'], $this->fieldList)) {
-
-                Cookie::forget($prefix . $column['name']);
-
-                if ($column['search']['value'] !== null) {
-                    Cookie::queue($prefix . $column['name'], $column['search']['value'], 1440);
-                }
-            }
-        }
-    }
-
-    protected function setInitialSearch()
-    {
-
-        $prefix = 'ActiveSearch-' . $this->listName . '-';
-
-        /**
-         * @var ListFieldHelper $field
-         */
-        foreach ($this->fieldList as &$field) {
-
-            if (empty($field->searchable)) {
-                continue;
-            }
-            $field->searchValue = strip_tags(Cookie::get($prefix . $field->getName(), ''));
-
-        }
-
-    }
-
     /**
      * Get table list item, check fields
      */
@@ -217,18 +186,23 @@ class ListHelper
      */
     public function addField(ListFieldHelper $field): ListHelper
     {
+        $this->fieldList[$field->getName()] = $field;
+        return $this;
+    }
 
-        $fieldName = $field->getName();
 
-        if (in_array($fieldName, array_keys($this->TableColumnsVisibility))) {
-            if ($this->TableColumnsVisibility[$fieldName] == '1') {
-                $field->show = true;
-            } else {
-                $field->show = false;
-            }
-
+    public function addFields(iterable $fields)
+    {
+        foreach ($fields as $field){
+            $this->addField($field);
         }
-        $this->fieldList[$fieldName] = $field;
+        return $this;
+    }
+
+    public function addTimeStamps(){
+        $this->addField(ListFieldHelper::to('created_at','Létrehozva')->setType('datetime'));
+        $this->addField(ListFieldHelper::to('updated_at','Módosítva')->setType('datetime'));
+
         return $this;
     }
 
@@ -248,19 +222,4 @@ class ListHelper
         return $this->rowActions;
     }
 
-    /**
-     * Set availablePagination, if not pass array, get from configuration
-     * @param array $availablePagination
-     * @return ListHelper
-     * @throws \Illuminate\Container\EntryNotFoundException
-     */
-    public function setAvailablePagination(array $availablePagination = []): ListHelper
-    {
-        if (empty($availablePagination)) {
-            $availablePagination = ['10,25,50'];
-        }
-        $this->availablePagination = $availablePagination;
-
-        return $this;
-    }
 }
