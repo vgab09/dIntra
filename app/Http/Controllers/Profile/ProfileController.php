@@ -22,10 +22,10 @@ class ProfileController extends Controller
     {
         return FormHelper::to('myProfile',Employee::class,$model,[
             FormFieldHelper::to('name',FormFieldHelper::TEXT_TYPE,'Név'),
-            FormFieldHelper::to('E-mail',FormFieldHelper::TEXT_TYPE,'E-mail'),
+            FormFieldHelper::to('email',FormFieldHelper::TEXT_TYPE,'E-mail'),
             FormFieldHelper::to('passoword',FormFieldHelper::PASSWORD_TYPE,'Jelszó'),
-            FormFieldHelper::to('passoword_confirm',FormFieldHelper::PASSWORD_TYPE,'Jelszó ismétlét'),
-        ]);
+            FormFieldHelper::to('passoword_confirm',FormFieldHelper::PASSWORD_TYPE,'Jelszó ismét'),
+        ])->setTitle('Profil szerkesztése');
     }
 
     public function editProfile(){
