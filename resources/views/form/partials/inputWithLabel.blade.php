@@ -1,7 +1,7 @@
 <?php /** @var \App\Http\Components\FormHelper\FormFieldHelper $field */ ?>
 
 <div class="form-group">
-    {{ Form::label($field->getLabel(), null, ['class' => ' col-xs-12 col-md-3', 'for' => $field->getName()]) }}
+    {{ Form::label($field->getLabel(), null, ['for' => $field->getName()]) }}
     <div class="input-group">
         @if($field->hasIcon())
             <div class="input-group-addon">

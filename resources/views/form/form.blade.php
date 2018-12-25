@@ -4,9 +4,10 @@
 {{$formHelper->getTitle()}}
 @endsection
 @section('content')
-    <div class="box box-primary">
-        <div class="box-body">
-            {{Form::model($formHelper->getModel(),['class'=>'frm_'.$formHelper->getName(),'id'=>'frm_'.$formHelper->getName()])}}
+    <div class="card">
+        {{Form::model($formHelper->getModel(),['class'=>'frm_'.$formHelper->getName(),'id'=>'frm_'.$formHelper->getName()])}}
+        <div class="card-body card-block">
+
 
 {{--
 
@@ -23,31 +24,17 @@
                 </div>
             @endif
 --}}
-            <div class="row">
-                <div class="col-xs-12 col-lg-10 col-lg-offset-1">
 
-                    @foreach($formHelper->getFormItems() as $fieldName => $field)
-                        {!! $field->render() !!}
-                    @endforeach
+            @foreach($formHelper->getFormItems() as $fieldName => $field)
+                {!! $field->render() !!}
+            @endforeach
 
-                </div><!-- /.col- -->
-            </div><!-- /.row -->
-            <div class="row">
-                <div class="col-xs-12 buttons">
-                    <div class="right">
-                        @if(isset($P['values'])) {{-- new --}}
-                        <button type="button" id="btn-new" class="btn btn-new bg-primary "><i class="fa fa-plus"></i> <span>New</span> </button>
-                        @endif
-                        <button type="submit" id="btn-save" class="btn btn-save bg-primary "><i class="fa fa-save"></i> <span>Save</span> </button>
-                        @if(isset($P['values'])) {{-- new --}}
-                        <button type="button" id="btn-copy" class="btn btn-copy bg-primary "><i class="fa fa-copy"></i> <span>Copy</span> </button>
-                        <button type="button" id="btn-delete" class="btn btn-delete bg-primary "><i class="fa fa-trash"></i> <span>Delete</span> </button>
-                        @endif
-                        <button type="button" id="btn-cancel" class="btn btn-cancel bg-primary "><i class="fa fa-close"></i> <span>Cancel</span> </button>
-                    </div>
-                </div>
-            </div>
-            {{Form::close()}}
-        </div> <!-- /.box-body -->
+
+
+        </div>
+        <div class="card-footer">
+            {!! Form::submit('Mentés'); !!}
+        </div>
+        {{Form::close()}}
     </div>
-@stop
+@endsection

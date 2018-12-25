@@ -24,26 +24,35 @@ class FormFieldHelper
 
     /**
      * @var string input type: text, password, range, hidden, search, tel, email, number, date, datetime,
-     * datetimeLocal, time, url, week, file, textarea, select, selectRange, selectYear, selectMonth, checkbox, radio, image, month color, submit
+     * datetimeLocal, time, url, week, file, textarea, image, month color, submit
      */
     protected $type;
     // custom: select,selectMonth ,
-    // custom: selectRange, selectYear
+    // custom: selectRange, selectYear selectMonth
 
     // custom radio: checkbox ,checkbox
     // custom button: button
 
     public const TEXT_TYPE = 'text';
-    public const EMAIL_TYPE = 'email';
     public const PASSWORD_TYPE = 'password';
-    public const SELECT_TYPE = 'select';
-    public const TEXTAREA_TYPE = 'textarea';
-    public const RADIO_TYPE = 'radio';
-    public const CHECKBOX_TYPE = 'checkbox';
-    public const FILE_TYPE = 'file';
-    public const COLOR_TYPE = 'color';
+    public const RANGE_TYPE = 'range';
+    public const HIDDEN_TYPE = 'hidden';
+    public const SEARCH_TYPE = 'search';
+    public const TEL_TYPE = 'tel';
+    public const EMAIL_TYPE = 'email';
     public const NUMBER_TYPE = 'number';
     public const DATE_TYPE = 'date';
+    public const DATETIME_TYPE = 'datetime';
+    public const DATETIMELOCAL_TYPE = 'datetimelocal';
+    public const TIME_TYPE = 'time';
+    public const URL_TYPE = 'url';
+    public const WEEK_TYPE = 'week';
+    public const FILE_TYPE = 'file';
+    public const TEXTAREA_TYPE = 'textarea';
+    public const IMAGE_TYPE = 'image';
+    public const MONTH_TYPE = 'month';
+    public const COLOR_TYPE = 'color';
+    public const SUBMIT_TYPE = 'submit';
 
     /**
      * @var bool If true, it will be required item. The label will append by a star

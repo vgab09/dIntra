@@ -12,6 +12,8 @@ namespace App\Http\Components\FormHelper;
 class FormSelectFieldHelper extends FormFieldHelper
 {
 
+    public const SELECT_TYPE = 'select';
+
     /**
      * @var array Select options
      */
