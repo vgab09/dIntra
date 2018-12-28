@@ -5,6 +5,7 @@ namespace App\Persistence\Models;
 use App\Traits\ValidatableModel;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -24,7 +25,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property bool active
  *
  */
-class Employee extends Authenticatable
+class Employee extends Authenticatable implements ValidatableModelInterface
 {
     use Notifiable, HasRoles, ValidatableModel;
 
@@ -51,20 +52,19 @@ class Employee extends Authenticatable
     protected function getValidationRules(): array
     {
         return [
-            'id_designation' => 'nullable|int|exists:departments',
+            'id_designation' => 'nullable|int|exists:designations',
             'id_department' => 'nullable|int|exists:departments',
-            'id_employment_form' => 'required|int|exists:departments',
+            'id_employment_form' => 'required|int|exists:employment_forms',
             'hiring_date' => 'required|date',
             'termination_date' => 'nullable|date',
             'name' => 'required|string',
-            'password'=>'required|string|min:6',
             'date_of_birth' => 'required|date',
             'reporting_to_id_employee' => 'nullable|int|exists:employees',
             'active' => 'required|boolean',
             'email' => [
                 'required',
                 'email',
-                $this->isUnique(),
+                $this->isUnique('email'),
                 'max:127'
             ]
         ];

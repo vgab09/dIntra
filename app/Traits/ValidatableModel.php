@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: g09
- * Date: 2018.12.08.
- * Time: 12:10
- */
 
 namespace App\Traits;
 
@@ -30,30 +24,30 @@ trait ValidatableModel
 
     /**
      * If model exist except current attribute
+     * @param string $fieldName
+     * @return \Illuminate\Validation\Rules\Unique
      */
-    protected function isUnique(){
-        return empty($this->getKey()) ? Rule::unique($this->getTable()) : Rule::unique($this->getTable())->ignore($this->getKey());
+    protected function isUnique(string $fieldName){
+        return empty($this->getKey()) ? Rule::unique($this->getTable(),$fieldName) : Rule::unique($this->getTable(),$fieldName)->ignore($this->getKey(),$this->getKeyName());
     }
 
     /**
      * Validate
-     * @param $data
      * @param string $ruleName
      * @return bool
      */
-    public function validate($data,$ruleName = null){
+    public function validate($ruleName = null){
 
-        return $this->baseValidate($data,$this->getValidationRules(),$ruleName);
+        return $this->baseValidate($this->getValidationRules(),$ruleName);
     }
 
     /**
      * Validate given rules
-     * @param $data
      * @param  array $rules
      * @return bool
      */
-    public function validateByThis($data,$rules = []){
-        return $this->baseValidate($data,$rules,null);
+    public function validateByThis($rules = []){
+        return $this->baseValidate($rules,null);
     }
 
     /**
@@ -62,7 +56,7 @@ trait ValidatableModel
      * @param string $ruleName
      * @return bool
      */
-    protected function baseValidate($data,$validationRules, $ruleName){
+    protected function baseValidate($validationRules, $ruleName){
 
         if(empty($ruleName)){
             $rules = $validationRules;
@@ -74,7 +68,7 @@ trait ValidatableModel
             return false;
         }
 
-        $validator = Validator::make($data,$rules);
+        $validator = Validator::make($this->attributesToArray(),$rules);
 
         if($validator->fails()){
             $this->validationErrors = $validator->errors();

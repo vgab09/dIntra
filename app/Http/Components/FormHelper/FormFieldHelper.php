@@ -194,7 +194,7 @@ class FormFieldHelper
      * @param bool $required
      * @return FormFieldHelper
      */
-    public function setRequired(bool $required): FormFieldHelper
+    public function setRequired(bool $required = true): FormFieldHelper
     {
         $this->required = $required;
         return $this;

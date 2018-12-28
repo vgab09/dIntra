@@ -26,7 +26,10 @@ $this->post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::group(['middleware' => 'auth'], function () {
     //Dashboard
     $this->get('/','Dashboard\DashboardController@dashboard')->name('dashboard');
-    $this->get('/profile','Profile\ProfileController@editProfile')->name('editProfile');
+
+    //Profile
+    $this->get('/profile','Profile\ProfileController@edit')->name('editProfile');
+    $this->post('/profile','Profile\ProfileController@update')->name('updateProfile');
 
 });
 

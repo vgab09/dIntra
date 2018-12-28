@@ -9,8 +9,11 @@
 namespace App\Http\Components\FormHelper;
 
 
+use App\Persistence\Models\ValidatableModelInterface;
 use Collective\Html\FormBuilder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\MessageBag;
 
@@ -62,13 +65,19 @@ class FormHelper
      */
     protected $submit;
 
-    protected $baseUrls = [];
+    /**
+     * @var string action URL
+     */
+    protected $action;
 
     /**
      * @var MessageBag Messages
      */
     protected $errors;
 
+    /**
+     * @var array icons
+     */
     protected $icons = [
         'date'      => 'calendar',
         'text'      => 'italic',
@@ -78,6 +87,11 @@ class FormHelper
     ];
 
     private $request;
+
+    /**
+     * @var FormBuilder
+     */
+    private $formBuilderInstance;
 
 
     /**
@@ -95,6 +109,8 @@ class FormHelper
         $this->name = $name;
         $this->modelName = $modelName;
         $this->model = $model;
+        $this->formBuilderInstance = App::make('form');
+        $this->setModel($model);
     }
 
     /**
@@ -127,7 +143,7 @@ class FormHelper
      * Create a new Empty model
      */
     protected function createEmptyModel(){
-        $this->model = App::make($this->modelName);
+        $this->setModel(App::make($this->modelName));
     }
 
     /**
@@ -142,17 +158,29 @@ class FormHelper
         }
 
         $request = request()->all();
+
+        /*
         foreach($this->fieldList as $key => $column){
             if($column->getType() == 'checkbox' && !isset($request[$key]) )          //  not posted unchecked checkboxes
                 $request[ $key ] = 0;
         }
+        */
         $this->request = $request;
         return $this->request;
     }
 
     /**
+     * @param Request|FormRequest $request
+     * @return $this
+     */
+    public function setRequest($request){
+        $this->request =$request->all();
+        return $this;
+    }
+
+    /**
      * Validate the current request
-     * return true if valid.     *
+     * return true if valid.
      * @return bool
      */
     public function validate(){
@@ -160,9 +188,10 @@ class FormHelper
         if(empty($this->model)){
             $this->createEmptyModel();
         }
-        $request = $this->getRequest();
 
-        if(!$this->model->validate($request)){
+        $this->model->fill($this->getRequest());
+
+        if(!$this->model->validate()){
             $this->errors->merge($this->model->getValidationErrorMessageBag()->toArray());
 
             foreach ($this->errors->toArray() as $key => $error){
@@ -188,13 +217,11 @@ class FormHelper
             return false;
         }
 
-        $request = $this->getRequest();
-
         if(empty($this->model)){
             $this->createEmptyModel();
         }
 
-        if(!$this->model->fill($request)->save()){
+        if(!$this->model->save()){
             $this->errors->add('Unable save resource','Unable save resource.');
             return false;
         }
@@ -216,24 +243,6 @@ class FormHelper
 
     public function render(){
         return view($this->baseFolder . '.' . $this->baseTemplate,['formHelper' => $this]);
-    }
-
-    /**
-     * Get the base url
-     * @return array
-     */
-    public function getBaseUrls(): array
-    {
-        return $this->baseUrls;
-    }
-
-    /**
-     * Set the base url
-     * @param array $baseUrls
-     */
-    public function setBaseUrls(array $baseUrls)
-    {
-        $this->baseUrls = $baseUrls;
     }
 
     /**
@@ -289,12 +298,13 @@ class FormHelper
     }
 
     /**
-     * @param Model|null $model
+     * @param ValidatableModelInterface|null $model
      * @return FormHelper
      */
-    public function setModel(?Model $model): FormHelper
+    public function setModel(?ValidatableModelInterface $model): FormHelper
     {
         $this->model = $model;
+        $this->formBuilderInstance->setModel($model);
         return $this;
     }
 
@@ -329,6 +339,46 @@ class FormHelper
         }
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getAction(): string
+    {
+        return $this->action;
+    }
+
+    /**
+     * Set action URL from named route
+     * @param string|array $action ['route.name',param1,param2,...]
+     * @return FormHelper
+     */
+    public function setActionFromNamedRoute($action){
+        $this->action= ['route' => $action];
+        return $this;
+    }
+
+    /**
+     * Set action URL from named route
+     * @param string|array $action ['foo/bar',param1,param2,...]
+     * @return FormHelper
+     */
+    public function setActionFromUrl($action){
+        $this->action= ['url' => $action];
+        return $this;
+    }
+
+    /**
+     * Set action URL from named route
+     * @param string|array $action ['Controller@method',param1,param2,...]
+     * @return FormHelper
+     */
+    public function setActionFromMethod($action){
+        $this->action= ['action' => $action];
+        return $this;
+    }
+
+
 
 
 }
