@@ -9,11 +9,6 @@ class Presenter
 {
     use AlertMessage;
 
-    public function getAlerts($group = false)
-    {
-        return app('AlertProvider')->getAlerts($group);
-    }
-
     public function renderAlerts()
     {
         return app('AlertProvider')->provide();
