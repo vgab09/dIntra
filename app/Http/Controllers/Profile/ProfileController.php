@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Profile;
 
 
-use App\Http\Components\FormHelper\FormFieldHelper;
+
 use App\Http\Components\FormHelper\FormHelper;
+use App\Http\Components\FormHelper\FormInputFieldHelper as Input;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\editProfile;
 use App\Persistence\Models\Employee;
 use App\Traits\AlertMessage;
-use App\Traits\FormHelperTrait;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
@@ -24,11 +24,11 @@ class ProfileController extends Controller
     protected function buildFormHelper($model)
     {
         return FormHelper::to('myProfile',Employee::class,$model,[
-            FormFieldHelper::to('name',FormFieldHelper::TEXT_TYPE,'Név')->setRequired(),
-            FormFieldHelper::to('email',FormFieldHelper::TEXT_TYPE,'E-mail')->setRequired(),
-            FormFieldHelper::to('current_password',FormFieldHelper::PASSWORD_TYPE,'Jelenlegi jelszó')->setRequired(),
-            FormFieldHelper::to('password',FormFieldHelper::PASSWORD_TYPE,'Új jelszó')->setRequired(),
-            FormFieldHelper::to('password_confirmation',FormFieldHelper::PASSWORD_TYPE,'Új jelszó ismételten')->setRequired(),
+            Input::toText('name','Név')->setRequired()->setIconClass('fas fa-user'),
+            Input::toEmail('email','E-mail')->setRequired()->setIconClass('fas fa-at'),
+            Input::toPassword('current_password','Jelenlegi jelszó')->setPlaceholder('Amivel bejelentkezel')->setRequired()->setIconClass('fas fa-key'),
+            Input::toPassword('password','Új jelszó')->setRequired()->setDescription('Minimum 6 karakter, kis - nagy betű, szám és speciális karakter')->setIconClass('fas fa-asterisk'),
+            Input::toPassword('password_confirmation','Új jelszó ismételten')->setRequired()->setDescription('A gépelési hibák elkerülése véget')->setIconClass('fas fa-asterisk'),
         ])->setTitle('Profil szerkesztése');
     }
 

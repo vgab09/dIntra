@@ -8,9 +8,7 @@
 
 namespace App\Http\Components\FormHelper;
 
-use Collective\Html\FormFacade as Form;
-
-class FormFieldHelper
+abstract class FormFieldHelper
 {
     /**
      * @var string Theoretically optional, but in reality each field has to have a label
@@ -33,26 +31,6 @@ class FormFieldHelper
     // custom radio: checkbox ,checkbox
     // custom button: button
 
-    public const TEXT_TYPE = 'text';
-    public const PASSWORD_TYPE = 'password';
-    public const RANGE_TYPE = 'range';
-    public const HIDDEN_TYPE = 'hidden';
-    public const SEARCH_TYPE = 'search';
-    public const TEL_TYPE = 'tel';
-    public const EMAIL_TYPE = 'email';
-    public const NUMBER_TYPE = 'number';
-    public const DATE_TYPE = 'date';
-    public const DATETIME_TYPE = 'datetime';
-    public const DATETIMELOCAL_TYPE = 'datetimelocal';
-    public const TIME_TYPE = 'time';
-    public const URL_TYPE = 'url';
-    public const WEEK_TYPE = 'week';
-    public const FILE_TYPE = 'file';
-    public const TEXTAREA_TYPE = 'textarea';
-    public const IMAGE_TYPE = 'image';
-    public const MONTH_TYPE = 'month';
-    public const COLOR_TYPE = 'color';
-    public const SUBMIT_TYPE = 'submit';
 
     /**
      * @var bool If true, it will be required item. The label will append by a star
@@ -73,16 +51,6 @@ class FormFieldHelper
      * @var string This is displayed after the field (ie. to indicate the unit of measure)
      */
     protected $suffix;
-
-    /**
-     * @var string input placeholder text. To be displayed when the field is empty
-     */
-    protected $placeholder;
-
-    /**
-     * @var int Textural input field max lenght
-     */
-    protected $maxLength;
 
     /**
      * @var bool disable edit
@@ -115,17 +83,6 @@ class FormFieldHelper
         $this->setName($name);
         $this->setType($type);
         $this->setLabel($label);
-    }
-
-    /**
-     * Create new FormFieldHelper instance
-     * @param string $name
-     * @param string $type
-     * @param string $label
-     * @return FormFieldHelper
-     */
-    public static function to(string $name, string $type, string $label){
-        return new static($name,$type,$label);
     }
 
     /**
@@ -209,6 +166,14 @@ class FormFieldHelper
     }
 
     /**
+     * @return bool
+     */
+    public function hasDescription(): bool
+    {
+        return !empty($this->description);
+    }
+
+    /**
      * @param string $description
      * @return FormFieldHelper
      */
@@ -244,6 +209,11 @@ class FormFieldHelper
         return $this->suffix;
     }
 
+    public function hasSuffix(): bool
+    {
+        return !empty($this->suffix);
+    }
+
     /**
      * @param string $suffix
      * @return FormFieldHelper
@@ -251,42 +221,6 @@ class FormFieldHelper
     public function setSuffix(string $suffix): FormFieldHelper
     {
         $this->suffix = $suffix;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPlaceholder(): string
-    {
-        return $this->placeholder;
-    }
-
-    /**
-     * @param string $placeholder
-     * @return FormFieldHelper
-     */
-    public function setPlaceholder(string $placeholder): FormFieldHelper
-    {
-        $this->placeholder = $placeholder;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMaxLength(): int
-    {
-        return $this->maxLength;
-    }
-
-    /**
-     * @param int $maxLength
-     * @return FormFieldHelper
-     */
-    public function setMaxLength(int $maxLength): FormFieldHelper
-    {
-        $this->maxLength = $maxLength;
         return $this;
     }
 
@@ -349,8 +283,6 @@ class FormFieldHelper
         return $this;
     }
 
-
-
     /**
      * @return array
      */
@@ -369,8 +301,6 @@ class FormFieldHelper
         return $this;
     }
 
-    public function render(){
-        return Form::inputWithLabel($this);
-    }
+    public abstract function render();
 
 }

@@ -52,6 +52,8 @@ class AppServiceProvider extends ServiceProvider
     }
 
     private function registerFormComponents(){
-        Form::component('inputWithLabel', 'form.partials.inputWithLabel', ['field']);
+        Form::component('inputField', 'form.partials.input', ['field']);
+        Form::component('checkboxField', 'form.partials.checkbox', ['field']);
+        Form::component('radioField', 'form.partials.radio', ['field']);
     }
 }

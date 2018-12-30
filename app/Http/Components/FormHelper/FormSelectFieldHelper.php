@@ -160,5 +160,10 @@ class FormSelectFieldHelper extends FormFieldHelper
         return $this;
     }
 
+    public function render()
+    {
+        // TODO: Implement render() method.
+    }
+
 
 }
