@@ -70,6 +70,17 @@ class Employee extends Authenticatable implements ValidatableModelInterface
         ];
     }
 
+    /**
+     * Hash the employee's password if is it necessary.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::needsRehash($value) ? Hash::make($value) : $value;
+    }
+
     public function department(){
         return $this->belongsTo(Department::class,'id_department','id_department',Employee::class);
     }

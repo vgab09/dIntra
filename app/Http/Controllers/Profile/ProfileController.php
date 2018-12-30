@@ -42,13 +42,11 @@ class ProfileController extends Controller
 
         $employee = Auth::user();
         $helper = $this->buildFormHelper($employee)->setRequest($request);
-        if(!$helper->validateAndSave()){
-            $this->alertError($helper->getErrors()->first());
+        if($helper->validateAndSave()){
+            return $this->redirectSuccess(route('editProfile'),'Sikeres adatmódósítás');
         }
-        else
-        {
-            $this->alertSuccess('Sikeres adatmódosítás.');
-        }
-        return $this->edit();
+
+        return $this->redirectError(route('editProfile'),$helper->getErrors());
+
     }
 }
