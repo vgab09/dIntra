@@ -1,12 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: g09
- * Date: 2018.12.08.
- * Time: 17:49
- */
 
 namespace App\Http\Components\ListHelper;
+
+use Yajra\DataTables\Html\Column;
 
 class ListFieldHelper
 {
@@ -299,6 +295,21 @@ class ListFieldHelper
     {
         $this->suffix = $suffix;
         return $this;
+    }
+
+    /**
+     * @return Column
+     */
+    public function convertToColumn(){
+        $col = Column::make($this->getName())
+            ->name($this->getName())
+            ->title($this->getTitle())
+            ->orderable($this->isOrderable())
+            ->searchable($this->isSearchable())
+            ->width($this->getWidth())
+            ->visible($this->isShow());
+        $col->search = '<input type="text">';
+        return $col;
     }
 
 }

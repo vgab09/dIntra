@@ -1,8 +1,8 @@
 <?php /** @var \App\Http\Components\Presenter $presenter */ ?>
-@include('layout-partials.htmlhead')
+@include('layouts.partials.htmlhead')
 <body>
 
-@include('layout-partials.leftpanel')
+@include('layouts.partials.leftpanel')
 <!-- Right Panel -->
 <div id="right-panel" class="right-panel">
 
@@ -68,8 +68,7 @@
 <!-- Right Panel -->
 
 <script src="{{ mix('/js/app.js') }}"></script>
-<script src="{{ mix('/js/dashboard.js') }}"></script>
-@yield('javascript')
+@stack('javascript')
 
 </body>
 

@@ -12,6 +12,7 @@
         "laravelcollective/html": "^5.4.0",
         "spatie/laravel-menu": "^3.2",
         "spatie/laravel-permission": "^2.23",
+        "yajra/laravel-datatables-html": "^3.0",
         "yajra/laravel-datatables-oracle": "~8.0"
     },
     "require-dev": {

@@ -1,19 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: g09
- * Date: 2018.12.08.
- * Time: 15:12
- */
-
 namespace App\Http\Controllers;
 
 
+use App\Traits\AlertMessage;
 use App\Traits\DataTable;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 abstract class BREADController extends Controller
 {
-    use DataTable;
+    use DataTable,AlertMessage;
 
     /**
      * @var string unique resource name
@@ -29,7 +25,12 @@ abstract class BREADController extends Controller
      * (B)READ Browse data
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(){
+    public function index(Request $request){
+
+        if($request->ajax()){
+            return $this->getData();
+        }
+
         return $this->buildListHelper()->render();
     }
 

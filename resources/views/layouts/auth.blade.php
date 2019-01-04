@@ -1,4 +1,4 @@
-@include('layout-partials.htmlhead')
+@include('layouts.partials.htmlhead')
 
 <body class="bg-dark">
 @yield('content')

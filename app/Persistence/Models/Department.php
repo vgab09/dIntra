@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 
 
 /**
- * Class Department
+ * Class Designation
  * @package App\Persistence\Modelsű
  *
  * @property int id_department

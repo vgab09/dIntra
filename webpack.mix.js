@@ -11,8 +11,9 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-.js('resources/js/dashboard.js', 'public/js');
+mix.js('resources/js/app.js', 'public/js').sourceMaps()
+.js('resources/js/datatable.js', 'public/js').sourceMaps();
 mix.sass('resources/sass/style.scss', 'public/css').sourceMaps()
 .sass('resources/sass/bootsrap.scss', 'public/css').sourceMaps()
-.sass('resources/sass/fontawesome.scss', 'public/css').sourceMaps();
+.sass('resources/sass/fontawesome.scss', 'public/css').sourceMaps()
+.sass('resources/sass/datatables.scss', 'public/css').sourceMaps();

@@ -6,15 +6,17 @@
  * Time: 8:46
  */
 
-namespace App\Http\Controllers\Department;
+namespace App\Http\Controllers\Designation;
 
 
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
 use App\Http\Controllers\BREADController;
 use App\Persistence\Models\Designation;
+use Illuminate\Support\Facades\App;
+use Illuminate\Http\Request;
 
-class DesignationController extends BREADController
+class DesignationController
 {
 
     protected $slug = 'designations';
@@ -22,6 +24,23 @@ class DesignationController extends BREADController
     public function __construct()
     {
         $this->modelClass = Designation::class;
+    }
+
+    /**
+     * (B)READ Browse data
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Exception
+     */
+    public function index(Request $request){
+
+        $list = $this->buildListHelper();
+
+        if($request->ajax()){
+            return $list->createDataTables($this->collectListData())->make(true);
+        }
+
+        return $list->render();
     }
 
     /**
@@ -39,7 +58,15 @@ class DesignationController extends BREADController
                 ListFieldHelper::to('active', 'Aktív')
                     ->setType('bool')
             ]
-        )
-            ->addTimeStamps();
+        )->setTitle('Beosztások')->addTimeStamps();
+    }
+
+    /**
+     * Get DataTable rows
+     *
+     * @return \Eloquent|Collection|QueryBuilder
+     */
+    protected function collectListData(){
+        return App::make($this->modelClass)->newQuery();
     }
 }

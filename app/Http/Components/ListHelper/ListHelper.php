@@ -8,10 +8,9 @@
 
 namespace App\Http\Components\ListHelper;
 
-
-use phpDocumentor\Reflection\Types\Iterable_;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Html\Builder;
 
 class ListHelper
 {
@@ -28,7 +27,7 @@ class ListHelper
     /**
      * @var string display title
      */
-    public $title;
+    protected $title;
 
     /**
      * @var array ListFieldHelper
@@ -81,8 +80,8 @@ class ListHelper
      */
     public function __construct($name, $modelClass)
     {
-        $this->baseFolder = 'bread';
-        $this->baseTemplate = 'browse';
+        $this->baseFolder = 'table';
+        $this->baseTemplate = 'table';
         $this->listName = $name;
         $this->modelClass = $modelClass;
         $this->baseUrl = url()->current();
@@ -105,8 +104,21 @@ class ListHelper
 
     public function render()
     {
+        /**
+         * @var Builder $builder
+         */
+        $builder = app('datatables.html');
+
+        $builder->addCheckbox();
+        foreach ($this->getListItems() as $item){
+            $builder->add($item->convertToColumn());
+        }
+        $builder->addAction();
+        $builder->parameters([ "autoWidth" => 'true']);
+
+
         $view = $this->baseFolder . '.' . $this->baseTemplate;
-        return view($view, $this);
+        return view($view, ['builder' => $builder, 'helper' => $this]);
 
     }
 
@@ -119,8 +131,11 @@ class ListHelper
     {
 
         $this->dataTablesInstance = Datatables::of($source);
-        $this->addRowActionButtons();
+        //$this->addRowActionButtons();
         $this->addRowHelpers();
+        $this->dataTablesInstance->addColumn('checkbox',function ($model){
+            return '<input type="checkbox" value="'.$model->getKey().'">';
+        });
 
         return $this->dataTablesInstance;
 
@@ -144,8 +159,8 @@ class ListHelper
             switch ($field->getType()) {
                 case 'bool':
                     $this->dataTablesInstance->editColumn($fieldName, function ($model) use ($fieldName) {
-                        return empty($model->$fieldName) ? 'nem' : 'igen';
-                    });
+                        return empty($model->$fieldName) ? '<i class="fas fa-times"></i>' : '<i class="fas fa-check"></i>';
+                    })->rawColumns([$fieldName,'checkbox']);
                     break;
                 case 'date':
                     break;
@@ -173,6 +188,7 @@ class ListHelper
 
     /**
      * Get table list item, check fields
+     * @return ListFieldHelper[]
      */
     public function getListItems()
     {
@@ -221,5 +237,25 @@ class ListHelper
     {
         return $this->rowActions;
     }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     * @return ListHelper
+     */
+    public function setTitle(string $title): ListHelper
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+
 
 }
