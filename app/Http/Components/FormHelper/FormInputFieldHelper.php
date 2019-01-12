@@ -193,5 +193,12 @@ class FormInputFieldHelper extends FormFieldHelper
     }
 
 
-
+    /**
+     * Render only the form element
+     * @return string
+     */
+    public function renderTag()
+    {
+        return Form::input($this->getType(),$this->getName(),$this->getValue());
+    }
 }

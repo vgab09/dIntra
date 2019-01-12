@@ -301,6 +301,16 @@ abstract class FormFieldHelper
         return $this;
     }
 
+    /**
+     * Render the form element with label, and divs
+     * @return string
+     */
     public abstract function render();
+
+    /**
+     * Render only the form element
+     * @return string
+     */
+    public abstract function renderTag();
 
 }

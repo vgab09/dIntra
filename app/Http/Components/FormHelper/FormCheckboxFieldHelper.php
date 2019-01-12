@@ -69,4 +69,20 @@ class FormCheckboxFieldHelper extends FormFieldHelper
 
     }
 
+    /**
+     * Render only the form element
+     * @return string
+     */
+    public function renderTag()
+    {
+        switch ($this->type)
+        {
+            case static::CHECKBOX_TYPE:
+                break;
+            case static::RADIO_TYPE:
+                break;
+            default:
+                break;
+        }
+    }
 }

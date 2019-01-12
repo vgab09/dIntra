@@ -69,7 +69,7 @@ class FormSelectFieldHelper extends FormFieldHelper
      */
     public static function to(string $name, $options = [], $selected = null, array $selectAttributes = [], array $optionsAttributes = [], array $optingGroupsAttributes = [])
     {
-        return new static($name,$options,$selected,$selectAttributes,$optionsAttributes,$optingGroupsAttributes);
+        return new static($name, $options, $selected, $selectAttributes, $optionsAttributes, $optingGroupsAttributes);
     }
 
 
@@ -160,10 +160,50 @@ class FormSelectFieldHelper extends FormFieldHelper
         return $this;
     }
 
-    public function render()
+    /**
+     * @return array
+     */
+    public function getSelectAttributes(): array
     {
-        // TODO: Implement render() method.
+        return $this->selectAttributes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptionsAttributes(): array
+    {
+        return $this->optionsAttributes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptionGroupsAttributes(): array
+    {
+        return $this->optionGroupsAttributes;
     }
 
 
+    public function render()
+    {
+        return Form::selectField($this);
+    }
+
+
+    /**
+     * Render only the form element
+     * @return string
+     */
+    public function renderTag()
+    {
+        return Form::select(
+            $this->getName(),
+            $this->getOptions(),
+            $this->getValue(),
+            $this->getSelectAttributes(),
+            $this->getOptionsAttributes(),
+            $this->getOptionGroupsAttributes()
+        );
+    }
 }
