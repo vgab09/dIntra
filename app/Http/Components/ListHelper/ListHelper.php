@@ -11,7 +11,6 @@ namespace App\Http\Components\ListHelper;
 use App\Http\Components\FormHelper\FormCheckboxFieldHelper;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use stdClass;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -43,9 +42,9 @@ class ListHelper
     protected $baseTemplate;
 
     /**
-     * @var Collection list of required actions for each list row
+     * @var callable|null row action
      */
-    protected $rowActions;
+    protected $rowActions = null;
 
     /**
      * @var EloquentDataTable Datatables instance
@@ -84,8 +83,6 @@ class ListHelper
         $this->setListName($name);
         $this->modelClass = $modelClass;
         $this->fieldList = new Collection;
-        $this->rowActions = new Collection;
-
     }
 
     /**
@@ -122,13 +119,11 @@ class ListHelper
         return $this;
     }
 
-
     public function render()
     {
         $this->addActionColumn();
         return view($this->baseTemplate, ['listHelper' => $this]);
     }
-
 
     /**
      * @param string $name
@@ -144,7 +139,6 @@ class ListHelper
         }
     }
 
-
     public function addTimeStamps()
     {
         $this->addField(ListFieldHelper::to('created_at', 'Létrehozva')->setType('datetime'));
@@ -153,8 +147,7 @@ class ListHelper
         return $this;
     }
 
-
-    protected function addActionColumn($name = 'rowAction', $title = '')
+    protected function addActionColumn($name = 'rowActions', $title = '')
     {
         $title = empty($title) ? 'Műveletek' : $title;
 
@@ -162,7 +155,7 @@ class ListHelper
             return !$value->isSearchable();
         });
 
-        if ($hasSearchableColumn === true || $this->rowActions->isNotEmpty()) {
+        if ($hasSearchableColumn === true || $this->rowActions !== null) {
 
             $actionField = ListFieldHelper::to($name, $title)
                 ->setSearchable(false)
@@ -177,7 +170,7 @@ class ListHelper
             }
 
             $this->fieldList->put($name, $actionField);
-            $this->addRawColumn('rowAction');
+            $this->addRawColumn($name);
         }
     }
 
@@ -251,7 +244,13 @@ class ListHelper
     {
         $this->dataTablesInstance = Datatables::of($source);
 
-        $this->applyModifiers();
+        /**
+         * @var ListFieldHelper $field
+         */
+        foreach ($this->fieldList as $field) {
+            $this->applyDisplayModifier($field);
+            $this->applyLengthModifier($field);
+        }
 
         if ($this->hasCheckboxColumn) {
             $listName = $this->getListName();
@@ -260,22 +259,17 @@ class ListHelper
             });
         }
 
+        if(is_callable($this->rowActions)){
+            $this->dataTablesInstance->editColumn('rowActions', $this->rowActions);
+            $this->addRawColumn('rowActions');
+        }
+
         $this->dataTablesInstance->rawColumns($this->rawColumns);
         return $this->dataTablesInstance;
     }
 
-    protected function applyModifiers()
-    {
-        /**
-         * @var ListFieldHelper $field
-         */
-        foreach ($this->fieldList as $field) {
-            $this->applyDisplayModifier($field);
-            $this->applyLengthModifier($field);
-        }
-    }
-
     /**
+     * Format values
      * @param ListFieldHelper $field
      */
     protected function applyDisplayModifier(ListFieldHelper $field)
@@ -309,6 +303,7 @@ class ListHelper
     }
 
     /**
+     * Trim values
      * @param ListFieldHelper $field
      */
     protected function applyLengthModifier(ListFieldHelper $field)
@@ -322,23 +317,22 @@ class ListHelper
         }
     }
 
+    /**
+     * The DataTables default remove html from cells. Use this method to add a column to exceptions.
+     * @param string $fieldName
+     */
     protected function addRawColumn($fieldName)
     {
         $this->rawColumns[] = $fieldName;
     }
 
     /**
-     * @param string|callable $action
-     * @param $text
+     * @param callable $callback the current item passed in callback parameter
      * @return ListHelper
      */
-    public function addRowAction($action, $text): listHelper
+    public function addRowActions(callable $callback): listHelper
     {
-        $this->rowActions[] = [
-            'url' => $action,
-            'text' => $text,
-        ];
-
+        $this->rowActions = $callback;
         return $this;
     }
 

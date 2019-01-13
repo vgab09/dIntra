@@ -59,7 +59,24 @@ class DesignationController
                     ->setType('bool')
                     ->setSearchTypeBool()
             ]
-        )->setTitle('Beosztások')->addTimeStamps();
+        )
+            ->addRowActions(function ($model){
+                return '<div class="btn-group">  
+  <a class="btn btn-primary" href="#">Action</a>
+  <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="#">Action</a>
+    <a class="dropdown-item" href="#">Another action</a>
+    <a class="dropdown-item" href="#">Something else here</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="#">Separated link</a>
+  </div>
+</div>';
+            })
+            ->setTitle('Beosztások')
+            ->addTimeStamps();
     }
 
     /**
