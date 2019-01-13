@@ -62,6 +62,12 @@
             return;
         }
 
+        if(settings.aoColumns.length !== state.columns.length){
+            let dT = new $.fn.dataTable.Api( settings );
+            dT.state.clear();
+            return;
+        }
+
         let searched = false;
         let table = $(settings.nTable);
 
