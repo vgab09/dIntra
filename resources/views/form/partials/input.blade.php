@@ -8,20 +8,7 @@
                 <i class="{{$field->getIconClass()}}"></i>
             </div>
         @endif
-        {{ Form::input(
-        $field->getType(),
-        $field->getName(),
-        $field->getValue(),
-        array_merge(
-            [
-                'id'=>$field->getName(),
-                'class' => 'form-control pull-right'
-            ],
-            $field->isDisabled() ? ['disabled' => 'disabled'] : [],
-            $field->hasPlaceholder() ? ['placeholder' => $field->getPlaceholder()] : []
-         )
-           )
-        }}
+        {{$field->renderTag()}}
         @if($field->hasSuffix())
             <div class="input-group-addon">
                 {{ $field->getSuffix() }}

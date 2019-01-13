@@ -40,7 +40,7 @@ abstract class FormFieldHelper
     /**
      * @var string The description displayed under the field.
      */
-    protected $description;
+    protected $description = '';
 
     /**
      * @var string This is displayed when the mouse hovers the field.
@@ -68,6 +68,16 @@ abstract class FormFieldHelper
     protected $iconClass = null;
 
     /**
+     * @var string
+     */
+    protected $class;
+
+    /**
+     * @var string
+     */
+    protected $elementId;
+
+    /**
      * @var array field error messages
      */
     protected $errors = [];
@@ -75,13 +85,12 @@ abstract class FormFieldHelper
     /**
      * FormFieldHelper constructor.
      * @param $name string Field name
-     * @param $type string Field Type
      * @param string $label Field label
      */
-    public function __construct($name, $type, $label = '')
+    public function __construct($name, $label = '')
     {
         $this->setName($name);
-        $this->setType($type);
+        $this->setElementId($this->name);
         $this->setLabel($label);
     }
 
@@ -299,6 +308,62 @@ abstract class FormFieldHelper
     {
         $this->errors = $errors;
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getClass()
+    {
+        return $this->class;
+    }
+
+    /**
+     * Add a class to input
+     * @param string $class
+     * @return FormFieldHelper
+     */
+    public function addClass(string $class): FormFieldHelper{
+        $this->class .= ' '.$class;
+        return $this;
+    }
+
+    /**
+     * Set input class
+     * @param string $class
+     * @return FormFieldHelper
+     */
+    public function setClass(string $class): FormFieldHelper
+    {
+        $this->class = $class;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getElementId()
+    {
+        return $this->elementId;
+    }
+
+    /**
+     * @param string $elementId
+     * @return FormFieldHelper
+     */
+    public function setElementId(string $elementId): FormFieldHelper
+    {
+        $this->elementId = $elementId;
+        return $this;
+    }
+
+    protected function collectAttributes(){
+
+        $attributes['id'] = $this->getElementId();
+        $attributes['class'] = $this->getClass();
+        $attributes['disabled'] = $this->isDisabled() ? 'disabled' : null;
+
+        return $attributes;
     }
 
     /**

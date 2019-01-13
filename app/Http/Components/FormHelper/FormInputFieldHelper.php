@@ -51,9 +51,9 @@ class FormInputFieldHelper extends FormFieldHelper
      */
     public function __construct($name, $type, $label = '')
     {
-        $this->setName($name);
+        parent::__construct($name,$label);
         $this->setType($type);
-        $this->setLabel($label);
+
     }
 
     /**
@@ -63,7 +63,7 @@ class FormInputFieldHelper extends FormFieldHelper
      * @param string $label
      * @return FormFieldHelper
      */
-    public static function to(string $name, string $type, string $label){
+    public static function to(string $name, string $type, string $label=''){
         return new static($name,$type,$label);
     }
 
@@ -163,9 +163,9 @@ class FormInputFieldHelper extends FormFieldHelper
 
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPlaceholder(): string
+    public function getPlaceholder()
     {
         return $this->placeholder;
     }
@@ -188,17 +188,32 @@ class FormInputFieldHelper extends FormFieldHelper
         return $this;
     }
 
+    public function collectAttributes()
+    {
+        return array_merge(parent::collectAttributes(),['placeholder' => $this->getPlaceholder()]);
+    }
+
+    /**
+     * Render form group elements with label, description, suffix, prefix
+     * @return string
+     */
     public function render(){
+
+        //Add default classes
+        if(empty($this->getClass())){
+            $this->addClass('form-control pull-right');
+        }
+
         return Form::inputField($this);
     }
 
 
     /**
-     * Render only the form element
+     * Render only the html tag
      * @return string
      */
     public function renderTag()
     {
-        return Form::input($this->getType(),$this->getName(),$this->getValue());
+        return Form::input($this->getType(),$this->getName(),$this->getValue(),$this->collectAttributes());
     }
 }

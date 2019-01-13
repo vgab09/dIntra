@@ -8,21 +8,24 @@
 
 namespace App\Http\Components\ListHelper;
 
+use App\Http\Components\FormHelper\FormCheckboxFieldHelper;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use stdClass;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Facades\DataTables;
-use Yajra\DataTables\Html\Builder;
 
 class ListHelper
 {
     /**
      * @var string List unique name
      */
-    public $listName;
+    protected $listName;
 
     /**
      * @var string Used model class name
      */
-    public $modelClass;
+    protected $modelClass;
 
     /**
      * @var string display title
@@ -30,32 +33,19 @@ class ListHelper
     protected $title;
 
     /**
-     * @var array ListFieldHelper
+     * @var Collection ListFieldHelper
      */
-    public $fieldList;
-
-    /**
-     * @var string Base Helper tpl folder
-     */
-    public $baseFolder;
+    protected $fieldList;
 
     /**
      * @var string tpl name
      */
-    public $baseTemplate;
+    protected $baseTemplate;
 
     /**
-     * @var array Bulk actions
+     * @var Collection list of required actions for each list row
      */
-    public $bulkActions = [];
-
-    /**
-     * @var array list of required actions for each list row
-     */
-    public $rowActions = [];
-
-    /** @var array Number of results in list per page (used in select field) */
-    public $availablePagination;
+    protected $rowActions;
 
     /**
      * @var EloquentDataTable Datatables instance
@@ -63,14 +53,24 @@ class ListHelper
     protected $dataTablesInstance;
 
     /**
-     * @var string base URL
-     */
-    public $baseUrl;
-
-    /**
      * @var string Get data URL
      */
-    public $dataUrl;
+    protected $ajaxUrl;
+
+    /**
+     * @var array dataTables javascript properties
+     */
+    protected $properties = [];
+
+    /**
+     * @var bool table has checkbox column
+     */
+    protected $hasCheckboxColumn = false;
+
+    /**
+     * @var array dataTables sanitize every row except there
+     */
+    protected $rawColumns = [];
 
 
     /**
@@ -80,12 +80,12 @@ class ListHelper
      */
     public function __construct($name, $modelClass)
     {
-        $this->baseFolder = 'table';
-        $this->baseTemplate = 'table';
-        $this->listName = $name;
+        $this->baseTemplate = 'table.table';
+        $this->setListName($name);
         $this->modelClass = $modelClass;
-        $this->baseUrl = url()->current();
-        $this->dataUrl = $this->baseUrl . '/data/';
+        $this->fieldList = new Collection;
+        $this->rowActions = new Collection;
+
     }
 
     /**
@@ -96,103 +96,19 @@ class ListHelper
      * @param iterable $fields default []
      * @return ListHelper
      */
-    public static function to($name,$modelClass,iterable $fields = []){
-        $instance = new static($name,$modelClass);
+    public static function to($name, $modelClass, iterable $fields = [])
+    {
+        $instance = new static($name, $modelClass);
         $instance->addFields($fields);
         return $instance;
     }
 
-    public function render()
+    public function addFields(iterable $fields)
     {
-        /**
-         * @var Builder $builder
-         */
-        $builder = app('datatables.html');
-
-        $builder->addCheckbox();
-        foreach ($this->getListItems() as $item){
-            $builder->add($item->convertToColumn());
+        foreach ($fields as $field) {
+            $this->addField($field);
         }
-        $builder->addAction();
-        $builder->parameters([ "autoWidth" => 'true']);
-
-
-        $view = $this->baseFolder . '.' . $this->baseTemplate;
-        return view($view, ['builder' => $builder, 'helper' => $this]);
-
-    }
-
-    /**
-     * @param $source
-     * @return EloquentDataTable
-     * @throws \Exception
-     */
-    public function createDataTables($source)
-    {
-
-        $this->dataTablesInstance = Datatables::of($source);
-        //$this->addRowActionButtons();
-        $this->addRowHelpers();
-        $this->dataTablesInstance->addColumn('checkbox',function ($model){
-            return '<input type="checkbox" value="'.$model->getKey().'">';
-        });
-
-        return $this->dataTablesInstance;
-
-    }
-
-    protected function addRowActionButtons()
-    {
-        $this->dataTablesInstance->addColumn('action', function ($model) {
-            return view($this->baseFolder . '.partials.button')->with(['actions' => $this->getRowActions(), 'rowId' => $model->getKey()]);
-        });
-    }
-
-    protected function addRowHelpers()
-    {
-
-        /**
-         * @var ListFieldHelper $field
-         */
-        foreach ($this->fieldList as $field) {
-            $fieldName = $field->getName();
-            switch ($field->getType()) {
-                case 'bool':
-                    $this->dataTablesInstance->editColumn($fieldName, function ($model) use ($fieldName) {
-                        return empty($model->$fieldName) ? '<i class="fas fa-times"></i>' : '<i class="fas fa-check"></i>';
-                    })->rawColumns([$fieldName,'checkbox']);
-                    break;
-                case 'date':
-                    break;
-                case 'datetime':
-                    break;
-                case 'decimal':
-                    $this->dataTablesInstance->editColumn($fieldName, function ($model) use ($fieldName) {
-                        return sprintf('%.2f', $model->$fieldName);
-                    });
-                    break;
-                case 'float':
-                    break;
-                case 'percent':
-                    break;
-                case 'price':
-                    $this->dataTablesInstance->editColumn($fieldName, function ($model) use ($fieldName) {
-                        return displayPrice($model->$fieldName);
-                    });
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Get table list item, check fields
-     * @return ListFieldHelper[]
-     */
-    public function getListItems()
-    {
-        return $this->fieldList;
+        return $this;
     }
 
     /**
@@ -207,35 +123,223 @@ class ListHelper
     }
 
 
-    public function addFields(iterable $fields)
+    public function render()
     {
-        foreach ($fields as $field){
-            $this->addField($field);
+        $this->addActionColumn();
+        return view($this->baseTemplate, ['listHelper' => $this]);
+    }
+
+
+    /**
+     * @param string $name
+     * @param string $title
+     */
+    public function addCheckboxes($name = 'rowSelector', $title = '')
+    {
+
+        if (!$this->hasCheckboxColumn) {
+            $this->fieldList->prepend(ListFieldHelper::to($name, $title), $name);
+            $this->hasCheckboxColumn = true;
+            $this->addRawColumn($name);
         }
-        return $this;
     }
 
-    public function addTimeStamps(){
-        $this->addField(ListFieldHelper::to('created_at','Létrehozva')->setType('datetime'));
-        $this->addField(ListFieldHelper::to('updated_at','Módosítva')->setType('datetime'));
 
-        return $this;
-    }
-
-    public function addRowAction($url, $text): listHelper
+    public function addTimeStamps()
     {
-        //Jogosultság ellenőrzés.
+        $this->addField(ListFieldHelper::to('created_at', 'Létrehozva')->setType('datetime'));
+        $this->addField(ListFieldHelper::to('updated_at', 'Módosítva')->setType('datetime'));
+
+        return $this;
+    }
+
+
+    protected function addActionColumn($name = 'rowAction', $title = '')
+    {
+        $title = empty($title) ? 'Műveletek' : $title;
+
+        $hasSearchableColumn = !$this->getListItems()->every(function ($value, $key) {
+            return !$value->isSearchable();
+        });
+
+        if ($hasSearchableColumn === true || $this->rowActions->isNotEmpty()) {
+
+            $actionField = ListFieldHelper::to($name, $title)
+                ->setSearchable(false)
+                ->setOrderable(false)
+                ->setDefaultContent('');
+
+            if ($hasSearchableColumn === true) {
+                $searchButton = '<button name ="search" class="btn btn-primary btn-sm d-inline ml-1 btn-filter"><i class="fas fa-search">Keresés</i></button>';
+                $resetButton = '<button name="resetSearch" class="btn btn-warning btn-sm d-none ml-1 btn-reset-filter"><i class="fas fa-eraser">Alaphelyzetbe állít</i></button>';
+
+                $actionField->setSearchElement($searchButton . $resetButton);
+            }
+
+            $this->fieldList->put($name, $actionField);
+            $this->addRawColumn('rowAction');
+        }
+    }
+
+    /**
+     * return array DataTables parameters
+     */
+    public function getDataTableParameters()
+    {
+
+        $params['serverSide'] = true;
+        $params['processing'] = true;
+        $params['ajax'] = $this->getAjaxUrl();
+        $params['language'] = $this->getDataTableLocalization();
+        $params['dom'] = 'rt<"container mt-3"<"row"<"col p-0"l><"col p-0"p><"col p-0"i>>>';
+        $params['orderCellsTop'] = true;
+        $params['autoWidth'] = true;
+        $params['stateSave'] = true;
+
+        foreach ($this->getListItems() as $item) {
+            $params['columns'][] = $item->toArray();
+        }
+        return array_merge($params, $this->getProperties());
+    }
+
+    /**
+     * return array DataTables localization
+     */
+    public function getDataTableLocalization()
+    {
+        return [
+            "decimal" => "",
+            "emptyTable" => "Nincs rendelkezésre álló adat",
+            "info" => "Találatok: _START_ - _END_ Összesen: _TOTAL_",
+            "infoEmpty" => "Nincs találat",
+            "infoFiltered" => "(_MAX_ rekord közül szűrve)",
+            "infoPostFix" => "",
+            "thousands" => " ",
+            "lengthMenu" => "_MENU_ találat oldalanként",
+            "loadingRecords" => "Betöltés...",
+            "processing" => "Feldolgozás...",
+            "search" => "Keresés:",
+            "zeroRecords" => "Nincs a keresésnek megfelelő találat",
+            "paginate" => [
+                "first" => "Első",
+                "last" => "Utolsó",
+                "next" => "Következő",
+                "previous" => "Előző"
+            ],
+            "aria" => [
+                "sortAscending" => ": Növelvő rendezés",
+                "sortDescending" => ": Csökkenő rendezés"
+            ]
+        ];
+    }
+
+    /**
+     * Get table list item, check fields
+     * @return ListFieldHelper[]|Collection
+     */
+    public function getListItems()
+    {
+        return $this->fieldList;
+    }
+
+    /**
+     * @param $source
+     * @return EloquentDataTable
+     * @throws \Exception
+     */
+    public function createDataTables($source)
+    {
+        $this->dataTablesInstance = Datatables::of($source);
+
+        $this->applyModifiers();
+
+        if ($this->hasCheckboxColumn) {
+            $listName = $this->getListName();
+            $this->dataTablesInstance->addColumn($this->fieldList->get('rowSelector')->getName(), function ($model) use ($listName) {
+                return FormCheckboxFieldHelper::toCheckbox($listName . 'rowSelector[]', '', $model->getKey())->render();
+            });
+        }
+
+        $this->dataTablesInstance->rawColumns($this->rawColumns);
+        return $this->dataTablesInstance;
+    }
+
+    protected function applyModifiers()
+    {
+        /**
+         * @var ListFieldHelper $field
+         */
+        foreach ($this->fieldList as $field) {
+            $this->applyDisplayModifier($field);
+            $this->applyLengthModifier($field);
+        }
+    }
+
+    /**
+     * @param ListFieldHelper $field
+     */
+    protected function applyDisplayModifier(ListFieldHelper $field)
+    {
+        $fieldName = $field->getName();
+        switch ($field->getType()) {
+            case 'bool':
+                $this->dataTablesInstance->editColumn($fieldName, function ($model) use ($fieldName) {
+                    return empty($model->$fieldName) ? '<i class="fas fa-times"></i>' : '<i class="fas fa-check"></i>';
+                });
+                $this->addRawColumn($fieldName);
+                break;
+            case 'date':
+                break;
+            case 'datetime':
+                break;
+            case 'decimal':
+                $this->dataTablesInstance->editColumn($fieldName, function ($model) use ($fieldName) {
+                    return sprintf('%.2f', $model->$fieldName);
+                });
+                break;
+            case 'float':
+                break;
+            case 'percent':
+                break;
+            case 'price':
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * @param ListFieldHelper $field
+     */
+    protected function applyLengthModifier(ListFieldHelper $field)
+    {
+        $maxLength = $field->getMaxLength();
+        $fieldName = $field->getName();
+        if ($maxLength > 0) {
+            $this->dataTablesInstance->editColumn($fieldName, function ($model) use ($fieldName, $maxLength) {
+                return Str::limit($model->$fieldName, $maxLength);
+            });
+        }
+    }
+
+    protected function addRawColumn($fieldName)
+    {
+        $this->rawColumns[] = $fieldName;
+    }
+
+    /**
+     * @param string|callable $action
+     * @param $text
+     * @return ListHelper
+     */
+    public function addRowAction($action, $text): listHelper
+    {
         $this->rowActions[] = [
-            'url' => $url,
+            'url' => $action,
             'text' => $text,
         ];
 
         return $this;
-    }
-
-    public function getRowActions()
-    {
-        return $this->rowActions;
     }
 
     /**
@@ -256,6 +360,65 @@ class ListHelper
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getListName(): string
+    {
+        return $this->listName;
+    }
+
+    /**
+     * @param string $listName
+     * @return ListHelper
+     */
+    public function setListName(string $listName): ListHelper
+    {
+        $this->listName = $listName;
+        return $this;
+    }
+
+    public function getRowActions()
+    {
+        return $this->rowActions;
+    }
+
+    /**
+     * @return array
+     */
+    public function getProperties(): array
+    {
+        return $this->properties;
+    }
+
+    /**
+     * @param array $properties
+     * @return ListHelper
+     */
+    public function setProperties(array $properties): ListHelper
+    {
+        $this->properties = array_merge($this->properties, $properties);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAjaxUrl(): string
+    {
+        return empty($this->ajaxUrl) ? url()->current() : $this->ajaxUrl;
+    }
+
+    /**
+     * @param string $ajaxUrl
+     * @return ListHelper
+     */
+    public function setAjaxUrl(string $ajaxUrl): ListHelper
+    {
+        $this->ajaxUrl = $ajaxUrl;
+
+        return $this;
+    }
 
 
 }

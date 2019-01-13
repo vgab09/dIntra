@@ -24,7 +24,8 @@ class FormCheckboxFieldHelper extends FormFieldHelper
      */
     public function __construct(string $name, $type = CHECKBOX_TYPE, string $label = '', $value = 1, $checked = null)
     {
-        parent::__construct($name,$type,$label);
+        parent::__construct($name,$label);
+        $this->setType($type);
         $this->setValue($value);
         $this->setChecked($checked);
     }

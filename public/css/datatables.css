@@ -415,5 +415,24 @@ div.dt-buttons a.btn.processing:after {
   -webkit-animation: dtb-spinner 1500ms infinite linear;
   -moz-animation: dtb-spinner 1500ms infinite linear;
 }
+table.dataTable th {
+  vertical-align: top;
+}
 
+div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+  -webkit-box-pack: initial;
+      -ms-flex-pack: initial;
+          justify-content: initial;
+}
+
+div.dataTables_wrapper div.dataTables_info {
+  margin: 10px 0px;
+  padding-top: 0em;
+  text-align: right;
+  white-space: nowrap;
+}
+
+div.dataTables_wrapper div.dataTables_length {
+  margin: 5px 0px;
+}
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Components\ListHelper;
 
+use App\Http\Components\FormHelper\FormInputFieldHelper;
+use App\Http\Components\FormHelper\FormSelectFieldHelper;
 use Yajra\DataTables\Html\Column;
 
 class ListFieldHelper
@@ -11,6 +13,11 @@ class ListFieldHelper
      * @var string The name of the model attribute from which we get the value
      */
     protected $name = '';
+
+    /**
+     * @var string field name on ajax request. Use snake naming instead of camelCase! currentState --> current_state
+     */
+    protected $dataName = '';
 
     /**
      * @var string Column display name
@@ -38,6 +45,11 @@ class ListFieldHelper
     protected $searchable = true;
 
     /**
+     * @var string search html element, input text, select, number, date
+     */
+    protected $searchElement = '';
+
+    /**
      * @var int If set, the field value will be truncated if it has more characters than the numeric value set (default 0: no limit, optional).
      */
     protected $maxLength = 0;
@@ -52,11 +64,25 @@ class ListFieldHelper
      */
     protected $style = '';
 
+    /**
+     * @var string column helper
+     */
     protected $hint = '';
 
+    /**
+     * @var bool column visibility
+     */
     protected $show = true;
 
+    /**
+     * @var string cell suffix etc kg,
+     */
     protected $suffix = ''; // kg
+
+    /**
+     * @var string|null
+     */
+    protected $defaultContent;
 
 
     /**
@@ -68,6 +94,7 @@ class ListFieldHelper
     public function __construct(string $name, string $title)
     {
         $this->setName($name);
+        $this->setDataName($name);
         $this->setTitle($title);
     }
 
@@ -77,8 +104,9 @@ class ListFieldHelper
      * @param string $title
      * @return ListFieldHelper
      */
-    public static function to(string $name, string $title){
-        return new static($name,$title);
+    public static function to(string $name, string $title)
+    {
+        return new static($name, $title);
     }
 
     /**
@@ -180,14 +208,80 @@ class ListFieldHelper
     }
 
     /**
+     * Set column searchable. The default search html element is text.
      * @param bool $searchable
      * @return ListFieldHelper
      */
     public function setSearchable(bool $searchable): ListFieldHelper
     {
         $this->searchable = $searchable;
+
+        if (!$this->isSearchable()) {
+            $this->searchElement = '';
+        }
+
         return $this;
     }
+
+    /**
+     * Set searchable to true, and set search type to select.
+     * @param array $options Select options
+     * @return ListFieldHelper
+     */
+    public function setSearchTypeSelect($options)
+    {
+        $this->setSearchable(true);
+        $this->searchElement = FormSelectFieldHelper::to($this->name,'', $options,null)
+            ->setClass('form-control-sm form-control filter-input')
+            ->setElementId($this->name.'-filter-input')
+            ->renderTag();
+        return $this;
+    }
+
+    /**
+     * Set searchable to true, and set search type to select. Fill options 1 => yes 0 => No.
+     * @return ListFieldHelper
+     */
+    public function setSearchTypeBool()
+    {
+        $this->setSearchTypeSelect([''=>'-','1' => 'Igen', 0 => 'Nem']);
+        return $this;
+    }
+
+    /**
+     * Set searchable to true, and set search type to text.
+     * @return ListFieldHelper
+     */
+    public function setSearchTypeText()
+    {
+        $this->setSearchable(true);
+        $this->searchElement = FormInputFieldHelper::to($this->name, FormInputFieldHelper::TEXT_TYPE)
+            ->setClass('form-control-sm form-control filter-input')
+            ->setElementId($this->name.'-filter-input')
+            ->renderTag();
+        return $this;
+    }
+
+    /**
+     * @param string $content
+     */
+    public function setSearchElement($content){
+        $this->searchElement = $content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSearchElement(): string
+    {
+
+        if ($this->isSearchable() && empty($this->searchElement)) {
+            $this->setSearchTypeText();
+        }
+
+        return $this->searchElement;
+    }
+
 
     /**
      * @return int
@@ -297,10 +391,29 @@ class ListFieldHelper
         return $this;
     }
 
+    public function toArray()
+    {
+        $property = [
+            'name' => $this->getName(),
+            'data' => $this->getDataName(),
+            'orderable' => $this->isOrderable(),
+            'searchable' => $this->isSearchable(),
+        ];
+
+        if($this->getDefaultContent() !== null){
+            $property['defaultContent'] = $this->getDefaultContent();
+        }
+
+        return $property;
+    }
+
+
     /**
      * @return Column
+     * @deprecated
      */
-    public function convertToColumn(){
+    public function convertToColumn()
+    {
         $col = Column::make($this->getName())
             ->name($this->getName())
             ->title($this->getTitle())
@@ -311,5 +424,43 @@ class ListFieldHelper
         $col->search = '<input type="text">';
         return $col;
     }
+
+    /**
+     * @return string
+     */
+    public function getDataName(): string
+    {
+        return $this->dataName;
+    }
+
+    /**
+     * @param string $dataName
+     * @return ListFieldHelper
+     */
+    public function setDataName(string $dataName): ListFieldHelper
+    {
+        $this->dataName = $dataName;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDefaultContent()
+    {
+        return $this->defaultContent;
+    }
+
+    /**
+     * @param string $defaultContent
+     * @return ListFieldHelper
+     */
+    public function setDefaultContent(string $defaultContent): ListFieldHelper
+    {
+        $this->defaultContent = $defaultContent;
+        return $this;
+    }
+
+
 
 }

@@ -7,7 +7,7 @@
  */
 
 namespace App\Http\Components\FormHelper;
-
+use Collective\Html\FormFacade as Form;
 
 class FormSelectFieldHelper extends FormFieldHelper
 {
@@ -22,54 +22,47 @@ class FormSelectFieldHelper extends FormFieldHelper
     /**
      * @var mixed selected value
      */
-    protected $selectedOption;
+    protected $selectedOption = [];
 
     /**
      * @var array
      */
-    protected $selectAttributes;
+    protected $selectAttributes = [];
 
     /**
      * @var array
      */
-    protected $optionsAttributes;
+    protected $optionsAttributes = [];
 
     /**
      * @var array
      */
-    protected $optionGroupsAttributes;
+    protected $optionGroupsAttributes = [];
 
     /**
      * FormSelectFieldHelper constructor.
      * @param string $name
+     * @param string $label
      * @param array $options
      * @param string|null $selectedValue
-     * @param array $selectAttributes
-     * @param array $optionsAttributes
-     * @param array $optionGroupsAttributes
      */
-    public function __construct(string $name, $options = [], $selectedValue = null, array $selectAttributes = [], array $optionsAttributes = [], array $optionGroupsAttributes = [])
+    public function __construct(string $name,$label='', $options = [], $selectedValue = null)
     {
-        $this->setName($name);
+        parent::__construct($name,$label);
         $this->addSelectOptions($options);
         $this->setSelectedOption($selectedValue);
-        $this->setSelectAttributes($selectAttributes);
-        $this->setOptionsAttributes($optionsAttributes);
-        $this->setOptionGroupsAttributes($optionGroupsAttributes);
     }
 
     /**
      * @param string $name
+     * @param string $label
      * @param array $options
      * @param null $selected
-     * @param array $selectAttributes
-     * @param array $optionsAttributes
-     * @param array $optingGroupsAttributes
      * @return FormFieldHelper
      */
-    public static function to(string $name, $options = [], $selected = null, array $selectAttributes = [], array $optionsAttributes = [], array $optingGroupsAttributes = [])
+    public static function to(string $name, $label='', $options = [], $selected = null)
     {
-        return new static($name, $options, $selected, $selectAttributes, $optionsAttributes, $optingGroupsAttributes);
+        return new static($name, $label, $options, $selected);
     }
 
 
@@ -99,8 +92,8 @@ class FormSelectFieldHelper extends FormFieldHelper
      */
     public function addSelectOptions($options)
     {
-        foreach ($options as $option) {
-            $this->addSelectOption($option['name'], $option['value']);
+        foreach ($options as $value => $name) {
+            $this->addSelectOption($name, $value);
         }
 
         return $this;
@@ -184,6 +177,11 @@ class FormSelectFieldHelper extends FormFieldHelper
         return $this->optionGroupsAttributes;
     }
 
+    public function collectAttributes()
+    {
+        return  array_merge(parent::collectAttributes(),$this->getSelectAttributes());
+    }
+
 
     public function render()
     {
@@ -201,7 +199,7 @@ class FormSelectFieldHelper extends FormFieldHelper
             $this->getName(),
             $this->getOptions(),
             $this->getValue(),
-            $this->getSelectAttributes(),
+            $this->collectAttributes(),
             $this->getOptionsAttributes(),
             $this->getOptionGroupsAttributes()
         );

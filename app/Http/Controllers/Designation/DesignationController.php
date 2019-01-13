@@ -57,6 +57,7 @@ class DesignationController
                     ->setMaxLength(20),
                 ListFieldHelper::to('active', 'Aktív')
                     ->setType('bool')
+                    ->setSearchTypeBool()
             ]
         )->setTitle('Beosztások')->addTimeStamps();
     }
