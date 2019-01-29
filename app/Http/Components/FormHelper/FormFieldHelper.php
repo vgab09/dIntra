@@ -8,7 +8,7 @@
 
 namespace App\Http\Components\FormHelper;
 
-abstract class FormFieldHelper
+abstract class FormFieldHelper implements FormFieldHelperInterface
 {
     /**
      * @var string Theoretically optional, but in reality each field has to have a label
@@ -124,7 +124,7 @@ abstract class FormFieldHelper
      * @param string $name
      * @return FormFieldHelper
      */
-    public function setName(string $name): FormFieldHelper
+    public function setName($name): FormFieldHelper
     {
         $this->name = $name;
         return $this;
@@ -255,7 +255,7 @@ abstract class FormFieldHelper
     /**
      * @return mixed|null
      */
-    public function getValue(): ?mixed
+    public function getValue()
     {
         return $this->value;
     }
@@ -264,7 +264,7 @@ abstract class FormFieldHelper
      * @param mixed|null $value
      * @return FormFieldHelper
      */
-    public function setValue(?mixed $value): FormFieldHelper
+    public function setValue($value): FormFieldHelper
     {
         $this->value = $value;
         return $this;
@@ -304,9 +304,18 @@ abstract class FormFieldHelper
      * @param array $errors
      * @return FormFieldHelper
      */
-    public function setErrors(array $errors): FormFieldHelper
+    public function setErrors($errors): FormFieldHelper
     {
         $this->errors = $errors;
+        return $this;
+    }
+
+    /**
+     * @param string $error
+     * @return FormFieldHelper
+     */
+    public function addError($error):FormFieldHelper{
+        $this->errors[] = $error;
         return $this;
     }
 

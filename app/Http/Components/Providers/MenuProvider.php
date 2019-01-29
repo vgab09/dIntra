@@ -49,7 +49,7 @@ class MenuProvider implements ProviderInterface
                     ->addClass('sub-menu children dropdown-menu')
                     ->link('#', '<i class="menu-icon fas fa-users"></i>Munkatársak')
                     ->link('#', '<i class="menu-icon fas fa-network-wired"></i>Osztályok')
-                    ->link(route('designationIndex'), '<i class="menu-icon fas fa-project-diagram"></i>Beosztások')
+                    ->link(route('indexDesignation'), '<i class="menu-icon fas fa-project-diagram"></i>Beosztások')
                     ->addParentClass('menu-item-has-children dropdown')
 
             )

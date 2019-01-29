@@ -5,6 +5,9 @@
 @endsection
 @section('content')
     <div class="card">
+        <div class="card-header">
+            {{$formHelper->getName()}}
+        </div>
         {{Form::model($formHelper->getModel(),['class'=>'frm_'.$formHelper->getName(),'id'=>'frm_'.$formHelper->getName()])}}
         <div class="card-body card-block">
 
@@ -16,7 +19,7 @@
 
         </div>
         <div class="card-footer">
-            {!! Form::submit('Mentés'); !!}
+            {!! Form::submit('Mentés',['class'=>'btn btn-primary']); !!}
         </div>
         {{Form::close()}}
     </div>

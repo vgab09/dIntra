@@ -86,17 +86,17 @@ class Alert implements AlertInterface
     {
         switch ($this->getType()) {
             case self::SUCCESS:
-                return sprintf('<div class="alert alert-success" role="alert">%s</div>',$this->getMessage());
+                return sprintf('<div class="alert alert-success" role="alert">%s <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>',$this->getMessage());
                 break;
             case self::WARNING:
-                return sprintf('<div class="alert alert-warning" role="alert">%s</div>',$this->getMessage());
+                return sprintf('<div class="alert alert-warning" role="alert">%s <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>',$this->getMessage());
                 break;
             case self::ERROR:
-                return sprintf('<div class="alert alert-danger" role="alert">%s</div>',$this->getMessage());
+                return sprintf('<div class="alert alert-danger" role="alert">%s <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>',$this->getMessage());
                 break;
             case self::INFO:
             default:
-                return sprintf('<div class="alert alert-primary" role="alert">%s</div>',$this->getMessage());
+                return sprintf('<div class="alert alert-primary" role="alert">%s<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>',$this->getMessage());
                 break;
         }
 

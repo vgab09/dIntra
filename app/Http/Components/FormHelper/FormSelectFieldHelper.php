@@ -51,6 +51,7 @@ class FormSelectFieldHelper extends FormFieldHelper
         parent::__construct($name,$label);
         $this->addSelectOptions($options);
         $this->setSelectedOption($selectedValue);
+        $this->setType(static::SELECT_TYPE);
     }
 
     /**
