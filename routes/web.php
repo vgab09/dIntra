@@ -32,8 +32,10 @@ Route::group(['middleware' => 'auth'], function () {
     $this->post('/profile','Profile\ProfileController@update')->name('updateProfile');
 
     //Designation
-    Route::group(['prefix' => 'designations'], function () {
-        $this->get('/', 'Designation\DesignationController@index')->name('designationIndex');
+    Route::group(['namespace'=>'Designation','prefix' => 'designations'], function () {
+        $this->get('/', 'DesignationController@index')->name('indexDesignation');
+        $this->get('/edit/{id_designation}', 'DesignationController@edit')->name('editDesignation');
+        $this->post('/edit/{id_designation}', 'DesignationController@update');
     });
 
 });

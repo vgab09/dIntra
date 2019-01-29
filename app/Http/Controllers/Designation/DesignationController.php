@@ -9,16 +9,19 @@
 namespace App\Http\Controllers\Designation;
 
 
+use App\Http\Components\FormHelper\FormCheckboxFieldHelper;
 use App\Http\Components\FormHelper\FormDropDownFieldHelper;
+use App\Http\Components\FormHelper\FormFieldHelper;
+use App\Http\Components\FormHelper\FormHelper;
+use App\Http\Components\FormHelper\FormInputFieldHelper;
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
 use App\Http\Controllers\BREADController;
 use App\Persistence\Models\Designation;
-use Illuminate\Support\Facades\App;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
 
 
-class DesignationController
+class DesignationController extends BREADController
 {
 
     protected $slug = 'designations';
@@ -26,23 +29,6 @@ class DesignationController
     public function __construct()
     {
         $this->modelClass = Designation::class;
-    }
-
-    /**
-     * (B)READ Browse data
-     * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @throws \Exception
-     */
-    public function index(Request $request){
-
-        $list = $this->buildListHelper();
-
-        if($request->ajax()){
-            return $list->createDataTables($this->collectListData())->make(true);
-        }
-
-        return $list->render();
     }
 
     /**
@@ -63,7 +49,7 @@ class DesignationController
             ]
         )->addRowActions(function ($model){
             return FormDropDownFieldHelper::to('action')
-                ->addActionLinkIfCan('update App\Persistence\Models\Designation','#','<i class="fas fa-pencil-alt"></i> Szerkesztés')
+                ->addActionLinkIfCan('update App\Persistence\Models\Designation',route('editDesignation',$model->getKey()),'<i class="fas fa-pencil-alt"></i> Szerkesztés')
                 ->addActionLinkIfCan('delete App\Persistence\Models\Designation','#','<i class="fas fa-trash-alt"></i> Törlés')
                 ->renderTag();
         })
@@ -71,12 +57,13 @@ class DesignationController
             ->addTimeStamps();
     }
 
-    /**
-     * Get DataTable rows
-     *
-     * @return \Eloquent|Collection|QueryBuilder
-     */
-    protected function collectListData(){
-        return App::make($this->modelClass)->newQuery();
+    protected function buildFormHelper(Model $model){
+        return FormHelper::to($this->slug,$this->modelClass,$model,[
+            FormInputFieldHelper::toText('name','Megnevezés'),
+            FormCheckboxFieldHelper::toSwitch('active','Aktív'),
+            FormInputFieldHelper::toTextarea('description','Leírás'),
+        ])->setTitle(sprintf('#%d Beosztás modósítása',$model->getKey()));
     }
+
+
 }

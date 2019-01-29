@@ -9,6 +9,7 @@
 namespace App\Persistence\Models;
 
 
+use App\Traits\ValidatableModel;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -20,8 +21,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string description
  * @property bool active
  */
-class Designation extends Model
+class Designation extends Model implements ValidatableModelInterface
 {
+    use ValidatableModel;
 
     protected $primaryKey = 'id_designation';
 
