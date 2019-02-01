@@ -38,7 +38,7 @@ class FormHelper
     /**
      * @var string Used model class name
      */
-    protected $modelName;
+    protected $modelClass;
 
     /**
      * @var Model|null Used model
@@ -97,17 +97,17 @@ class FormHelper
     /**
      * FormHelper constructor.
      * @param $name string Form name
-     * @param $modelName string the model name
+     * @param $modelClass string the model name
      * @param BaseModel $model filled or empty model
      */
-    public function __construct($name, $modelName,$model = null)
+    public function __construct($name, $modelClass,$model = null)
     {
 
         $this->baseFolder = 'form';
         $this->baseTemplate ='form';
         $this->errors = new MessageBag();
         $this->name = $name;
-        $this->modelName = $modelName;
+        $this->modelClass = $modelClass;
         $this->model = $model;
         $this->formBuilderInstance = App::make('form');
         $this->setModel($model);
@@ -143,7 +143,7 @@ class FormHelper
      * Create a new Empty model
      */
     protected function createEmptyModel(){
-        $this->setModel(App::make($this->modelName));
+        $this->setModel(App::make($this->modelClass));
     }
 
     /**
@@ -256,9 +256,9 @@ class FormHelper
     /**
      * @return string
      */
-    public function getModelName(): string
+    public function getModelClass(): string
     {
-        return $this->modelName;
+        return $this->modelClass;
     }
 
     /**
@@ -288,12 +288,12 @@ class FormHelper
     }
 
     /**
-     * @param string $modelName
+     * @param string $modelClass
      * @return FormHelper
      */
-    public function setModelName(string $modelName): FormHelper
+    public function setModelClass(string $modelClass): FormHelper
     {
-        $this->modelName = $modelName;
+        $this->modelClass = $modelClass;
         return $this;
     }
 

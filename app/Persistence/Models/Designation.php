@@ -39,7 +39,7 @@ class Designation extends Model implements ValidatableModelInterface
     }
 
     public function employees(){
-        return $this->hasMany(Employee::classm,'id_designation','id_designation');
+        return $this->hasMany(Employee::class,'id_designation','id_designation');
     }
 
 }

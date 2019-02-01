@@ -11,7 +11,6 @@
 |
 */
 
-
 // Authentication Routes...
 $this->get('login', 'Auth\LoginController@showLoginForm')->name('login');
 $this->post('login', 'Auth\LoginController@login');
@@ -34,8 +33,12 @@ Route::group(['middleware' => 'auth'], function () {
     //Designation
     Route::group(['namespace'=>'Designation','prefix' => 'designations'], function () {
         $this->get('/', 'DesignationController@index')->name('indexDesignation');
+        $this->get('/new', 'DesignationController@new')->name('newDesignation');
+        $this->post('/new', 'DesignationController@insert');
         $this->get('/edit/{id_designation}', 'DesignationController@edit')->name('editDesignation');
         $this->post('/edit/{id_designation}', 'DesignationController@update');
+        $this->get('/delete/{id_designation}', 'DesignationController@delete')->name('deleteDesignation');
+        $this->post('confirmDelete','designationController@resolveContractAndDelete');
     });
 
 });
