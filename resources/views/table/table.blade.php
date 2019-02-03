@@ -4,12 +4,11 @@
 ?>
 
 @extends('layouts.app')
-@section('page_title')
-    {{$listHelper->getTitle()}}
-@endsection
-
 @section('content')
     <div class="card">
+        <div class="card-header">
+            {{$listHelper->getTitle()}}
+        </div>
         <div class="card-body card-block">
             <table class="table table-bordered " id="tableList-{{$listHelper->getListName()}}">
                 <thead>
@@ -36,13 +35,13 @@
     <script src="{{ mix('/js/datatable.js') }}"></script>
     <script>
         window.LaravelDataTables["tableList-{{$listHelper->getListName()}}"] = $("#tableList-{{$listHelper->getListName()}}")
-            .on('stateLoadParams.dt',window.dTstateLoadParams)
+            .on('stateLoadParams.dt', window.dTstateLoadParams)
             .DataTable(@json($listHelper->getDataTableParameters()));
     </script>
 @endpush
 
 @push('stylesheet')
-    <link href="{{ mix('/css/datatables.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ mix('/css/datatables.css') }}" rel="stylesheet" type="text/css"/>
 @endpush
 
 

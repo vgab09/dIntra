@@ -19,6 +19,31 @@ class MenuProvider implements ProviderInterface
     protected function buildLeftMenu(){
         $menu = Menu::new()
             ->addClass('nav navbar-nav')
+            ->html('<h3 class="menu-title">Szabadság igények</h3>')
+                ->link('#', '<i class="menu-icon fas fa-gavel"></i>Döntésre váró szabadságok')
+                ->link('#', '<i class="menu-icon fas fa-eye"></i>Szabadságok áttekintése')
+
+            ->html('<h3 class="menu-title">Szabadság szabályzás</h3>')
+                ->link('#', '<i class="menu-icon fas fa-pencil-ruler"></i>Szabadság típusok')
+                ->link('#', '<i class="menu-icon fas fa-coffee"></i>Munkanapok')
+                ->link('#', '<i class="menu-icon fas fa-tree"></i>Munkaszüneti napok')
+
+            ->html('<h3 class="menu-title">Munkatársak</h3>')
+                ->link('#', '<i class="menu-icon fas fa-users"></i>Munkatársak')
+                ->link('#', '<i class="menu-icon fas fa-network-wired"></i>Osztályok')
+                ->link(route('indexDesignation'), '<i class="menu-icon fas fa-project-diagram"></i>Beosztások')
+
+            ->html('<h3 class="menu-title">Beállítások</h3>')
+            ->link('#', '<i class="menu-icon fas fa-object-ungroup"></i>Felhasználói csoportok')
+            ->link('#', '<i class="menu-icon fas fa-user-shield"></i>Jogosultságok');
+
+        return $menu;
+
+    }
+
+    protected function OldbuildLeftMenu(){
+        $menu = Menu::new()
+            ->addClass('nav navbar-nav')
             ->link('#', 'Szabadság igénylés')
             ->submenu(
                 Link::to('#', '<i class="menu-icon fa fa-tasks"></i>Szabadság igények')

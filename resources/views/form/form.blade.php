@@ -1,12 +1,9 @@
 <?php /** @var \App\Http\Components\FormHelper\FormHelper $formHelper */ ?>
 @extends('layouts.app')
-@section('page_title')
-{{$formHelper->getTitle()}}
-@endsection
 @section('content')
     <div class="card">
         <div class="card-header">
-            {{$formHelper->getName()}}
+            {{$formHelper->getTitle()}}
         </div>
         {!! $formHelper->open() !!}
         <div class="card-body card-block">

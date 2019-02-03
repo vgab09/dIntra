@@ -36,26 +36,6 @@
 
     </header><!-- /header -->
     <!-- Header-->
-
-    <div class="breadcrumbs">
-        <div class="col-sm-4">
-            <div class="page-header float-left">
-                <div class="page-title">
-                    <h1>@yield('page_title')</h1>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-8">
-            <div class="page-header float-right">
-                <div class="page-title">
-                    <ol class="breadcrumb text-right">
-                        @yield('breadcrumb','')
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="content mt-3">
 
         <div class="col-sm-12">
