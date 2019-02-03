@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Http\Components\FormHelper\FormHelper;
 use App\Traits\AlertMessage;
 use App\Traits\DataTable;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -58,6 +59,7 @@ abstract class BREADController extends Controller
      * Save resource
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     * @throws Exception
      */
     public function insert()
     {
@@ -84,6 +86,7 @@ abstract class BREADController extends Controller
      *
      * @param int $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View|RedirectResponse
+     * @throws Exception
      */
     public function update($id)
     {
@@ -131,7 +134,7 @@ abstract class BREADController extends Controller
      *
      * @return \Eloquent|Collection|QueryBuilder
      */
-    protected function getQueryBuilder()
+    protected function collectListData()
     {
         return App::make($this->modelClass)->newQuery();
     }

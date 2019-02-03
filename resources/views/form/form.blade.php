@@ -11,9 +11,6 @@
             @foreach($formHelper->getFormItems() as $fieldName => $field)
                 {!! $field->render() !!}
             @endforeach
-
-
-
         </div>
         <div class="card-footer">
             {!! Form::submit('Mentés',['class'=>'btn btn-primary']); !!}

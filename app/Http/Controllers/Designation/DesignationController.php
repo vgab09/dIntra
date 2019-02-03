@@ -51,8 +51,8 @@ class DesignationController extends BREADController
             ]
         )->addRowActions(function ($model) {
             return FormDropDownFieldHelper::to('action')
-                ->addActionLinkIfCan('update App\Persistence\Models\Designation', route('editDesignation', $model->getKey()), '<i class="fas fa-pencil-alt"></i> Szerkesztés')
-                ->addActionLinkIfCan('delete App\Persistence\Models\Designation', route('deleteDesignation', $model->getKey()), '<i class="fas fa-trash-alt"></i> Törlés')
+                ->addActionLinkIfCan('update_designation', route('editDesignation', $model->getKey()), '<i class="fas fa-pencil-alt"></i> Szerkesztés')
+                ->addActionLinkIfCan('delete_designation', route('deleteDesignation', $model->getKey()), '<i class="fas fa-trash-alt"></i> Törlés')
                 ->renderTag();
         })
             ->setTitle('Beosztások')
@@ -137,11 +137,10 @@ class DesignationController extends BREADController
 
         $designation->employees->map($callback);
         if ($designation->delete()) {
-            return $this->redirectSuccess(route('indexDesignation'), 'Sikeres törlés');
+            return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Sikeres törlés');
         } else {
-            return $this->redirectError(route('indexDesignation'), 'Sikertelen törlés');
+            return $this->redirectError($this->getSuccessRedirectUrl(), 'Sikertelen törlés');
         }
-
 
     }
 

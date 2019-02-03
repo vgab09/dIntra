@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool active
  * @property string description
  */
-class Department extends Model
+class Department extends Model implements ValidatableModelInterface
 {
 
     use ValidatableModel;
@@ -37,8 +37,8 @@ class Department extends Model
     {
         return [
             'name' => 'required|string',
-            'id_leader' => 'nullable|int|exists:employees',
-            'id_parent' => 'nullable|int|exists:departments',
+            'id_leader' => 'nullable|int|exists:employees,id_employee',
+            'id_parent' => 'nullable|int|exists:departments,id_department',
             'active' => 'required|boolean',
             'description' => 'nullable|string'
         ];
@@ -47,6 +47,18 @@ class Department extends Model
 
     public function employees(){
         return $this->hasMany(Employee::class,'id_department','id_department');
+    }
+
+    public function leader(){
+        return $this->hasOne(Employee::class,'id_employee','id_leader');
+    }
+
+    public function parent() {
+        return $this->belongsTo(static::class, 'id_department','id_parent',Department::class);
+    }
+
+    public function children() {
+        return $this->hasMany(static::class, 'id_parent','id_department');
     }
 
 }

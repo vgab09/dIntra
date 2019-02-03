@@ -32,13 +32,24 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Designation
     Route::group(['namespace'=>'Designation','prefix' => 'designations'], function () {
-        $this->get('/', 'DesignationController@index')->name('indexDesignation');
-        $this->get('/new', 'DesignationController@new')->name('newDesignation');
-        $this->post('/new', 'DesignationController@insert');
-        $this->get('/edit/{id_designation}', 'DesignationController@edit')->name('editDesignation');
-        $this->post('/edit/{id_designation}', 'DesignationController@update');
-        $this->get('/delete/{id_designation}', 'DesignationController@delete')->name('deleteDesignation');
-        $this->post('/delete/{id_designation}','DesignationController@resolveContractAndDelete');
+        $this->get('/', 'DesignationController@index')->middleware('permission:list_designation')->name('indexDesignation');
+        $this->get('/new', 'DesignationController@new')->middleware('permission:create_designation')->name('newDesignation');
+        $this->post('/new', 'DesignationController@insert')->middleware('permission:create_designation');
+        $this->get('/edit/{id_designation}', 'DesignationController@edit')->middleware('permission:update_designation')->name('editDesignation');
+        $this->post('/edit/{id_designation}', 'DesignationController@update')->middleware('permission:update_designation');
+        $this->get('/delete/{id_designation}', 'DesignationController@delete')->middleware('permission:delete_designation')->name('deleteDesignation');
+        $this->post('/delete/{id_designation}','DesignationController@resolveContractAndDelete')->middleware('permission:delete_designation');
+    });
+
+    //Department
+    Route::group(['namespace'=>'Department','prefix' => 'department'], function () {
+        $this->get('/', 'DepartmentController@index')->middleware('permission:list_department')->name('indexDepartment');
+        $this->get('/new', 'DepartmentController@new')->middleware('permission:create_department')->name('newDepartment');
+        $this->post('/new', 'DepartmentController@insert')->middleware('permission:create_department');
+        $this->get('/edit/{id_department}', 'DepartmentController@edit')->middleware('permission:update_department')->name('editDepartment');
+        $this->post('/edit/{id_department}', 'DepartmentController@update')->middleware('permission:update_department');
+        $this->get('/delete/{id_department}', 'DepartmentController@delete')->middleware('permission:delete_department')->name('deleteDepartment');
+        $this->post('/delete/{id_department}','DepartmentController@resolveContractAndDelete')->middleware('permission:delete_department');
     });
 
 });
