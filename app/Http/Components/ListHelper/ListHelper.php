@@ -22,11 +22,6 @@ class ListHelper
     protected $listName;
 
     /**
-     * @var string Used model class name
-     */
-    protected $modelClass;
-
-    /**
      * @var string display title
      */
     protected $title;
@@ -75,13 +70,11 @@ class ListHelper
     /**
      * ListHelper constructor.
      * @param $name
-     * @param $modelClass
      */
-    public function __construct($name, $modelClass)
+    public function __construct($name)
     {
         $this->baseTemplate = 'table.table';
         $this->setListName($name);
-        $this->modelClass = $modelClass;
         $this->fieldList = new Collection;
     }
 
@@ -89,13 +82,12 @@ class ListHelper
      * Create new ListHelper instance
      *
      * @param $name
-     * @param $modelClass
      * @param iterable $fields default []
      * @return ListHelper
      */
-    public static function to($name, $modelClass, iterable $fields = [])
+    public static function to($name,iterable $fields = [])
     {
-        $instance = new static($name, $modelClass);
+        $instance = new static($name);
         $instance->addFields($fields);
         return $instance;
     }

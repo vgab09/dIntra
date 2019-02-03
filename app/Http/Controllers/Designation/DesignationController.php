@@ -40,7 +40,7 @@ class DesignationController extends BREADController
     protected function buildListHelper()
     {
 
-        return ListHelper::to($this->slug, $this->modelClass,
+        return ListHelper::to($this->slug,
             [
                 ListFieldHelper::to('name', 'Megnevezés'),
                 ListFieldHelper::to('description', 'Leírás')
@@ -59,23 +59,23 @@ class DesignationController extends BREADController
             ->addTimeStamps();
     }
 
-    protected function buildFormHelper($model = null)
+    protected function buildFormHelper($model)
     {
-        return FormHelper::to($this->slug, $this->modelClass, $model, [
+        return FormHelper::to($this->slug, $model, [
             FormInputFieldHelper::toText('name', 'Megnevezés'),
-            FormCheckboxFieldHelper::toSwitch('active', 'Aktív',1,1),
+            FormCheckboxFieldHelper::toSwitch('active', 'Aktív', 1, 1),
             FormInputFieldHelper::toTextarea('description', 'Leírás'),
         ]);
     }
 
     public function new()
     {
-        return $this->buildFormHelper()->setTitle('Új beosztás hozzáadása')->render();
+        return $this->buildFormHelper(new $this->modelClass())->setTitle('Új beosztás hozzáadása')->render();
     }
 
     public function edit($id)
     {
-     return $this->buildFormHelper($this->modelClass::findOrFail($id))->setTitle('Beosztás szerkesztése')->render();
+        return $this->buildFormHelper($this->modelClass::findOrFail($id))->setTitle('Beosztás szerkesztése')->render();
     }
 
 
@@ -90,18 +90,17 @@ class DesignationController extends BREADController
         if (!empty($designation->employees_count)) {
 
             $alternativeDesignations = DB::table($designation->getTable())
-                ->select('id_designation','name')
-                ->where('id_designation', '<>',$id)
-                ->pluck('name','id_designation');
-            return FormHelper::to('confirmDesignation', '', null, [
+                ->select('id_designation', 'name')
+                ->where('id_designation', '<>', $id)
+                ->pluck('name', 'id_designation');
+            return FormHelper::to('confirmDesignation', null, [
                 FormSelectFieldHelper::to('confirmDeleteSelect', 'Kapcsolódó bejegyzések:',
                     [
-                        'DELETE' =>'Törlése',
+                        'DELETE' => 'Törlése',
                         'Áthelyezése ide:' => $alternativeDesignations,
                     ]
                 ),
             ])
-                ->setActionFromMethod('designationController@resolveContractAndDelete')
                 ->setTitle('Törlési müvelet')
                 ->render();
         }
@@ -109,9 +108,41 @@ class DesignationController extends BREADController
         return true;
     }
 
-    protected function resolveContractAndDelete(Request $request)
+    public function resolveContractAndDelete($id, Request $request)
     {
-        dd($action = $request->get('confirmDeleteSelect'));
+        $designation = new Designation();
+        $designation = $designation->newQuery()->with('employees')->findOrFail($id);
+        $action = $request->get('confirmDeleteSelect');
+
+
+        /**
+         * @var Employee $employee
+         */
+        if ($action === 'DELETE') {
+            $callback = function ($employee) {
+                $employee->delete();
+            };
+        } else {
+            $newDesignation = Designation::find($action);
+            if (empty($newDesignation)) {
+                return $this->redirectError(route('deleteDesignation'), 'A kiválasztott elem nem található');
+            }
+
+            $callback = function ($employee, $key) use ($newDesignation) {
+                $employee->id_designation = $newDesignation->id_designation;
+                $employee->save();
+            };
+
+        }
+
+        $designation->employees->map($callback);
+        if ($designation->delete()) {
+            return $this->redirectSuccess(route('indexDesignation'), 'Sikeres törlés');
+        } else {
+            return $this->redirectError(route('indexDesignation'), 'Sikertelen törlés');
+        }
+
+
     }
 
 

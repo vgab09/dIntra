@@ -140,6 +140,6 @@ abstract class BREADController extends Controller
      * @param Model|null $model
      * @return FormHelper
      */
-    protected abstract function buildFormHelper($model = null);
+    protected abstract function buildFormHelper($model);
 
 }

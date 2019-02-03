@@ -38,7 +38,7 @@ Route::group(['middleware' => 'auth'], function () {
         $this->get('/edit/{id_designation}', 'DesignationController@edit')->name('editDesignation');
         $this->post('/edit/{id_designation}', 'DesignationController@update');
         $this->get('/delete/{id_designation}', 'DesignationController@delete')->name('deleteDesignation');
-        $this->post('confirmDelete','designationController@resolveContractAndDelete');
+        $this->post('/delete/{id_designation}','DesignationController@resolveContractAndDelete');
     });
 
 });

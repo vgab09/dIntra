@@ -11,6 +11,7 @@ namespace App\Http\Components\FormHelper;
 
 use App\Persistence\Models\ValidatableModelInterface;
 use Collective\Html\FormBuilder;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
@@ -26,6 +27,16 @@ class FormHelper
     protected $name;
 
     /**
+     * @var string
+     */
+    protected $id;
+
+    /**
+     * @var string
+     */
+    protected $class;
+
+    /**
      * @var string This is the name of the fieldset
      */
     protected $title = '';
@@ -34,11 +45,6 @@ class FormHelper
      * @var string The fieldset icon
      */
     protected $icon = '';
-
-    /**
-     * @var string Used model class name
-     */
-    protected $modelClass;
 
     /**
      * @var Model|null Used model
@@ -66,9 +72,9 @@ class FormHelper
     protected $submit;
 
     /**
-     * @var string action URL
+     * @var array action URL
      */
-    protected $action;
+    protected $action = [];
 
     /**
      * @var MessageBag Messages
@@ -79,11 +85,11 @@ class FormHelper
      * @var array icons
      */
     protected $icons = [
-        'date'      => 'calendar',
-        'text'      => 'italic',
-        'mail'      => 'envelope',
-        'money'     => 'dollar',
-        'number'    => 'tachometer',
+        'date' => 'calendar',
+        'text' => 'italic',
+        'mail' => 'envelope',
+        'money' => 'dollar',
+        'number' => 'tachometer',
     ];
 
     private $request;
@@ -96,19 +102,16 @@ class FormHelper
 
     /**
      * FormHelper constructor.
-     * @param $name string Form name
-     * @param $modelClass string the model name
-     * @param BaseModel $model filled or empty model
+     * @param string $name Form name
+     * @param Model $model filled or empty model
      */
-    public function __construct($name, $modelClass,$model = null)
+    public function __construct($name, $model = null)
     {
 
         $this->baseFolder = 'form';
-        $this->baseTemplate ='form';
+        $this->baseTemplate = 'form';
         $this->errors = new MessageBag();
         $this->name = $name;
-        $this->modelClass = $modelClass;
-        $this->model = $model;
         $this->formBuilderInstance = App::make('form');
         $this->setModel($model);
     }
@@ -117,13 +120,13 @@ class FormHelper
      * Create new FormHelper instance
      *
      * @param $name
-     * @param $modelClass
      * @param Model|null $model
      * @param iterable $fields default []
      * @return FormHelper
      */
-    public static function to($name,$modelClass,$model = null,iterable $fields = []){
-        $instance = new static($name,$modelClass,$model);
+    public static function to($name, $model = null, iterable $fields = [])
+    {
+        $instance = new static($name, $model);
         $instance->addFields($fields);
         return $instance;
     }
@@ -133,7 +136,8 @@ class FormHelper
      * @param FormFieldHelper $field
      * @return FormHelper
      */
-    public function addField(FormFieldHelper $field) : FormHelper{
+    public function addField(FormFieldHelper $field): FormHelper
+    {
 
         $this->fieldList[$field->getName()] = $field;
         return $this;
@@ -142,8 +146,9 @@ class FormHelper
     /**
      * Create a new Empty model
      */
-    protected function createEmptyModel(){
-        $this->setModel(App::make($this->modelClass));
+    protected function createEmptyModel()
+    {
+        $this->setModel(App::make(get_class($this->model)));
     }
 
     /**
@@ -151,9 +156,10 @@ class FormHelper
      *
      * @return array request
      */
-    protected function getRequest(){
+    protected function getRequest()
+    {
 
-        if(!empty($this->request)){
+        if (!empty($this->request)) {
             return $this->request;
         }
 
@@ -173,8 +179,9 @@ class FormHelper
      * @param Request|FormRequest $request
      * @return $this
      */
-    public function setRequest($request){
-        $this->request =$request->all();
+    public function setRequest($request)
+    {
+        $this->request = $request->all();
         return $this;
     }
 
@@ -182,21 +189,23 @@ class FormHelper
      * Validate the current request
      * return true if valid.
      * @return bool
+     * @throws Exception
      */
-    public function validate(){
+    public function validate()
+    {
 
-        if(empty($this->model)){
-            $this->createEmptyModel();
+        if (empty($this->model)) {
+            throw new Exception('Formhelper\'s model is not set');
         }
 
         $this->model->fill($this->getRequest());
 
-        if(!$this->model->validate()){
+        if (!$this->model->validate()) {
             $this->errors->merge($this->model->getValidationErrorMessageBag()->toArray());
 
-            foreach ($this->errors->toArray() as $key => $error){
-                if(array_key_exists($key,$this->fieldList)){
-                    $this->fieldList[$key]->setErrors(array_merge($this->fieldList[$key]->getErrors(),$error));
+            foreach ($this->errors->toArray() as $key => $error) {
+                if (array_key_exists($key, $this->fieldList)) {
+                    $this->fieldList[$key]->setErrors(array_merge($this->fieldList[$key]->getErrors(), $error));
                 }
             }
 
@@ -210,19 +219,17 @@ class FormHelper
      * Validate and save the resource
      * return true if valid, and save is success.
      * @return bool
+     * @throws Exception
      */
-    public function validateAndSave(){
+    public function validateAndSave()
+    {
 
-        if(!$this->validate()){
+        if (!$this->validate()) {
             return false;
         }
 
-        if(empty($this->model)){
-            $this->createEmptyModel();
-        }
-
-        if(!$this->model->save()){
-            $this->errors->add('Unable save resource','Unable save resource.');
+        if (!$this->model->save()) {
+            $this->errors->add('Unable save resource', 'Unable save resource.');
             return false;
         }
 
@@ -233,16 +240,36 @@ class FormHelper
      * Get All Error
      * @return MessageBag
      */
-    public function getErrors(){
+    public function getErrors()
+    {
         return $this->errors;
     }
 
-    public function getFormItems() :array{
+    /**
+     * return form opening html tag
+     * @return \Illuminate\Support\HtmlString|string
+     */
+    public function open()
+    {
+        return $this->formBuilderInstance->open($this->collectAttributes());
+    }
+
+    /** return form closing html tag
+     * @return string
+     */
+    public function close()
+    {
+        return $this->formBuilderInstance->close();
+    }
+
+    public function getFormItems(): array
+    {
         return $this->fieldList;
     }
 
-    public function render(){
-        return view($this->baseFolder . '.' . $this->baseTemplate,['formHelper' => $this]);
+    public function render()
+    {
+        return view($this->baseFolder . '.' . $this->baseTemplate, ['formHelper' => $this]);
     }
 
     /**
@@ -251,14 +278,6 @@ class FormHelper
     public function getTitle(): string
     {
         return $this->title;
-    }
-
-    /**
-     * @return string
-     */
-    public function getModelClass(): string
-    {
-        return $this->modelClass;
     }
 
     /**
@@ -278,6 +297,69 @@ class FormHelper
     }
 
     /**
+     * @return string|null
+     */
+    public function getClass()
+    {
+        return $this->class;
+    }
+
+    /**
+     * Add a class to input
+     * @param string $class
+     * @return FormHelper
+     */
+    public function addClass(string $class): FormHelper
+    {
+        $this->class .= ' ' . $class;
+        return $this;
+    }
+
+    /**
+     * Set input class
+     * @param string $class
+     * @return FormHelper
+     */
+    public function setClass(string $class): FormHelper
+    {
+        $this->class = $class;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $elementId
+     * @return FormHelper
+     */
+    public function setId(string $elementId): FormHelper
+    {
+        $this->id = $elementId;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    protected function collectAttributes(): array
+    {
+
+        $id = $this->getid();
+        $class = $this->getClass();
+
+        $attributes['class'] = empty($class) ? 'frm' . $this->getName() : $class;
+        $attributes['id'] = empty($id) ? 'frm' . $this->getName() : $id;
+
+        return array_merge($attributes, $this->getAction());
+    }
+
+    /**
      * @param string $title
      * @return FormHelper
      */
@@ -287,15 +369,6 @@ class FormHelper
         return $this;
     }
 
-    /**
-     * @param string $modelClass
-     * @return FormHelper
-     */
-    public function setModelClass(string $modelClass): FormHelper
-    {
-        $this->modelClass = $modelClass;
-        return $this;
-    }
 
     /**
      * @param ValidatableModelInterface|null $model
@@ -334,16 +407,16 @@ class FormHelper
      */
     public function addFields(iterable $fields)
     {
-        foreach ($fields as $field){
+        foreach ($fields as $field) {
             $this->addField($field);
         }
         return $this;
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getAction(): string
+    public function getAction()
     {
         return $this->action;
     }
@@ -353,8 +426,9 @@ class FormHelper
      * @param string|array $action ['route.name',param1,param2,...]
      * @return FormHelper
      */
-    public function setActionFromNamedRoute($action){
-        $this->action= ['route' => $action];
+    public function setActionFromNamedRoute($action)
+    {
+        $this->action = ['route' => $action];
         return $this;
     }
 
@@ -363,8 +437,9 @@ class FormHelper
      * @param string|array $action ['foo/bar',param1,param2,...]
      * @return FormHelper
      */
-    public function setActionFromUrl($action){
-        $this->action= ['url' => $action];
+    public function setActionFromUrl($action)
+    {
+        $this->action = ['url' => $action];
         return $this;
     }
 
@@ -373,12 +448,11 @@ class FormHelper
      * @param string|array $action ['Controller@method',param1,param2,...]
      * @return FormHelper
      */
-    public function setActionFromMethod($action){
-        $this->action= ['action' => $action];
+    public function setActionFromMethod($action)
+    {
+        $this->action = ['action' => $action];
         return $this;
     }
-
-
 
 
 }
