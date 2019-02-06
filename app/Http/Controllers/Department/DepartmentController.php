@@ -36,13 +36,38 @@ class DepartmentController extends BREADController
     protected function buildFormHelper($model)
     {
         return FormHelper::to('department',$model,[
-           FormInputFieldHelper::toText('name','név')->setRequired(),
-           FormSelectFieldHelper::to('id_leader','Vezető',Employee::all('id_employee','name')->pluck('name','id_employee')),
-            FormSelectFieldHelper::to('id_parent','Szülő osztály',Department::all('id_department','name')->pluck('name','id_department')),
+           FormInputFieldHelper::toText('name','Név')->setRequired(),
+           FormSelectFieldHelper::to('id_leader','Osztály vezető',$this->getLeaderOptions()),
+           FormSelectFieldHelper::to('id_parent','Szülő osztály',$this->getParentDepartmentOptions($model->getKey())),
            FormCheckboxFieldHelper::toSwitch('active','Aktív'),
            FormInputFieldHelper::toTextarea('description','Leírás'),
         ]);
     }
+
+    protected function getLeaderOptions(){
+        return Employee::all('id_employee','name')
+            ->pluck('name','id_employee')
+            ->prepend('-','');
+    }
+
+    protected function getParentDepartmentOptions($self_id){
+        return Department::query('id_department','name')
+            ->whereKeyNot($self_id)
+
+            ->pluck('name','id_department')
+            ->prepend('-','');
+    }
+
+    protected function getFormHelperToUpdate($model)
+    {
+        return parent::getFormHelperToUpdate($model)->setTitle('Osztály szerkesztése');
+    }
+
+    protected function getFormHelperToInsert($model)
+    {
+        return parent::getFormHelperToInsert($model)->setTitle('Új osztály hozzáadása');
+    }
+
 
     /**
      * Create a new ListHelper instance, and fill up.
@@ -53,9 +78,9 @@ class DepartmentController extends BREADController
         return ListHelper::to('department',[
             ListFieldHelper::to('id_department','#'),
             ListFieldHelper::to('name','Név'),
-            ListFieldHelper::to('parent.name','Szülő')
+            ListFieldHelper::to('pd.name','Szülő')
                 ->setDefaultContent('-'),
-            ListFieldHelper::to('leader.name','Vezető')
+            ListFieldHelper::to('e.name','Vezető')
                 ->setDefaultContent('-'),
             ListFieldHelper::to('active','Aktív')
                 ->setType('bool')
@@ -68,7 +93,6 @@ class DepartmentController extends BREADController
             ->setTitle('Osztályok')
             ->addRowActions(function ($model) {
                 return FormDropDownFieldHelper::to('action')
-                    ->addActionLinkIfCan('update_department', route('editDepartment', $model->getKey()), '<i class="fas fa-pencil-alt"></i> Megnyitás')
                     ->addActionLinkIfCan('update_department', route('editDepartment', $model->getKey()), '<i class="fas fa-pencil-alt"></i> Szerkesztés')
                     ->addActionLinkIfCan('delete_department', route('deleteDepartment', $model->getKey()), '<i class="fas fa-trash-alt"></i> Törlés')
                     ->renderTag();
@@ -77,6 +101,9 @@ class DepartmentController extends BREADController
 
     protected function collectListData()
     {
-        return Department::with(['leader','parent']);
+        return Department::query()->select(['departments.id_department as id_department','departments.name as name','pd.name as pd.name','e.name as e.name','departments.active','departments.description','departments.created_at as created_at','departments.updated_at as updated_at'])
+            ->from('departments')
+            ->leftJoin('departments as pd','departments.id_parent','=','pd.id_department')
+            ->leftJoin('employees as e','departments.id_leader','=','e.id_employee');
     }
 }
