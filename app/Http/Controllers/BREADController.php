@@ -10,7 +10,6 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\App;
 
 abstract class BREADController extends Controller
@@ -52,7 +51,7 @@ abstract class BREADController extends Controller
      */
     public function new()
     {
-        return $this->buildFormHelper()->render();
+        return $this->getFormHelperToInsert()->render();
     }
 
     /**
@@ -63,7 +62,7 @@ abstract class BREADController extends Controller
      */
     public function insert()
     {
-        $form = $this->buildFormHelper();
+        $form = $this->getFormHelperToInsert();
         if (!$form->validateAndSave()) {
             return $form->render();
         }
@@ -77,7 +76,7 @@ abstract class BREADController extends Controller
     public function edit($id)
     {
         $model = $this->modelClass::findOrFail($id);
-        $form = $this->buildFormHelper($model);
+        $form = $this->getFormHelperToUpdate($model);
         return $form->render();
     }
 
@@ -90,7 +89,7 @@ abstract class BREADController extends Controller
      */
     public function update($id)
     {
-        $form = $this->buildFormHelper($this->modelClass::findOrFail($id));
+        $form = $this->getFormHelperToUpdate($this->modelClass::findOrFail($id));
         if (!$form->validateAndSave()) {
             return $form->render();
         }
@@ -137,6 +136,14 @@ abstract class BREADController extends Controller
     protected function collectListData()
     {
         return App::make($this->modelClass)->newQuery();
+    }
+
+    protected function getFormHelperToUpdate($model){
+        return $this->buildFormHelper($model);
+    }
+
+    protected function getFormHelperToInsert($model){
+        return $this->buildFormHelper($model);
     }
 
     /**
