@@ -18,8 +18,8 @@ class CreateDepartmentsTable extends Migration
         Schema::create('departments', function (Blueprint $table) {
             $table->increments('id_department');
             $table->string('name');
-            $table->unsignedInteger('id_leader')->default('0');
-            $table->unsignedInteger('id_parent')->default('0');
+            $table->unsignedInteger('id_leader')->nullable();
+            $table->unsignedInteger('id_parent')->nullable();
             $table->tinyInteger('active')->default('1');
             $table->text('description')->nullable();
             $table->nullableTimestamps();
