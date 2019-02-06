@@ -292,16 +292,6 @@ class FormInputFieldHelper extends FormFieldHelper
      * @return string
      */
     public function render(){
-
-        //Add default classes
-        if(empty($this->getClass())){
-            $this->addClass('form-control pull-right');
-        }
-
-        if(count($this->getErrors())){
-            $this->addClass('is-invalid');
-        }
-
         return Form::inputField($this);
     }
 

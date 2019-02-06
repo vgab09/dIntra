@@ -92,6 +92,7 @@ abstract class FormFieldHelper implements FormFieldHelperInterface
         $this->setName($name);
         $this->setElementId($this->name);
         $this->setLabel($label);
+        $this->addClass('form-control');
     }
 
     /**
@@ -306,6 +307,10 @@ abstract class FormFieldHelper implements FormFieldHelperInterface
      */
     public function setErrors($errors): FormFieldHelper
     {
+        if(!count($this->errors)){
+            $this->addClass('is-invalid');
+        }
+
         $this->errors = $errors;
         return $this;
     }
@@ -315,6 +320,11 @@ abstract class FormFieldHelper implements FormFieldHelperInterface
      * @return FormFieldHelper
      */
     public function addError($error):FormFieldHelper{
+
+        if(!count($this->errors)){
+            $this->addClass('is-invalid');
+        }
+
         $this->errors[] = $error;
         return $this;
     }

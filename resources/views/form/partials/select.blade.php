@@ -1,7 +1,6 @@
 <?php /** @var \App\Http\Components\FormHelper\FormSelectFieldHelper $field */ ?>
-
 <div class="form-group">
-    {{ Form::label($field->getLabel(), null, ['for' => $field->getName()]) }}
+    {{ Form::label($field->getName(), $field->getLabel()) }}
     <div class="input-group">
         @if($field->hasIcon())
             <div class="input-group-addon">
@@ -14,6 +13,18 @@
                 {{ $field->getSuffix() }}
             </div>
         @endif
+            @foreach ($field->getErrors() as $error)
+                @if ($loop->first)
+                    <div class="invalid-feedback">
+                        <ul class="ml-3">
+                @endif
+                            <li>{{$error}}</li>
+                @if ($loop->last)
+                        </ul>
+                    </div>
+                @endif
+
+            @endforeach
 
     </div>
     @if($field->hasDescription())

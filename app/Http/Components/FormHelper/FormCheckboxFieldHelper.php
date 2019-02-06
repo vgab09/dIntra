@@ -31,6 +31,7 @@ class FormCheckboxFieldHelper extends FormFieldHelper
         $this->setType($type);
         $this->setValue($value);
         $this->setChecked($checked);
+        $this->setClass('custom-control-input');
     }
 
     public static function toCheckbox(string $name,string $label = '', $value = 1, $checked = null){
@@ -85,11 +86,6 @@ class FormCheckboxFieldHelper extends FormFieldHelper
 
     public function render()
     {
-        //Add default classes
-        if(empty($this->getClass())){
-            $this->addClass('custom-control-input');
-        }
-
         switch ($this->type)
         {
             case static::RADIO_TYPE:
