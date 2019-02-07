@@ -51,6 +51,16 @@ Route::group(['middleware' => 'auth'], function () {
         $this->get('/delete/{id_department}', 'DepartmentController@delete')->middleware('permission:delete_department')->name('deleteDepartment');
         $this->post('/delete/{id_department}','DepartmentController@resolveContractAndDelete')->middleware('permission:delete_department');
     });
-
+    
+    //leaveType
+    Route::group(['namespace'=>'LeaveType','prefix' => 'leavetype'], function () {
+        $this->get('/', 'LeaveTypeController@index')->middleware('permission:list_leave_type')->name('indexLeaveType');
+        $this->get('/new', 'LeaveTypeController@new')->middleware('permission:create_leave_type')->name('newLeaveType');
+        $this->post('/new', 'LeaveTypeController@insert')->middleware('permission:create_leave_type');
+        $this->get('/edit/{id_leave_type}', 'LeaveTypeController@edit')->middleware('permission:update_leave_type')->name('editLeaveType');
+        $this->post('/edit/{id_leave_type}', 'LeaveTypeController@update')->middleware('permission:update_leave_type');
+        $this->get('/delete/{id_leave_type}', 'LeaveTypeController@delete')->middleware('permission:delete_leave_type')->name('deleteLeaveType');
+        $this->post('/delete/{id_leave_type}','LeaveTypeController@resolveContractAndDelete')->middleware('permission:delete_leave_type');
+    });
 });
 

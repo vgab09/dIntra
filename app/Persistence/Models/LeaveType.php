@@ -9,6 +9,7 @@
 namespace App\Persistence\Models;
 
 
+use App\Traits\ValidatableModel;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -18,8 +19,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int id_leave_type
  * @property string name
  */
-class LeaveType extends Model
+class LeaveType extends Model implements ValidatableModelInterface
 {
+    use ValidatableModel;
 
     protected $primaryKey = 'id_leave_type';
 
