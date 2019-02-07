@@ -22,6 +22,7 @@ use App\Persistence\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class DepartmentController extends BREADController
 {
@@ -120,7 +121,7 @@ class DepartmentController extends BREADController
         $alternativeDepartments = $this->getAlternativeDepartmentOptions($id);
         if (!empty($department->children_count)) {
             $form->addField(
-                FormSelectFieldHelper::to('contractAction[\'children\']', 'Kapcsolódó osztály bejegyzések ('.$department->children_count.'):',
+                FormSelectFieldHelper::to('contractAction[children]', 'Kapcsolódó osztály bejegyzések ('.$department->children_count.'):',
                     [
                         'DELETE' => 'Törlése',
                         'Áthelyezése ide:' => $alternativeDepartments,
@@ -131,7 +132,7 @@ class DepartmentController extends BREADController
 
         if (!empty($department->employees_count)) {
             $form->addField(
-                FormSelectFieldHelper::to('contractAction[\'employees\']', 'Kapcsolódó felhasználó bejegyzések ('.$department->employees_count.'):',
+                FormSelectFieldHelper::to('contractAction[employees]', 'Kapcsolódó felhasználó bejegyzések ('.$department->employees_count.'):',
                     [
                         'DELETE' => 'Törlése',
                         'Áthelyezése ide:' => $alternativeDepartments,
@@ -150,23 +151,33 @@ class DepartmentController extends BREADController
     public function resolveContractAndDelete($id, Request $request)
     {
         $department = Department::with(['children','employees'])->findOrFail($id);
-        $request->get('action'));
+        $alternativeDepartment = $this->getAlternativeDepartmentOptions($department->getKey());
+        $alternativeDepartment->shift();
+        $actions = $request->get('contractAction',[]);
+        $items = $department->getRelations();
+
         /**
-         * @var HasMany $relation
+         * @var Collection $relatedModel
          */
-        foreach ($department->getRelations() as $relation){
-            $localProperty = $relation->getForeignKeyName();
+        foreach ($items as $relation => $relatedModel){
 
-            if()
+            $relatedModel = collect($relatedModel);
 
+            $foreignKey = $department->$relation()->getForeignKeyName();
+            $action = $actions[$relation];
+
+            if(isset($action) && $action=== 'DELETE'){
+                $relatedModel->map(function ($model, $key){
+                 $model->delete();
+                });
+
+            }elseif($action === null || (isset($action) && $alternativeDepartment->contains($action))){
+                $relatedModel->map(function ($model, $key) use ($foreignKey,$action){
+                    $model->$foreignKey = $action;
+                    $model->save();
+                });
+            }
         }
-
-
-        $childrenAction = $request->get('action');
-        $employeAction = $request->get('employeesAction');
-
-
-
 
     }
 }
