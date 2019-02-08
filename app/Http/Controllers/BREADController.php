@@ -6,11 +6,12 @@ namespace App\Http\Controllers;
 use App\Http\Components\FormHelper\FormHelper;
 use App\Traits\AlertMessage;
 use App\Traits\DataTable;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
+use Exception;
 
 abstract class BREADController extends Controller
 {
@@ -35,7 +36,6 @@ abstract class BREADController extends Controller
      */
     public function index(Request $request)
     {
-
         $list = $this->buildListHelper();
 
         if ($request->ajax()) {
@@ -71,6 +71,7 @@ abstract class BREADController extends Controller
 
     /**
      * BR(E)AD Edit data
+     * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function edit($id)
@@ -113,11 +114,65 @@ abstract class BREADController extends Controller
     }
 
     /**
+     * @param Model $model
+     * @param Collection $alternativeModel
+     * @param array $actions
+     * @return \Illuminate\Http\RedirectResponse|bool
+     */
+    public function resolveRelationContract($model, $alternativeModel, $actions)
+    {
+
+        $relations = $model->getRelations();
+        $relationsNames = array_keys($relations);
+
+        foreach ($relationsNames as $relationName) {
+            if (!array_key_exists($relationName, $actions)) {
+                return $this->redirectError($this->getFailedRedirectUrl(), 'Kapcsolódó bejegyzések müvelete hibásan lett megadva.');
+            }
+
+            if ($actions[$relationName] !== 'DELETE' && !$alternativeModel->has($actions[$relationName])) {
+                return $this->redirectError($this->getFailedRedirectUrl(), $relationName . ' kapcsolat nem állítható be a kijelölt értékre.');
+            }
+        }
+
+        /**
+         * @var Collection $relatedModel
+         */
+        foreach ($relations as $relation => $relatedModel) {
+            $relatedModel = collect($relatedModel);
+            $action = $actions[$relation];
+            $callBack = null;
+
+            if ($action === 'DELETE') {
+                $relatedModel->map(function ($model, $key) {
+                    $model->delete();
+                });
+                continue;
+            }
+
+            $foreignKey = $model->$relation()->getForeignKeyName();
+            $relatedModel->map(function ($model, $key) use ($foreignKey, $action) {
+                $model->$foreignKey = $action;
+                $model->save();
+            });
+        }
+        return true;
+    }
+
+    /**
      * @return string
      */
     protected function getSuccessRedirectUrl()
     {
         return action('\\' . static::class . '@index');
+    }
+
+    /**
+     * @return string
+     */
+    protected function getFailedRedirectUrl()
+    {
+        return $this->getSuccessRedirectUrl();
     }
 
     /**
@@ -138,11 +193,13 @@ abstract class BREADController extends Controller
         return App::make($this->modelClass)->newQuery();
     }
 
-    protected function getFormHelperToUpdate($model){
+    protected function getFormHelperToUpdate($model)
+    {
         return $this->buildFormHelper($model);
     }
 
-    protected function getFormHelperToInsert($model){
+    protected function getFormHelperToInsert($model)
+    {
         return $this->buildFormHelper($model);
     }
 
