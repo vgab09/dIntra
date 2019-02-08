@@ -89,15 +89,11 @@ class DesignationController extends BREADController
         $designation = $designation->newQuery()->withCount('employees')->findOrFail($id);
         if (!empty($designation->employees_count)) {
 
-            $alternativeDesignations = DB::table($designation->getTable())
-                ->select('id_designation', 'name')
-                ->where('id_designation', '<>', $id)
-                ->pluck('name', 'id_designation');
             return FormHelper::to('confirmDesignation', null, [
-                FormSelectFieldHelper::to('confirmDeleteSelect', 'Kapcsolódó bejegyzések:',
+                FormSelectFieldHelper::to('contractAction[employees]', 'Kapcsolódó bejegyzések ('.$designation->employees_count.'):',
                     [
                         'DELETE' => 'Törlése',
-                        'Áthelyezése ide:' => $alternativeDesignations,
+                        'Áthelyezése ide:' => $this->getAlternativeDesignationOptions($designation->getKey()),
                     ]
                 ),
             ])
@@ -110,9 +106,14 @@ class DesignationController extends BREADController
 
     public function resolveContractAndDelete($id, Request $request)
     {
-        $designation = new Designation();
-        $designation = $designation->newQuery()->with('employees')->findOrFail($id);
-        $action = $request->get('confirmDeleteSelect');
+        $designation = Designation::with('employees')->findOrFail($id);
+
+        if ($this->resolveRelationContract($designation, $this->getAlternativeDesignationOptions($designation->getKey()), $request->get('contractAction', []))) {
+            $designation->delete();
+            return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Sikeres törlés');
+        } else {
+            return $this->redirectError($this->getFailedRedirectUrl(), 'Sikertelen törlés');
+        }
 
 
         /**
@@ -139,9 +140,21 @@ class DesignationController extends BREADController
         if ($designation->delete()) {
             return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Sikeres törlés');
         } else {
-            return $this->redirectError($this->getSuccessRedirectUrl(), 'Sikertelen törlés');
+            return $this->redirectError($this->getFailedRedirectUrl(), 'Sikertelen törlés');
         }
 
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    protected function getAlternativeDesignationOptions($id)
+    {
+        return Designation::query()
+            ->select('id_designation', 'name')
+            ->where('id_designation', '<>', $id)
+            ->pluck('name', 'id_designation');
     }
 
 

@@ -10,6 +10,7 @@ namespace App\Persistence\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class LeavePolicy
@@ -27,9 +28,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class LeavePolicy extends Model
 {
+    use SoftDeletes;
+
     protected $primaryKey = 'id_leave_policy';
 
     protected $fillable = ['id_leave_type','name','days','color','description','start_at','end_at','active'];
+
+    protected $dates = ['deleted_at'];
 
     protected function getValidationRules(): array
     {
