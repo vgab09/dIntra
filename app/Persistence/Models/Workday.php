@@ -9,6 +9,7 @@
 namespace App\Persistence\Models;
 
 
+use App\Traits\ValidatableModel;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -22,9 +23,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property string description
  *
  */
-class WorkDay extends Model
+class Workday extends Model implements ValidatableModelInterface
 {
-    protected $primaryKey = 'id_work_day';
+    use ValidatableModel;
+    
+    protected $primaryKey = 'id_workday';
 
     protected $fillable = ['name','start','end','description'];
 

@@ -15,8 +15,8 @@ class CreateWorkDaysTable extends Migration
      */
     public function up()
     {
-        Schema::create('work_days', function (Blueprint $table) {
-            $table->increments('id_work_day');
+        Schema::create('workdays', function (Blueprint $table) {
+            $table->increments('id_workday');
             $table->string('name');
             $table->date('start');
             $table->date('end');
@@ -32,6 +32,6 @@ class CreateWorkDaysTable extends Migration
      */
      public function down()
      {
-       Schema::dropIfExists('work_days');
+       Schema::dropIfExists('workdays');
      }
 }

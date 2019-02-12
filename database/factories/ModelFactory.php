@@ -73,7 +73,7 @@ $factory->define(\App\Persistence\Models\Employee::class, function (Faker $faker
     ];
 });
 
-$factory->define(\App\Persistence\Models\WorkDay::class, function (Faker $faker) {
+$factory->define(\App\Persistence\Models\Workday::class, function (Faker $faker) {
 
     $saturday = Carbon::instance($faker->dateTimeThisYear())->nextWeekendDay()->format('Y-m-d');
 

@@ -9,7 +9,7 @@ use App\Persistence\Models\LeavePolicy;
 use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\LeaveRequestHistory;
 use App\Persistence\Models\LeaveType;
-use App\Persistence\Models\WorkDay;
+use App\Persistence\Models\Workday;
 use Illuminate\Database\Seeder;
 use Faker\Generator as Faker;
 use Illuminate\Support\Carbon;
@@ -53,7 +53,7 @@ class TestDataSeeder extends Seeder
 
 
     /**
-     * @var WorkDay[]
+     * @var Workday[]
      */
     private $workDays;
 
@@ -128,7 +128,7 @@ class TestDataSeeder extends Seeder
     }
 
     private function createWorkDays(){
-        $this->workDays = factory(WorkDay::class,self::WORK_DAY_COUNT)->create();
+        $this->workDays = factory(Workday::class,self::WORK_DAY_COUNT)->create();
     }
 
     private function createLeaveRequest(){

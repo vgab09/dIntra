@@ -62,5 +62,16 @@ Route::group(['middleware' => 'auth'], function () {
         $this->get('/delete/{id_leave_type}', 'LeaveTypeController@delete')->middleware('permission:delete_leave_type')->name('deleteLeaveType');
         $this->post('/delete/{id_leave_type}','LeaveTypeController@resolveContractAndDelete')->middleware('permission:delete_leave_type');
     });
+
+    //workDay
+    Route::group(['namespace'=>'Workday','prefix' => 'workday'], function () {
+        $this->get('/', 'WorkdayController@index')->middleware('permission:list_workday')->name('indexWorkday');
+        $this->get('/new', 'WorkdayController@new')->middleware('permission:create_workday')->name('newWorkday');
+        $this->post('/new', 'WorkdayController@insert')->middleware('permission:create_workday');
+        $this->get('/edit/{id_workday}', 'WorkdayController@edit')->middleware('permission:update_workday')->name('editWorkday');
+        $this->post('/edit/{id_workday}', 'WorkdayController@update')->middleware('permission:update_workday');
+        $this->get('/delete/{id_workday}', 'WorkdayController@delete')->middleware('permission:delete_workday')->name('deleteWorkday');
+        $this->post('/delete/{id_workday}','WorkdayController@resolveContractAndDelete')->middleware('permission:delete_workday');
+    });
 });
 

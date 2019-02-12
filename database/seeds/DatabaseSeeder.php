@@ -8,7 +8,7 @@ use App\Persistence\Models\Holiday;
 use App\Persistence\Models\LeavePolicy;
 use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\LeaveRequestHistory;
-use App\Persistence\Models\WorkDay;
+use App\Persistence\Models\Workday;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Spatie\Permission\Models\Permission;
