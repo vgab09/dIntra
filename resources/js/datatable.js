@@ -73,7 +73,7 @@
 
         $.each(state.columns, function (i, v) {
 
-            let element = $('#' + settings.aoColumns[i].sName + '-filter-input').first();
+            let element = $(clearIdSelector(settings.aoColumns[i].sName + '-filter-input')).first();
 
             if (!element.length) {
                 return true;
@@ -90,5 +90,9 @@
     }
 
 })(window, jQuery);
+
+function clearIdSelector( id ) {
+    return "#" + id.replace( /(:|\.|\[|\]|,|=)/g, "\\$1" );
+}
 
 
