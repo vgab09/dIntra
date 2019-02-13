@@ -84,5 +84,16 @@ Route::group(['middleware' => 'auth'], function () {
         $this->get('/delete/{id_holiday}', 'HolidayController@delete')->middleware('permission:delete_holiday')->name('deleteHoliday');
         $this->post('/delete/{id_holiday}','HolidayController@resolveContractAndDelete')->middleware('permission:delete_holiday');
     });
+
+    //Employee
+    Route::group(['namespace'=>'Employee','prefix' => 'employee'], function () {
+        $this->get('/', 'EmployeeController@index')->middleware('permission:list_employee')->name('indexEmployee');
+        $this->get('/new', 'EmployeeController@new')->middleware('permission:create_employee')->name('newEmployee');
+        $this->post('/new', 'EmployeeController@insert')->middleware('permission:create_employee');
+        $this->get('/edit/{id_employee}', 'EmployeeController@edit')->middleware('permission:update_employee')->name('editEmployee');
+        $this->post('/edit/{id_employee}', 'EmployeeController@update')->middleware('permission:update_employee');
+        $this->get('/delete/{id_employee}', 'EmployeeController@delete')->middleware('permission:delete_employee')->name('deleteEmployee');
+        $this->post('/delete/{id_employee}','EmployeeController@resolveContractAndDelete')->middleware('permission:delete_employee');
+    });
 });
 
