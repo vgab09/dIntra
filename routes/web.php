@@ -52,7 +52,7 @@ Route::group(['middleware' => 'auth'], function () {
         $this->post('/delete/{id_department}','DepartmentController@resolveContractAndDelete')->middleware('permission:delete_department');
     });
     
-    //leaveType
+    //LeaveType
     Route::group(['namespace'=>'LeaveType','prefix' => 'leavetype'], function () {
         $this->get('/', 'LeaveTypeController@index')->middleware('permission:list_leave_type')->name('indexLeaveType');
         $this->get('/new', 'LeaveTypeController@new')->middleware('permission:create_leave_type')->name('newLeaveType');
@@ -63,7 +63,7 @@ Route::group(['middleware' => 'auth'], function () {
         $this->post('/delete/{id_leave_type}','LeaveTypeController@resolveContractAndDelete')->middleware('permission:delete_leave_type');
     });
 
-    //workDay
+    //Workday
     Route::group(['namespace'=>'Workday','prefix' => 'workday'], function () {
         $this->get('/', 'WorkdayController@index')->middleware('permission:list_workday')->name('indexWorkday');
         $this->get('/new', 'WorkdayController@new')->middleware('permission:create_workday')->name('newWorkday');
@@ -72,6 +72,17 @@ Route::group(['middleware' => 'auth'], function () {
         $this->post('/edit/{id_workday}', 'WorkdayController@update')->middleware('permission:update_workday');
         $this->get('/delete/{id_workday}', 'WorkdayController@delete')->middleware('permission:delete_workday')->name('deleteWorkday');
         $this->post('/delete/{id_workday}','WorkdayController@resolveContractAndDelete')->middleware('permission:delete_workday');
+    });
+
+    //Holiday
+    Route::group(['namespace'=>'Holiday','prefix' => 'holiday'], function () {
+        $this->get('/', 'HolidayController@index')->middleware('permission:list_holiday')->name('indexHoliday');
+        $this->get('/new', 'HolidayController@new')->middleware('permission:create_holiday')->name('newHoliday');
+        $this->post('/new', 'HolidayController@insert')->middleware('permission:create_holiday');
+        $this->get('/edit/{id_holiday}', 'HolidayController@edit')->middleware('permission:update_holiday')->name('editHoliday');
+        $this->post('/edit/{id_holiday}', 'HolidayController@update')->middleware('permission:update_holiday');
+        $this->get('/delete/{id_holiday}', 'HolidayController@delete')->middleware('permission:delete_holiday')->name('deleteHoliday');
+        $this->post('/delete/{id_holiday}','HolidayController@resolveContractAndDelete')->middleware('permission:delete_holiday');
     });
 });
 

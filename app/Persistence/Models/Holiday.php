@@ -1,14 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: g09
- * Date: 2018.10.28.
- * Time: 10:09
- */
 
 namespace App\Persistence\Models;
 
 
+use App\Traits\ValidatableModel;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -22,8 +17,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string description
  *
  */
-class Holiday extends Model
+class Holiday extends Model implements ValidatableModelInterface
 {
+    use ValidatableModel;
+
     protected $primaryKey = 'id_holiday';
 
     protected $fillable = ['name','start','end','description'];

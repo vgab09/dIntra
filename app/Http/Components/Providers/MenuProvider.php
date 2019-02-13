@@ -26,7 +26,7 @@ class MenuProvider implements ProviderInterface
             ->html('<h3 class="menu-title">Szabadság szabályzás</h3>')
                 ->linkIfCan('list_leave_type', route('indexLeaveType'),'<i class="menu-icon fas fa-pencil-ruler"></i>Szabadság típusok')
                 ->linkIfCan('list_workday',route('indexWorkday'), '<i class="menu-icon fas fa-coffee"></i>Munkanapok')
-                ->link('#', '<i class="menu-icon fas fa-tree"></i>Munkaszüneti napok')
+                ->linkIfCan('list_holiday',route('indexHoliday'), '<i class="menu-icon fas fa-tree"></i>Munkaszüneti napok')
 
             ->html('<h3 class="menu-title">Munkatársak</h3>')
                 ->link('#', '<i class="menu-icon fas fa-users"></i>Munkatársak')
