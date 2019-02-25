@@ -17,7 +17,7 @@ class FormButtonFieldHelper extends FormFieldHelper
      */
     public function render()
     {
-        // TODO: Implement render() method.
+        return $this->renderTag();
     }
 
     /**
