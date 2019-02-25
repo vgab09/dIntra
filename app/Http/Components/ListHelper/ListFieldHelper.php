@@ -398,6 +398,7 @@ class ListFieldHelper
             'data' => $this->getDataName(),
             'orderable' => $this->isOrderable(),
             'searchable' => $this->isSearchable(),
+            'width' => $this->getWidth(),
         ];
 
         if($this->getDefaultContent() !== null){
