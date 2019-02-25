@@ -10,12 +10,15 @@ namespace App\Http\Controllers\Employee;
 
 
 
+use App\Http\Components\FormHelper\FormCheckboxFieldHelper;
 use App\Http\Components\FormHelper\FormDropDownFieldHelper;
 use App\Http\Components\FormHelper\FormHelper;
 use App\Http\Components\FormHelper\FormInputFieldHelper;
+use App\Http\Components\FormHelper\FormSelectFieldHelper;
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
 use App\Http\Controllers\BREADController;
+use App\Persistence\Models\Designation;
 use App\Persistence\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,9 +38,14 @@ class EmployeeController extends BREADController
     {
         return FormHelper::to('employee',$model,[
             FormInputFieldHelper::toText('name','Név')->setRequired(),
-            FormInputFieldHelper::toDate('start','Kezdés')->setRequired(),
-            FormInputFieldHelper::toDate('end','Vége')->setRequired(),
-            FormInputFieldHelper::toTextarea('description','Megjegyzés'),
+            FormInputFieldHelper::toEmail('email','Email')->setRequired(),
+            FormInputFieldHelper::toDate('date_of_birth','Születési dátum'),
+            FormSelectFieldHelper::to('id_designation','Beosztás')->setRequired(),
+            FormSelectFieldHelper::to('id_department','Osztály')->setRequired(),
+            FormSelectFieldHelper::to('id_employment_form','EmploymentForm')->setRequired(),
+            FormInputFieldHelper::toDate('hiring_date','Munkaviszony kezdete')->setRequired(),
+            FormInputFieldHelper::toDate('termination_date','Munkaviszony vége'),
+            FormCheckboxFieldHelper::toSwitch('active','Aktív'),
         ]);
     }
 
@@ -62,12 +70,14 @@ class EmployeeController extends BREADController
             ListFieldHelper::to('id_employee','#'),
             ListFieldHelper::to('designation.name','Beosztás')->setDefaultContent('-'),
             ListFieldHelper::to('department.name','Osztály')->setDefaultContent('-'),
-            ListFieldHelper::to('employmentForm.name','EmploymentForm')->setDataName('employment_form.name'),
-            ListFieldHelper::to('hiring_date','Munkaviszony kezdete')->setType('datetime'),
-            ListFieldHelper::to('termination_date','Munkaviszony vége')->setType('datetime')->setDefaultContent('-'),
             ListFieldHelper::to('name','Név'),
             ListFieldHelper::to('email','Email'),
+            ListFieldHelper::to('active','Aktív')->setType('bool'),
+            ListFieldHelper::to('employmentForm.name','EmploymentForm')->setDataName('employment_form.name'),
             ListFieldHelper::to('date_of_birth','Születési dátum')->setType('date'),
+            ListFieldHelper::to('hiring_date','Munkaviszony kezdete')->setType('datetime'),
+            ListFieldHelper::to('termination_date','Munkaviszony vége')->setType('datetime')->setDefaultContent('-'),
+
 
         ])
             ->addTimeStamps()
