@@ -247,7 +247,7 @@ abstract class FormFieldHelper implements FormFieldHelperInterface
      * @param bool $disabled
      * @return FormFieldHelper
      */
-    public function setDisabled(bool $disabled): FormFieldHelper
+    public function setDisabled(bool $disabled = true): FormFieldHelper
     {
         $this->disabled = $disabled;
         return $this;
@@ -370,7 +370,7 @@ abstract class FormFieldHelper implements FormFieldHelperInterface
      * @param string $elementId
      * @return FormFieldHelper
      */
-    public function setElementId(string $elementId): FormFieldHelper
+    public function setElementId($elementId): FormFieldHelper
     {
         $this->elementId = $elementId;
         return $this;

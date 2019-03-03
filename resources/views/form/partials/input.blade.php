@@ -1,5 +1,4 @@
 <?php /** @var \App\Http\Components\FormHelper\FormInputFieldHelper $field */ ?>
-
 <div class="form-group">
     {{ Form::label($field->getName(),$field->getLabel()) }}
     <div class="input-group">

@@ -186,7 +186,7 @@ class FormSelectFieldHelper extends FormFieldHelper
 
     public function render()
     {
-        return Form::selectField($this);
+        return Form::inputField($this);
     }
 
 
