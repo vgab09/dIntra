@@ -40,7 +40,6 @@ class FormInputFieldHelper extends FormFieldHelper
     public const IMAGE_TYPE = 'image';
     public const MONTH_TYPE = 'month';
     public const COLOR_TYPE = 'color';
-    public const SUBMIT_TYPE = 'submit';
 
     /**
      * FormFieldHelper constructor.
@@ -235,6 +234,17 @@ class FormInputFieldHelper extends FormFieldHelper
      */
     public static function toColor(string $name,string $label){
         return new static($name,static::COLOR_TYPE,$label);
+    }
+
+    /**
+     * @param string $name
+     * @param string $buttonText Submit value
+     * @param string $label
+     * @return FormButtonFieldHelper|FormFieldHelper
+     */
+    public static function toSubmit(string $buttonText,string $name='submit',string $label = '')
+    {
+        return FormButtonFieldHelper::toSubmit($buttonText,$name,$label);
     }
 
     /**
