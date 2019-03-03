@@ -1,20 +1,24 @@
 <?php /** @var \App\Http\Components\FormHelper\FormHelper $formHelper */ ?>
-@extends('layouts.app')
-@section('content')
-    <div class="card">
-        <div class="card-header">
-            {{$formHelper->getTitle()}}
-        </div>
-        {!! $formHelper->open() !!}
-        <div class="card-body card-block">
 
-            @foreach($formHelper->getFormItems() as $fieldName => $field)
-                {!! $field->render() !!}
-            @endforeach
-        </div>
-        <div class="card-footer">
-            {!! Form::submit('Mentés',['class'=>'btn btn-primary']); !!}
-        </div>
-        {!! $formHelper->close() !!}
-    </div>
+@extends('layouts.partials.card')
+
+@section('card-title')
+    @if($formHelper->hasIcon())
+        <i class="{{$formHelper->getIconClass()}}"></i>
+    @endif
+    {{$formHelper->getTitle()}}
+@endsection
+
+@section('before-card-body')
+    {!! $formHelper->open() !!}
+@endsection
+
+@section('card-body')
+    @foreach($formHelper->getFormItems() as $fieldName => $field)
+        {!! $field->render() !!}
+    @endforeach
+@endsection
+
+@section('card-footer')
+    {!! $formHelper->renderSubmit() !!}
 @endsection

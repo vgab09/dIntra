@@ -66,6 +66,11 @@ class ListHelper
      */
     protected $rawColumns = [];
 
+    /**
+     * @var string|null
+     */
+    protected $iconClass;
+
 
     /**
      * ListHelper constructor.
@@ -405,6 +410,30 @@ class ListHelper
 
         return $this;
     }
+
+    /**
+     * @return null|string
+     */
+    public function getIconClass(): ?string
+    {
+        return $this->iconClass;
+    }
+
+    public function hasIcon(): bool{
+        return is_null($this->iconClass) ? false : true;
+    }
+
+    /**
+     * @param null|string $iconClass
+     * @return ListHelper
+     */
+    public function setIconClass(?string $iconClass): ListHelper
+    {
+        $this->iconClass = $iconClass;
+        return $this;
+    }
+
+
 
 
 }

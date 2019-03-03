@@ -3,32 +3,34 @@
 /** @var \App\Http\Components\ListHelper\ListFieldHelper $column */
 ?>
 
-@extends('layouts.app')
-@section('content')
-    <div class="card">
-        <div class="card-header">
-            {{$listHelper->getTitle()}}
-        </div>
-        <div class="card-body card-block">
-            <table class="table table-bordered " id="tableList-{{$listHelper->getListName()}}">
-                <thead>
-                    <tr>
-                        @foreach($listHelper->getListItems() as $column)
-                            <th class="{{$column->getStyle()}}">{{$column->getTitle()}}</th>
-                        @endforeach
-                    </tr>
-                    <tr class="filter">
-                        @foreach($listHelper->getListItems() as $column)
-                            <th>{!! $column->getSearchElement() !!}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tfoot>
 
-                </tfoot>
-            </table>
-        </div>
-    </div>
+@extends('layouts.partials.card')
+
+@section('card-title')
+    @if($listHelper->hasIcon())
+        <i class="{{$listHelper->getIconClass()}}"></i>
+    @endif
+    {{$listHelper->getTitle()}}
+@endsection
+
+@section('card-body')
+    <table class="table table-bordered " id="tableList-{{$listHelper->getListName()}}">
+        <thead>
+        <tr>
+            @foreach($listHelper->getListItems() as $column)
+                <th class="{{$column->getStyle()}}">{{$column->getTitle()}}</th>
+            @endforeach
+        </tr>
+        <tr class="filter">
+            @foreach($listHelper->getListItems() as $column)
+                <th>{!! $column->getSearchElement() !!}</th>
+            @endforeach
+        </tr>
+        </thead>
+        <tfoot>
+
+        </tfoot>
+    </table>
 @endsection
 
 @push('javascript')

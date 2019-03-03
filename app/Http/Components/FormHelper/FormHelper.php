@@ -42,9 +42,9 @@ class FormHelper
     protected $title = '';
 
     /**
-     * @var string The fieldset icon
+     * @var string|null The fieldset icon
      */
-    protected $icon = '';
+    protected $iconClass = '';
 
     /**
      * @var Model|null Used model
@@ -81,16 +81,6 @@ class FormHelper
      */
     protected $errors;
 
-    /**
-     * @var array icons
-     */
-    protected $icons = [
-        'date' => 'calendar',
-        'text' => 'italic',
-        'mail' => 'envelope',
-        'money' => 'dollar',
-        'number' => 'tachometer',
-    ];
 
     private $request;
 
@@ -100,7 +90,7 @@ class FormHelper
     private $formBuilderInstance;
 
 
-    /**
+        /**
      * FormHelper constructor.
      * @param string $name Form name
      * @param Model $model filled or empty model
@@ -453,6 +443,64 @@ class FormHelper
         $this->action = ['action' => $action];
         return $this;
     }
+
+    /**
+     * @return FormFieldHelper
+     */
+    public function getSubmit(): FormFieldHelper
+    {
+        return $this->submit;
+    }
+
+    public function renderSubmit(){
+        if($this->hasSubmit()){
+            return $this->submit->renderTag();
+        }
+
+        return FormButtonFieldHelper::toSubmit('Mentés')->setIconClass('far fa-save')->setClass('btn btn-primary')->render();
+    }
+
+    public function hasSubmit(): bool{
+        return is_null($this->submit) ? false : true;
+    }
+
+    /**
+     * @param FormFieldHelper $submit
+     * @return FormHelper
+     */
+    public function setSubmit(FormFieldHelper $submit): FormHelper
+    {
+        $this->submit = $submit;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getIconClass(): ?string
+    {
+        return $this->iconClass;
+    }
+
+    /**
+     * @param string $iconClass
+     * @return FormHelper
+     */
+    public function setIconClass(string $iconClass): FormHelper
+    {
+        $this->iconClass = $iconClass;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasIcon(): bool{
+        return is_null($this->iconClass) ? false : true;
+    }
+
+
+
+
 
 
 }
