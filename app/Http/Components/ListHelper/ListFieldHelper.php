@@ -9,6 +9,16 @@ use Yajra\DataTables\Html\Column;
 class ListFieldHelper
 {
 
+
+    public const STRING_TYPE = 'string';
+    public const BOOL_TYPE = 'bool';
+    public const DATE_TYPE = 'date';
+    public const DATETIME_TYPE = 'datetime';
+    public const DECIMAL_TYPE = 'decimal';
+    public const FLOAT_TYPE = 'float';
+    public const PERCENT_TYPE = 'percent';
+    public const PRICE_TYPE = 'string';
+
     /**
      * @var string The name of the model attribute from which we get the value
      */
@@ -406,24 +416,6 @@ class ListFieldHelper
         }
 
         return $property;
-    }
-
-
-    /**
-     * @return Column
-     * @deprecated
-     */
-    public function convertToColumn()
-    {
-        $col = Column::make($this->getName())
-            ->name($this->getName())
-            ->title($this->getTitle())
-            ->orderable($this->isOrderable())
-            ->searchable($this->isSearchable())
-            ->width($this->getWidth())
-            ->visible($this->isShow());
-        $col->search = '<input type="text">';
-        return $col;
     }
 
     /**
