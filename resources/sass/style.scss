@@ -918,6 +918,9 @@ header .form-inline {
 
     .card-header {
         .card-actions {
+            i{
+                margin-right: 0.25rem;
+            }
             button {
                 display: block;
                 float: left;

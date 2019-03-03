@@ -2213,6 +2213,10 @@ header .form-inline .search-form.close {
   -webkit-border-radius: 50%;
 }
 
+.card .card-header .card-actions i {
+  margin-right: 0.25rem;
+}
+
 .card .card-header .card-actions button {
   display: block;
   float: left;
