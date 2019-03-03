@@ -15,34 +15,36 @@ class FormAlertFieldHelper implements FormFieldHelperInterface
 
     protected $alertInstance;
 
-    public function __construct($message, $type)
+    protected $name;
+
+    public function __construct($message, $type, $name='alert')
     {
         $this->alertInstance = new Alert($message, $type);
     }
 
-    public static function to($message, $type)
+    public static function to($message, $type,$name='alert')
     {
-        return new static($message, $type);
+        return new static($message, $type,$name);
     }
 
-    public static function toInfo($message)
+    public static function toInfo($message,$name='alert')
     {
-        return static::to($message, Alert::INFO);
+        return static::to($message, Alert::INFO,$name);
     }
 
-    public static function toSuccess($message)
+    public static function toSuccess($message,$name='alert')
     {
-        return static::to($message, Alert::SUCCESS);
+        return static::to($message, Alert::SUCCESS,$name);
     }
 
-    public static function toWarning($message)
+    public static function toWarning($message,$name='alert')
     {
-        return static::to($message, Alert::WARNING);
+        return static::to($message, Alert::WARNING,$name);
     }
 
-    public static function toError($message)
+    public static function toError($message,$name='alert')
     {
-        return static::to($message, Alert::ERROR);
+        return static::to($message, Alert::ERROR,$name);
     }
 
     public function render()
@@ -62,7 +64,7 @@ class FormAlertFieldHelper implements FormFieldHelperInterface
 
     public function getName()
     {
-        return $this->getType();
+        return $this->name;
     }
 
     public function getType(){
@@ -71,7 +73,7 @@ class FormAlertFieldHelper implements FormFieldHelperInterface
 
     public function setName($name)
     {
-        return $this->setType($name);
+        return $this->name = $name;
     }
 
     public function setType($type){

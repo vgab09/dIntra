@@ -123,10 +123,10 @@ class FormHelper
 
     /**
      * Add new Entry to form.
-     * @param FormFieldHelper $field
+     * @param FormFieldHelperInterface $field
      * @return FormHelper
      */
-    public function addField(FormFieldHelper $field): FormHelper
+    public function addField(FormFieldHelperInterface $field): FormHelper
     {
 
         $this->fieldList[$field->getName()] = $field;
