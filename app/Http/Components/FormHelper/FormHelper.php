@@ -9,6 +9,7 @@
 namespace App\Http\Components\FormHelper;
 
 
+use App\Http\Components\ToolbarLink\ToolbarLinks;
 use App\Persistence\Models\ValidatableModelInterface;
 use Collective\Html\FormBuilder;
 use Exception;
@@ -81,6 +82,10 @@ class FormHelper
      */
     protected $errors;
 
+    /**
+     * @var ToolbarLinks
+     */
+    protected $toolbarLinkInstance;
 
     private $request;
 
@@ -88,6 +93,8 @@ class FormHelper
      * @var FormBuilder
      */
     private $formBuilderInstance;
+
+
 
 
         /**
@@ -103,6 +110,7 @@ class FormHelper
         $this->errors = new MessageBag();
         $this->name = $name;
         $this->formBuilderInstance = App::make('form');
+        $this->toolbarLinkInstance = new ToolbarLinks();
         $this->setModel($model);
     }
 
@@ -497,6 +505,27 @@ class FormHelper
     public function hasIcon(): bool{
         return is_null($this->iconClass) ? false : true;
     }
+
+    /**
+     * @return ToolbarLinks
+     */
+    public function getToolbarLinkInstance(): ToolbarLinks
+    {
+        return $this->toolbarLinkInstance;
+    }
+
+    /**
+     * @param ToolbarLinks $toolbarLinkInstance
+     */
+    public function setToolbarLinkInstance(ToolbarLinks $toolbarLinkInstance): void
+    {
+        $this->toolbarLinkInstance = $toolbarLinkInstance;
+    }
+
+    public function renderToolbarLinks(){
+        return $this->toolbarLinkInstance->render();
+    }
+
 
 
 

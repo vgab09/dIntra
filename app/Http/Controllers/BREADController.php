@@ -198,9 +198,9 @@ abstract class BREADController extends Controller
         return $this->buildFormHelper($model);
     }
 
-    protected function getFormHelperToInsert($model)
+    protected function getFormHelperToInsert()
     {
-        return $this->buildFormHelper($model);
+        return $this->buildFormHelper(null);
     }
 
     /**

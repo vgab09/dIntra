@@ -13,6 +13,10 @@
     {{$listHelper->getTitle()}}
 @endsection
 
+@section('card-actions')
+    {!! $listHelper->renderToolbarLinks() !!}
+@endsection
+
 @section('card-body')
     <table class="table table-bordered " id="tableList-{{$listHelper->getListName()}}">
         <thead>

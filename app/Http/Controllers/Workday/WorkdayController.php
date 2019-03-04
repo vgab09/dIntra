@@ -15,6 +15,8 @@ use App\Http\Components\FormHelper\FormHelper;
 use App\Http\Components\FormHelper\FormInputFieldHelper;
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
+use App\Http\Components\ToolbarLink\Link;
+use App\Http\Components\ToolbarLink\ToolbarLinks;
 use App\Http\Controllers\BREADController;
 use App\Persistence\Models\Workday;
 use Illuminate\Database\Eloquent\Model;
@@ -46,9 +48,9 @@ class WorkdayController extends BREADController
         return parent::getFormHelperToUpdate($model)->setTitle('Plusz munkanapok szerkesztése');
     }
 
-    protected function getFormHelperToInsert($model)
+    protected function getFormHelperToInsert()
     {
-        return parent::getFormHelperToInsert($model)->setTitle('Új munkanap hozzáadása');
+        return parent::getFormHelperToInsert()->setTitle('Új munkanap hozzáadása');
     }
 
 
@@ -73,7 +75,7 @@ class WorkdayController extends BREADController
                     ->addActionLinkIfCan('update_workday', route('editWorkday', $model->getKey()), '<i class="fas fa-pencil-alt"></i> Szerkesztés')
                     ->addActionLinkIfCan('delete_workday', route('deleteWorkday', $model->getKey()), '<i class="fas fa-trash-alt"></i> Törlés')
                     ->renderTag();
-            });
+            })->setToolbarLinkInstance(new ToolbarLinks([Link::to(route('newWorkday'),'Új hozzáadása')->setClass('btn btn-primary btn-sm')]));
     }
 
     protected function collectListData()
