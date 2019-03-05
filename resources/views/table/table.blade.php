@@ -18,7 +18,7 @@
         <thead>
         <tr>
             @foreach($listHelper->getListItems() as $column)
-                <th class="{{$column->getStyle()}}">{{$column->getTitle()}}</th>
+                <th class="{{$column->getClass()}}">{{$column->getTitle()}}</th>
             @endforeach
         </tr>
         <tr class="filter">

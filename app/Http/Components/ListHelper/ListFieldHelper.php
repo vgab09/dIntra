@@ -72,7 +72,7 @@ class ListFieldHelper
     /**
      * @var string  Style classes (format: "class1 class2") add to column (default empty, optional)
      */
-    protected $style = '';
+    protected $class = '';
 
     /**
      * @var string column helper
@@ -332,18 +332,18 @@ class ListFieldHelper
     /**
      * @return string
      */
-    public function getStyle(): string
+    public function getClass(): string
     {
-        return $this->style;
+        return $this->class;
     }
 
     /**
-     * @param string $style
+     * @param string $class
      * @return ListFieldHelper
      */
-    public function setStyle(string $style): ListFieldHelper
+    public function setClass(string $class): ListFieldHelper
     {
-        $this->style = $style;
+        $this->class = $class;
         return $this;
     }
 
