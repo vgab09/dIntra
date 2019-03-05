@@ -85,6 +85,9 @@ class DesignationController extends BREADController
      */
     protected function confirmDelete($id)
     {
+        /**
+         * @var Designation $designation
+         */
         $designation = new Designation();
         $designation = $designation->newQuery()->withCount('employees')->findOrFail($id);
         if (!empty($designation->employees_count)) {
@@ -93,7 +96,7 @@ class DesignationController extends BREADController
                 FormSelectFieldHelper::to('contractAction[employees]', 'Kapcsolódó bejegyzések ('.$designation->employees_count.'):',
                     [
                         'DELETE' => 'Törlése',
-                        'Áthelyezése ide:' => $this->getAlternativeDesignationOptions($designation->getKey()),
+                        'Áthelyezése ide:' => $designation->getAlternativeDesignationOptions(),
                     ]
                 ),
             ])
@@ -106,9 +109,12 @@ class DesignationController extends BREADController
 
     public function resolveContractAndDelete($id, Request $request)
     {
+        /**
+         * @var Designation $designation
+         */
         $designation = Designation::with('employees')->findOrFail($id);
 
-        if ($this->resolveRelationContract($designation, $this->getAlternativeDesignationOptions($designation->getKey()), $request->get('contractAction', []))) {
+        if ($this->resolveRelationContract($designation, $designation->getAlternativeDesignationOptions(), $request->get('contractAction', []))) {
             $designation->delete();
             return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Sikeres törlés');
         } else {
@@ -144,18 +150,5 @@ class DesignationController extends BREADController
         }
 
     }
-
-    /**
-     * @param $id
-     * @return mixed
-     */
-    protected function getAlternativeDesignationOptions($id)
-    {
-        return Designation::query()
-            ->select('id_designation', 'name')
-            ->where('id_designation', '<>', $id)
-            ->pluck('name', 'id_designation');
-    }
-
 
 }

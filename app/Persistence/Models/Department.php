@@ -44,6 +44,26 @@ class Department extends Model implements ValidatableModelInterface
         ];
     }
 
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAlternativeDepartmentOptions()
+    {
+        return Department::query('id_department', 'name')
+            ->whereKeyNot($this->getKey())
+            ->where('active','=','1')
+            ->pluck('name', 'id_department')
+            ->prepend('-','');
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getDepartmentOptions(){
+        return Department::query('id_department', 'name')
+            ->pluck('name', 'name')
+            ->prepend('-','');
+    }
 
     public function employees(){
         return $this->hasMany(Employee::class,'id_department','id_department');

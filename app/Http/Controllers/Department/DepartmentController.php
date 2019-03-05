@@ -33,7 +33,7 @@ class DepartmentController extends BREADController
     }
 
     /**
-     * @param Model|null $model
+     * @param Department|null $model
      * @return FormHelper
      */
     protected function buildFormHelper($model)
@@ -41,7 +41,7 @@ class DepartmentController extends BREADController
         return FormHelper::to('department', $model, [
             FormInputFieldHelper::toText('name', 'Név')->setRequired(),
             FormSelectFieldHelper::to('id_leader', 'Osztály vezető', $this->getLeaderOptions()),
-            FormSelectFieldHelper::to('id_parent', 'Szülő osztály', $this->getAlternativeDepartmentOptions($model->getKey())),
+            FormSelectFieldHelper::to('id_parent', 'Szülő osztály', $model->getAlternativeDepartmentOptions()),
             FormCheckboxFieldHelper::toSwitch('active', 'Aktív'),
             FormInputFieldHelper::toTextarea('description', 'Leírás'),
         ]);
@@ -51,14 +51,6 @@ class DepartmentController extends BREADController
     {
         return Employee::all('id_employee', 'name')
             ->pluck('name', 'id_employee')
-            ->prepend('-', '');
-    }
-
-    protected function getAlternativeDepartmentOptions($self_id)
-    {
-        return Department::query('id_department', 'name')
-            ->whereKeyNot($self_id)
-            ->pluck('name', 'id_department')
             ->prepend('-', '');
     }
 
@@ -116,9 +108,13 @@ class DepartmentController extends BREADController
      */
     protected function confirmDelete($id)
     {
+
+        /**
+         * @var Department $department
+         */
         $department = Department::query()->withCount('children')->withCount('employees')->findOrFail($id);
         $form = FormHelper::to('confirmDesignation')->setTitle('Törlési müvelet');
-        $alternativeDepartments = $this->getAlternativeDepartmentOptions($id);
+        $alternativeDepartments = $department->getAlternativeDepartmentOptions();
         if (!empty($department->children_count)) {
             $form->addField(
                 FormSelectFieldHelper::to('contractAction[children]', 'Kapcsolódó osztály bejegyzések (' . $department->children_count . '):',
@@ -150,8 +146,11 @@ class DepartmentController extends BREADController
 
     public function resolveContractAndDelete($id, Request $request)
     {
+        /**
+         * @var Department $department
+         */
         $department = Department::with(['children', 'employees'])->findOrFail($id);
-        if ($this->resolveRelationContract($department, $this->getAlternativeDepartmentOptions($department->getKey()), $request->get('contractAction', []))) {
+        if ($this->resolveRelationContract($department, $department->getAlternativeDepartmentOptions(), $request->get('contractAction', []))) {
             $department->delete();
             return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Sikeres törlés');
         } else {

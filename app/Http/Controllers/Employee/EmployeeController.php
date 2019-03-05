@@ -18,6 +18,7 @@ use App\Http\Components\FormHelper\FormSelectFieldHelper;
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
 use App\Http\Controllers\BREADController;
+use App\Persistence\Models\Department;
 use App\Persistence\Models\Designation;
 use App\Persistence\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
@@ -68,8 +69,11 @@ class EmployeeController extends BREADController
     {
         return ListHelper::to('employee',[
             ListFieldHelper::to('id_employee','#'),
-            ListFieldHelper::to('designation.name','Beosztás')->setDefaultContent('-'),
-            ListFieldHelper::to('department.name','Osztály')->setDefaultContent('-'),
+            ListFieldHelper::to('designation.name','Beosztás')->setDefaultContent('-')->setSearchTypeSelect(Designation::getDesignationOptions()->prepend('-',''),'designations.id_designation'),
+            ListFieldHelper::to('department.name','Osztály')->setDefaultContent('-')->setSearchTypeSelect(Department::getDepartmentOptions()),
+            ListFieldHelper::to('employmentForm.name','EmploymentForm')->setDataName('employment_form.name'),
+            ListFieldHelper::to('hiring_date','Munkaviszony kezdete')->setType('datetime'),
+            ListFieldHelper::to('termination_date','Munkaviszony vége')->setType('datetime')->setDefaultContent('-'),
             ListFieldHelper::to('name','Név'),
             ListFieldHelper::to('email','Email'),
             ListFieldHelper::to('active','Aktív')->setType('bool'),

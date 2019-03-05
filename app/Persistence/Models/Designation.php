@@ -38,6 +38,25 @@ class Designation extends Model implements ValidatableModelInterface
         ];
     }
 
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAlternativeDesignationOptions()
+    {
+        return static::query()
+            ->select('id_designation', 'name')
+            ->whereKeyNot($this->getKey())
+            ->where('active','=','1')
+            ->pluck('name', 'id_designation');
+    }
+
+    public static function getDesignationOptions(){
+        return static::query()
+            ->select('id_designation', 'name')
+            ->pluck('name', 'id_designation');
+    }
+
     public function employees(){
         return $this->hasMany(Employee::class,'id_designation','id_designation');
     }
