@@ -82,6 +82,9 @@ class LeaveTypeController extends BREADController
      */
     protected function confirmDelete($id)
     {
+        /**
+         * @var LeaveType $leaveType
+         */
         $leaveType = LeaveType::query()->withCount('leavePolicies')->findOrFail($id);
         $form = FormHelper::to('confirmLeaveType')->setTitle('Törlési müvelet');
 
@@ -90,7 +93,7 @@ class LeaveTypeController extends BREADController
                 FormSelectFieldHelper::to('contractAction[leavePolicies]', 'Kapcsolódó Szabadság szabály bejegyzések (' . $leaveType->leave_policies_count . '):',
                     [
                         'DELETE' => 'Törlése',
-                        'Áthelyezése ide:' => $this->getAlternativeLeaveTypeOptions($id),
+                        'Áthelyezése ide:' => $leaveType->getAlternativeLeaveTypeOptions(),
                     ]
                 )
             );
@@ -100,17 +103,10 @@ class LeaveTypeController extends BREADController
         return true;
     }
 
-    protected function getAlternativeLeaveTypeOptions($id)
-    {
-        return LeaveType::query('id_leave_type', 'name')
-            ->whereKeyNot($id)
-            ->pluck('name', 'id_leave_type');
-    }
-
     public function resolveContractAndDelete($id, Request $request)
     {
         $leaveType = LeaveType::with(['leavePolicies'])->findOrFail($id);
-        if ($this->resolveRelationContract($leaveType, $this->getAlternativeLeaveTypeOptions($leaveType->getKey()), $request->get('contractAction', []))) {
+        if ($this->resolveRelationContract($leaveType, $leaveType->getAlternativeLeaveTypeOptions($leaveType->getKey()), $request->get('contractAction', []))) {
             $leaveType->delete();
             return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Sikeres törlés');
         } else {
