@@ -95,5 +95,18 @@ Route::group(['middleware' => 'auth'], function () {
         $this->get('/delete/{id_employee}', 'EmployeeController@delete')->middleware('permission:delete_employee')->name('deleteEmployee');
         $this->post('/delete/{id_employee}','EmployeeController@resolveContractAndDelete')->middleware('permission:delete_employee');
     });
+
+    //LeaveRequest
+    Route::group(['namespace'=>'LeaveRequest','prefix' => 'leave'], function () {
+        $this->get('/', 'LeaveRequestController@index')->middleware('permission:list_leave_request')->name('indexLeaveRequest');
+        $this->get('/new', 'LeaveRequestController@new')->middleware('permission:create_leave_request')->name('newLeaveRequest');
+        $this->post('/new', 'LeaveRequestController@insert')->middleware('permission:create_leave_request');
+        $this->get('/edit/{id_leave_request}', 'LeaveRequestController@edit')->middleware('permission:update_leave_request')->name('editLeaveRequest');
+        $this->post('/edit/{id_leave_request}', 'LeaveRequestController@update')->middleware('permission:update_leave_request');
+
+        $this->post('/accept/{id_leave_request}', 'LeaveRequestController@accept')->middleware('permission:accept_leave_request')->name('acceptLeaveRequest');
+        $this->get('/denny/{id_leave_request}', 'LeaveRequestController@showDennyForm')->middleware('permission:denny_leave_request')->name('dennyLeaveRequest');
+        $this->post('/denny/{id_leave_request}', 'LeaveRequestController@denny')->middleware('permission:denny_leave_request')->name('dennyLeaveRequest');
+    });
 });
 
