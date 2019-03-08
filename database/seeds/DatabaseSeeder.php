@@ -140,6 +140,7 @@ class DatabaseSeeder extends Seeder
 
         $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('request_%s', 'leave_request')]), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
         $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('withdraw_%s', 'leave_request')]), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('list_%s', 'leave_request')]), $this->administratorRole, $this->managerRole, $this->leaderRole);
 
         $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('accept_%s', 'leave_request')]), $this->administratorRole, $this->managerRole, $this->leaderRole);
         $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('denny_%s', 'leave_request')]), $this->administratorRole, $this->managerRole, $this->leaderRole);
