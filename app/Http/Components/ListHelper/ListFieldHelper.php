@@ -4,6 +4,7 @@ namespace App\Http\Components\ListHelper;
 
 use App\Http\Components\FormHelper\FormInputFieldHelper;
 use App\Http\Components\FormHelper\FormSelectFieldHelper;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Html\Column;
 
 class ListFieldHelper
@@ -104,7 +105,7 @@ class ListFieldHelper
     public function __construct(string $name, string $title)
     {
         $this->setName($name);
-        $this->setDataName($name);
+        $this->setDataName(Str::snake(str_replace('.','_',$name)));
         $this->setTitle($title);
     }
 

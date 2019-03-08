@@ -16,6 +16,8 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ListHelper
 {
+    protected const ROW_ACTION_COLUMN = 'row_actions';
+
     /**
      * @var string List unique name
      */
@@ -144,7 +146,7 @@ class ListHelper
         return $this;
     }
 
-    protected function addActionColumn($name = 'rowActions', $title = '')
+    protected function addActionColumn($title = '')
     {
         $title = empty($title) ? 'Műveletek' : $title;
 
@@ -154,7 +156,7 @@ class ListHelper
 
         if ($hasSearchableColumn === true || $this->rowActions !== null) {
 
-            $actionField = ListFieldHelper::to($name, $title)
+            $actionField = ListFieldHelper::to(static::ROW_ACTION_COLUMN, $title)
                 ->setSearchable(false)
                 ->setOrderable(false)
                 ->setDefaultContent('');
@@ -166,8 +168,8 @@ class ListHelper
                 $actionField->setSearchElement($searchButton . $resetButton);
             }
 
-            $this->fieldList->put($name, $actionField);
-            $this->addRawColumn($name);
+            $this->fieldList->put(static::ROW_ACTION_COLUMN, $actionField);
+            $this->addRawColumn(static::ROW_ACTION_COLUMN);
         }
     }
 
@@ -257,8 +259,8 @@ class ListHelper
         }
 
         if(is_callable($this->rowActions)){
-            $this->dataTablesInstance->editColumn('rowActions', $this->rowActions);
-            $this->addRawColumn('rowActions');
+            $this->dataTablesInstance->editColumn(static::ROW_ACTION_COLUMN, $this->rowActions);
+            $this->addRawColumn(static::ROW_ACTION_COLUMN);
         }
 
         $this->dataTablesInstance->rawColumns($this->rawColumns);
