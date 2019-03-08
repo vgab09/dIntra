@@ -20,8 +20,8 @@ class MenuProvider implements ProviderInterface
         $menu = Menu::new()
             ->addClass('nav navbar-nav')
             ->html('<h3 class="menu-title">Szabadság igények</h3>')
-                ->link('#', '<i class="menu-icon fas fa-gavel"></i>Döntésre váró szabadságok')
-                ->link('#', '<i class="menu-icon fas fa-eye"></i>Szabadságok áttekintése')
+                ->linkIfCan('list_leave_request',route('indexLeaveRequest'), '<i class="menu-icon fas fa-gavel"></i>Döntésre váró szabadságok')
+                ->linkIfCan('list_leave_request',route('indexLeaveRequest'), '<i class="menu-icon fas fa-eye"></i>Szabadságok áttekintése')
 
             ->html('<h3 class="menu-title">Szabadság szabályzás</h3>')
                 ->linkIfCan('list_leave_type', route('indexLeaveType'),'<i class="menu-icon fas fa-pencil-ruler"></i>Szabadság típusok')
