@@ -10,13 +10,14 @@ namespace App\Persistence\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 /**
  * Class LeaveRequest
  * @package App\Persistence\Models
  *
- * @property id_leave_request
+ * @property int id_leave_request
  * @property int id_employee
  * @property int id_leave_policy
  * @property string start_at
@@ -55,12 +56,50 @@ class LeaveRequest extends Model
         ];
     }
 
+    public function accept(){
+        $user = Auth::user();
+        $this->status = static::STATUS_ACCEPTED;
+        $this->save();
+        $history = $this->addNewHistoryEntry(sprintf('%s elfogadta a szabadság kérelmet',$user->name));
+        event(new LeaveRequestAccepted($this,$history,$user));
+    }
+
+    public function denny(){
+        $user = Auth::user();
+        $this->status = static::STATUS_DENIED;
+        $this->save();
+        $history = $this->addNewHistoryEntry(sprintf('%s elutasította a szabadság kérelmet',$user->name));
+        event(new LeaveRequestAccepted($this,$history,$user));
+    }
+
+    /**
+     * @param string $event
+     * @return LeaveRequestHistory
+     */
+    protected function addNewHistoryEntry(string $event){
+        $history = new LeaveRequestHistory();
+        $history->event = $event;
+        $this->history()->save($history);
+
+        return $history;
+    }
+
     public function leavePolicy(){
         return $this->belongsTo(LeavePolicy::class,'id_leave_policy','id_leave_policy',LeaveRequest::class);
     }
 
+    public function leaveType(){
+        return $this->hasManyThrough(
+            LeaveType::class,
+            LeavePolicy::class,
+            'id_leave_policy',
+            'id_leave_type',
+            'id_leave_policy',
+            'id_leave_type');
+    }
+
     public function employee(){
-        return $this->belongsTo(Employee::class,'id_employee','id_employee',LeaveRequest::class);
+        return $this->belongsTo(Employee::class,'id_employee','id_employee',LeaveRequest::class)->withDefault(['id_employee'=>0,'name'=>'Megszünt felhasználó']);
     }
 
     public function history(){
