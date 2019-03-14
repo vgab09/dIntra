@@ -6,22 +6,10 @@ namespace App\Events;
 use App\Persistence\Models\Employee;
 use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\LeaveRequestHistory;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class NewLeaveRequest
+class NewLeaveRequest extends LeaveRequestEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    protected $leaveRequest;
-    protected $history;
-    protected $perimeter;
-
     /**
      * Create a new event instance.
      *
@@ -29,11 +17,9 @@ class NewLeaveRequest
      * @param LeaveRequestHistory $history
      * @param Employee $perimeter
      */
-    public function __construct(LeaveRequest $leaveRequest,LeaveRequestHistory $history, Employee $perimeter)
+    public function __construct(LeaveRequest $leaveRequest,Employee $perimeter)
     {
-        $this->leaveRequest = $leaveRequest;
-        $this->history = $history;
-        $this->perimeter = $perimeter;
+        parent::__construct( $leaveRequest, $perimeter);
     }
 
     /**
