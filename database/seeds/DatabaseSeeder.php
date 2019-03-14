@@ -49,6 +49,7 @@ class DatabaseSeeder extends Seeder
         $this->addPermissions();
 
         $this->addEmploymentForms();
+        $this->addLeaveTypes();
         $this->addAdministrator();
         $this->addConstantHolidays();
 
@@ -110,6 +111,11 @@ class DatabaseSeeder extends Seeder
 
     }
 
+    private function addLeaveTypes(){
+        factory(LeaveType::class)->create(['name'=>'Szabadság']);
+        factory(LeaveType::class)->create(['name'=>'Beteg szabadság']);
+    }
+
     private function addAdministrator()
     {
         $admin = factory(Employee::class)->create(['name' => 'Administrator', 'id_employment_form'=>'1', 'hiring_date' => Carbon::now(), 'termination_date' => null, 'email' => 'web@erppartner.hu', 'active' => 1]);
@@ -138,14 +144,16 @@ class DatabaseSeeder extends Seeder
         $this->assignPermissionsToRoles($this->createCRUDPermissions('holiday'), $this->administratorRole, $this->managerRole);
         $this->assignPermissionsToRoles($this->createCRUDPermissions('leave_policy'), $this->administratorRole, $this->managerRole);
 
-        $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('request_%s', 'leave_request')]), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
-        $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('withdraw_%s', 'leave_request')]), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
-        $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('list_%s', 'leave_request')]), $this->administratorRole, $this->managerRole, $this->leaderRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'request_leave_request', '']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'withdraw_leave_request', 'leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'list_own_leave_request', 'leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'show_leave_request_history', 'leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
 
-        $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('accept_%s', 'leave_request')]), $this->administratorRole, $this->managerRole, $this->leaderRole);
-        $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('denny_%s', 'leave_request')]), $this->administratorRole, $this->managerRole, $this->leaderRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'list_leave_request', 'leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'accept_leave_request', 'leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'denny_leave_request', 'leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
 
-        $this->assignPermissionsToRoles(Permission::create(['name' => sprintf('list_%s', 'leave_request_history')]), $this->administratorRole, $this->managerRole, $this->leaderRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'show_leave_request', 'leave_request_history']), $this->administratorRole, $this->managerRole, $this->leaderRole);
 
     }
 
