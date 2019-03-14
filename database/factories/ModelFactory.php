@@ -107,13 +107,14 @@ $factory->define(\App\Persistence\Models\LeaveRequest::class, function (Faker $f
 
         $startAt = Carbon::instance($faker->dateTimeBetween('-2 years'));
         $days = rand(1,13);
+        $status = $faker->randomElement(['accepted','denied','pending']);
 
         return[
             'start_at' => $startAt->format('Y-m-d'),
             'end_at' => $startAt->addday($days),
             'days' => $days,
             'comment' => $faker->text(120),
-            'status' => $faker->randomElement(['accepted','denied','pending']),
-            'reason' => $faker->text(60),
+            'status' => $status,
+            'reason' => $status === 'denied' ? $faker->text(60) : '',
         ];
 });
