@@ -9,6 +9,7 @@
 namespace App\Http\Components\FormHelper;
 
 
+use App\Http\Components\Presenter;
 use App\Persistence\Models\ValidatableModelInterface;
 use Collective\Html\FormBuilder;
 use Exception;
@@ -153,7 +154,7 @@ class FormHelper
             return $this->request;
         }
 
-        $request = request()->all();
+        $request = request()->only(array_keys($this->fieldList));
 
         /*
         foreach($this->fieldList as $key => $column){
