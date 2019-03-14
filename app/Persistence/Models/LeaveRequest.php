@@ -9,6 +9,9 @@
 namespace App\Persistence\Models;
 
 
+use App\Events\LeaveRequestAccepted;
+use App\Events\LeaveRequestDenied;
+use App\Traits\ValidatableModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -26,9 +29,17 @@ use Illuminate\Validation\Rule;
  * @property string comment
  * @property string status
  * @property string reason
+ * @property string created_at
+ * @property string updated_at
+ * @property Employee employee
+ * @property LeaveType[] leaveType
+ * @property LeavePolicy leavePolicy
+ * @property LeaveRequestHistory[] history
  */
-class LeaveRequest extends Model
+class LeaveRequest extends Model implements ValidatableModelInterface
 {
+
+    use ValidatableModel;
 
     public const STATUS_PENDING = 'pending';
     public const STATUS_DENIED = 'denied';
@@ -42,7 +53,7 @@ class LeaveRequest extends Model
     {
         return [
             'id_employee' => 'required|int|exists:employees',
-            'id_leave_policy' => 'required|int|exists:leave_types',
+            'id_leave_policy' => 'required|int|exists:leave_policies',
             'start_at' => 'required|date',
             'end_at' => 'required|date',
             'days' => 'required|int',
@@ -52,36 +63,16 @@ class LeaveRequest extends Model
                 'string',
                 Rule::in([self::STATUS_PENDING,self::STATUS_DENIED,self::STATUS_ACCEPTED])
             ],
-            'reason' => 'nullable|string',
+            'reason' => 'required_unless:status,'.self::STATUS_PENDING.','.self::STATUS_ACCEPTED.'|string',
         ];
     }
 
-    public function accept(){
-        $user = Auth::user();
-        $this->status = static::STATUS_ACCEPTED;
-        $this->save();
-        $history = $this->addNewHistoryEntry(sprintf('%s elfogadta a szabadság kérelmet',$user->name));
-        event(new LeaveRequestAccepted($this,$history,$user));
-    }
-
-    public function denny(){
-        $user = Auth::user();
-        $this->status = static::STATUS_DENIED;
-        $this->save();
-        $history = $this->addNewHistoryEntry(sprintf('%s elutasította a szabadság kérelmet',$user->name));
-        event(new LeaveRequestAccepted($this,$history,$user));
-    }
-
     /**
-     * @param string $event
-     * @return LeaveRequestHistory
+     * @return \Illuminate\Support\Collection|LeaveRequestHistory[]
      */
-    protected function addNewHistoryEntry(string $event){
-        $history = new LeaveRequestHistory();
-        $history->event = $event;
-        $this->history()->save($history);
+    public function getHistoryData(){
 
-        return $history;
+        return $this->load('history')->history;
     }
 
     public function leavePolicy(){

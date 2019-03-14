@@ -9,34 +9,49 @@
 namespace App\Http\Controllers\LeaveRequest;
 
 
+use App\Http\Components\FormHelper\FormButtonFieldHelper;
+use App\Http\Components\FormHelper\FormCustomViewFieldHelper;
 use App\Http\Components\FormHelper\FormDropDownFieldHelper;
 use App\Http\Components\FormHelper\FormHelper;
+use App\Http\Components\FormHelper\FormInputFieldHelper;
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
 use App\Http\Controllers\BREADController;
+use App\Persistence\Services\LeaveRequestService;
 use App\Persistence\Models\Employee;
-use App\Persistence\Models\LeavePolicy;
 use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\LeaveType;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+
 
 class LeaveRequestController extends BREADController
 {
     public function __construct()
     {
-        /**
-         * @var
-         */
         $this->modelClass = LeaveRequest::class;
     }
 
     /**
-     * @param Model|null $model
-     * @return FormHelper
+     * @param $id_leave_request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    protected function buildFormHelper($model)
-    {
-        // TODO: Implement buildFormHelper() method.
+    public function show($id_leave_request){
+
+        /**
+         * @var LeaveRequest $leaveRequest
+         */
+        $leaveRequest = LeaveRequest::findOrFail($id_leave_request);
+
+        /**
+         * @var Employee $user
+         */
+        $user = Auth::user();
+        $history = $user->can('show_leave_request_history') ? $leaveRequest->history : null;
+
+        return view('leaves.show',['leaveRequest' => $leaveRequest,'history'=>$history]);
     }
 
     /**
@@ -58,56 +73,121 @@ class LeaveRequestController extends BREADController
             ->addTimeStamps()
             ->setTitle('Szabadság igények')
             ->addRowActions(function ($model) {
-            return FormDropDownFieldHelper::to('action')
-                ->addActionLinkIfCan('accept_leave_request','', '<i class="fas fa-pencil-alt"></i> Elfogadás')
-                ->addActionLinkIfCan('denny_leave_request', '', '<i class="fas fa-trash-alt"></i> Elutasítás')
-                ->renderTag();
-        });
+                return FormDropDownFieldHelper::to('action')
+                    ->addActionLinkIfCan('accept_leave_request', route('acceptLeaveRequest', $model->getKey()), '<i class="far fa-check-circle"></i> Elfogadás')
+                    ->addActionLinkIfCan('list_leave_request', route('showLeaveRequest', $model->getKey()), '<i class="far fa-eye"></i> Megtekintés')
+                    ->addActionLinkIfCan('denny_leave_request', route('showDennyLeaveRequestForm', $model->getKey()), '<i class="far fa-times-circle"></i> Elutasítás')
+                    ->renderTag();
+            });
     }
 
     /**
      * Get DataTable rows
      *
-     * @return \Eloquent|Collection|QueryBuilder
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function collectListData()
     {
         return LeaveRequest::query()
-            ->select(['leave_requests.*','leave_types.name as leave_types_name','employees.name as employees_name'])
+            ->select(['leave_requests.*', 'leave_types.name as leave_types_name', 'employees.name as employees_name'])
             ->from('leave_requests')
-            ->join('leave_policies','leave_requests.id_leave_policy','=','leave_policies.id_leave_policy')
-            ->join('leave_types','leave_policies.id_leave_type','=','leave_types.id_leave_type')
-            ->join('employees','leave_requests.id_employee','=','employees.id_employee')
-            ->where('leave_requests.status','=',LeaveRequest::STATUS_PENDING);
+            ->join('leave_policies', 'leave_requests.id_leave_policy', '=', 'leave_policies.id_leave_policy')
+            ->join('leave_types', 'leave_policies.id_leave_type', '=', 'leave_types.id_leave_type')
+            ->join('employees', 'leave_requests.id_employee', '=', 'employees.id_employee')
+            ->where('leave_requests.status', '=', LeaveRequest::STATUS_PENDING);
     }
 
     /**
-     * @param int $id_leave_request
+     * @param $id_leave_request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Throwable
      */
-    public function accept($id_leave_request){
+    public function accept($id_leave_request)
+    {
 
         /**
          * @var LeaveRequest $leaveRequest
          */
         $leaveRequest = LeaveRequest::findOrFail($id_leave_request);
-        $leaveRequest->accept();
-        $this->redirecetSucces();
+        $service = new LeaveRequestService();
+        $service->setLeaveRequest($leaveRequest);
 
+        try{
+            $service->accept();
+        }
+        catch (ValidationException $e){
+            return redirect(route('showDennyLeaveRequestForm', $leaveRequest->getKey()))->withErrors($e->validator->getMessageBag());
+        }
+        return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Szabadság elfogadva');
 
     }
 
     /**
-     * @param int $id_leave_request
+     * @param LeaveRequest $leaveRequest
+     * @return FormHelper
      */
-    public function showDennyForm($id_leave_request){
-        
+    protected function buildDennyForm(LeaveRequest $leaveRequest)
+    {
+
+        return FormHelper::to('dennyLeave', $leaveRequest, [
+            FormCustomViewFieldHelper::to('leave_information', 'leaves.partials.leave_request_information', ['leaveRequest' => $leaveRequest]),
+            FormInputFieldHelper::toTextarea('reason', 'Elutasítás oka:')
+                ->setRequired()
+                ->setHint('Az elutasítás okát kötelező megadni.')
+        ])
+            ->setTitle('Szabadság igény elutasítása')
+            ->setSubmit(
+                FormButtonFieldHelper::toSubmit('Elutasítás')
+                    ->setIconClass('far fa-times-circle')
+                    ->setClass('btn btn-primary')
+            )
+            ->setActionFromMethod(['LeaveRequest\LeaveRequestController@denny', $leaveRequest->getKey()]);
     }
 
     /**
-     * @param int $id_leave_request
+     * @param $id_leave_request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function denny($id_leave_request){
 
+    public function showDennyForm($id_leave_request)
+    {
+        return $this->buildDennyForm(LeaveRequest::findOrFail($id_leave_request))->render();
+    }
+
+    /**
+     * @param $id_leave_request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Throwable
+     */
+    public function denny($id_leave_request)
+    {
+
+        /**
+         * @var LeaveRequest $leaveRequest
+         */
+        $leaveRequest = LeaveRequest::findOrFail($id_leave_request);
+        $service = new LeaveRequestService();
+        $service->setLeaveRequest($leaveRequest);
+
+        try{
+            $service->denny();
+        }
+        catch (ValidationException $e){
+            return redirect(route('showDennyLeaveRequestForm', $leaveRequest->getKey()))->withErrors($e->validator->getMessageBag());
+        }
+
+        return $this->redirectInfo($this->getSuccessRedirectUrl(), 'Szabadság elutasítva');
+
+    }
+
+
+    /**
+     * @param Model|null $model
+     * @return FormHelper
+     */
+    protected function buildFormHelper($model)
+    {
+        // TODO: Implement buildFormHelper() method.
     }
 
 

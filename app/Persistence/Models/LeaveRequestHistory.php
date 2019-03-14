@@ -19,12 +19,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property int id_leave_request
  * @property string event
  * @property int created_by
+ * @property string created_at
+ * @property string updated_at
  */
 class LeaveRequestHistory extends Model
 {
     protected $primaryKey = 'id_leave_request_history';
 
     protected $fillable = ['id_leave_request','event','created_by'];
+
+    protected $table = 'leave_request_history';
 
     protected function getValidationRules(): array
     {
@@ -36,7 +40,7 @@ class LeaveRequestHistory extends Model
     }
 
     public function leaveRequest(){
-        return $this->belongsTo(LeaveRequest::class,'id_leave_request','id_leave_request',LeaveRequestHistory::class);
+        return $this->hasOne(LeaveRequest::class,'id_leave_request','id_leave_request',LeaveRequestHistory::class);
     }
 
     public function employee(){
