@@ -30,7 +30,7 @@ class FormTextareaFieldHelper extends FormInputFieldHelper
      * @param string $label
      * @return FormTextareaFieldHelper
      */
-    public static function to(string $name,$type,string $label = ''): FormTextareaFieldHelper
+    public static function to(string $name,$type='textarea',string $label = ''): FormTextareaFieldHelper
     {
         return new static($name,$label);
     }

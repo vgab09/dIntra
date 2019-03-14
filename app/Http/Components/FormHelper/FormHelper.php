@@ -454,7 +454,7 @@ class FormHelper
 
     public function renderSubmit(){
         if($this->hasSubmit()){
-            return $this->submit->renderTag();
+            return $this->submit->render();
         }
 
         return FormButtonFieldHelper::toSubmit('Mentés')->setIconClass('far fa-save')->setClass('btn btn-primary')->render();
@@ -489,6 +489,7 @@ class FormHelper
     public function setIconClass(string $iconClass): FormHelper
     {
         $this->iconClass = $iconClass;
+        return $this;
     }
 
     /**
