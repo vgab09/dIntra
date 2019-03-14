@@ -381,6 +381,11 @@ abstract class FormFieldHelper implements FormFieldHelperInterface
         $attributes['id'] = $this->getElementId();
         $attributes['class'] = $this->getClass();
         $attributes['disabled'] = $this->isDisabled() ? 'disabled' : null;
+        $attributes['disabled'] = $this->isDisabled() ? 'disabled' : null;
+
+        if($this->isRequired()){
+            $attributes['required'] = 'required';
+        }
 
         return $attributes;
     }

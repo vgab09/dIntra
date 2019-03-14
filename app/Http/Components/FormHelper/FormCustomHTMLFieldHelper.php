@@ -16,6 +16,9 @@ class FormCustomHTMLFieldHelper implements FormFieldHelperInterface
      */
     protected $name;
 
+    /**
+     * @var string
+     */
     protected $html = '';
 
     public function __construct($name,$html)
@@ -28,11 +31,17 @@ class FormCustomHTMLFieldHelper implements FormFieldHelperInterface
         return new static($name,$html);
     }
 
+    /**
+     * @return string
+     */
     public function render()
     {
         return $this->renderTag();
     }
 
+    /**
+     * @return string
+     */
     public function renderTag()
     {
         return $this->html;
