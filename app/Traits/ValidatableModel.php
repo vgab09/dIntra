@@ -14,11 +14,13 @@ trait ValidatableModel
      */
     private $validationErrors;
 
+    private $validator;
+
     /**
      * return all validation rules
      * @return array
      */
-    protected function getValidationRules():array {
+    public function getValidationRules():array {
         return isset($this->rules) ? $this->rules : [];
     }
 
@@ -68,10 +70,10 @@ trait ValidatableModel
             return false;
         }
 
-        $validator = Validator::make($this->attributesToArray(),$rules);
+        $this->validator = Validator::make($this->attributesToArray(),$rules);
 
-        if($validator->fails()){
-            $this->validationErrors = $validator->errors();
+        if($this->validator->fails()){
+            $this->validationErrors = $this->validator->errors();
             return false;
         }
 
@@ -93,6 +95,10 @@ trait ValidatableModel
      */
     public function getValidationErrorMessages($format = null) : array{
         return $this->getValidationErrorMessageBag()->all($format);
+    }
+
+    public function getValidatorInstance(){
+        return $this->validator;
     }
 
 

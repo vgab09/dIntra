@@ -2,6 +2,7 @@
 
 namespace App\Persistence\Models;
 
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 
 interface ValidatableModelInterface
@@ -20,6 +21,12 @@ interface ValidatableModelInterface
      */
     public function validateByThis($rules = []);
 
+    /**
+     * Get model's validation rules
+     * @return array
+     */
+    public function getValidationRules():array;
+
 
     /**
      * Get validation errors MessageBag object
@@ -33,6 +40,14 @@ interface ValidatableModelInterface
      * @return array
      */
     public function getValidationErrorMessages($format = null) : array;
+
+    /**
+     * Get Validator instance. after the validation
+     * @return Validator
+     */
+    public function getValidatorInstance():Validator;
+
+
 
 
 }
