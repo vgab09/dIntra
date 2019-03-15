@@ -49,7 +49,7 @@ class Employee extends Authenticatable implements ValidatableModelInterface
         'password', 'remember_token',
     ];
 
-    protected function getValidationRules(): array
+    public function getValidationRules(): array
     {
         return [
             'id_designation' => 'nullable|int|exists:designations',

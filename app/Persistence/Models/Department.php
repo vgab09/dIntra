@@ -33,7 +33,7 @@ class Department extends Model implements ValidatableModelInterface
 
     protected $fillable = ['name','id_leader','id_parent','active','description'];
 
-    protected function getValidationRules(): array
+    public function getValidationRules(): array
     {
         return [
             'name' => 'required|string',

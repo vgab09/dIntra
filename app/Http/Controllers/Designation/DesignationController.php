@@ -68,14 +68,14 @@ class DesignationController extends BREADController
         ]);
     }
 
-    public function new()
+    protected function getFormHelperToUpdate($model)
     {
-        return $this->buildFormHelper(new $this->modelClass())->setTitle('Új beosztás hozzáadása')->render();
+        return parent::getFormHelperToUpdate($model)->setTitle('Beosztás szerkesztése');
     }
 
-    public function edit($id)
+    protected function getFormHelperToInsert()
     {
-        return $this->buildFormHelper($this->modelClass::findOrFail($id))->setTitle('Beosztás szerkesztése')->render();
+        return parent::getFormHelperToInsert()->setTitle('Új beosztás hozzáadása');
     }
 
 

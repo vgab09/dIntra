@@ -59,9 +59,9 @@ class DepartmentController extends BREADController
         return parent::getFormHelperToUpdate($model)->setTitle('Osztály szerkesztése');
     }
 
-    protected function getFormHelperToInsert($model)
+    protected function getFormHelperToInsert()
     {
-        return parent::getFormHelperToInsert($model)->setTitle('Új osztály hozzáadása');
+        return parent::getFormHelperToInsert()->setTitle('Új osztály hozzáadása');
     }
 
 

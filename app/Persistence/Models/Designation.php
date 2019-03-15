@@ -29,7 +29,7 @@ class Designation extends Model implements ValidatableModelInterface
 
     protected $fillable = ['name','description','active'];
 
-    protected function getValidationRules(): array
+    public function getValidationRules(): array
     {
         return [
             'name' => 'required|string',

@@ -49,7 +49,7 @@ class LeaveRequest extends Model implements ValidatableModelInterface
 
     protected $fillable = ['id_employee','id_leave_policy','start_at','end_at','days','comment','status','reason'];
 
-    protected function getValidationRules(): array
+    public function getValidationRules(): array
     {
         return [
             'id_employee' => 'required|int|exists:employees',

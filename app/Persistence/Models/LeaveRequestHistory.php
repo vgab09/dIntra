@@ -30,7 +30,7 @@ class LeaveRequestHistory extends Model
 
     protected $table = 'leave_request_history';
 
-    protected function getValidationRules(): array
+    public function getValidationRules(): array
     {
         return [
             'id_leave_request' => 'required|int|exists:leave_requests',

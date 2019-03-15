@@ -2,7 +2,6 @@
 
 namespace App\Persistence\Models;
 
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 
 interface ValidatableModelInterface
@@ -13,6 +12,12 @@ interface ValidatableModelInterface
      * @return bool
      */
     public function validate($ruleName = null);
+
+    /**
+     * @param string|null $ruleName
+     * @return bool
+     */
+    public function isValid($ruleName = null);
 
     /**
      * Validate given rules
@@ -43,11 +48,16 @@ interface ValidatableModelInterface
 
     /**
      * Get Validator instance. after the validation
-     * @return Validator
+     * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function getValidatorInstance():Validator;
+    public function getValidatorInstance();
 
-
+    /**
+     * Convert the model's attributes to an array.
+     *
+     * @return array
+     */
+    public function attributesToArray();
 
 
 }

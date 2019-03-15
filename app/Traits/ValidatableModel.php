@@ -14,6 +14,9 @@ trait ValidatableModel
      */
     private $validationErrors;
 
+    /**
+     * @var \Illuminate\Contracts\Validation\Validator
+     */
     private $validator;
 
     /**
@@ -34,31 +37,46 @@ trait ValidatableModel
     }
 
     /**
-     * Validate
-     * @param string $ruleName
-     * @return bool
+     * @param string|null $ruleName
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function validate($ruleName = null){
 
-        return $this->baseValidate($this->getValidationRules(),$ruleName);
+        $this->makeValidator($this->getValidationRules(),$ruleName);
+        $this->validator->validate();
+    }
+
+    /**
+     * @param string|null $ruleName
+     * @return bool
+     */
+    public function isValid($ruleName = null){
+        $this->makeValidator($this->getValidationRules(),$ruleName);
+
+        if($this->validator->fails()){
+            $this->validationErrors = $this->validator->errors();
+            return false;
+        }
+        return true;
     }
 
     /**
      * Validate given rules
      * @param  array $rules
-     * @return bool
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function validateByThis($rules = []){
-        return $this->baseValidate($rules,null);
+        $this->makeValidator($rules,null);
+        $this->validator->validate();
     }
 
     /**
-     * @param $data
-     * @param array $validationRules
-     * @param string $ruleName
-     * @return bool
+     * @param $validationRules
+     * @param $ruleName
+     * @return \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Factory
      */
-    protected function baseValidate($validationRules, $ruleName){
+
+    protected function makeValidator($validationRules, $ruleName = null){
 
         if(empty($ruleName)){
             $rules = $validationRules;
@@ -67,17 +85,11 @@ trait ValidatableModel
             $rules = $validationRules[$ruleName];
         }
         else{
-            return false;
+            $rules = [];
         }
 
         $this->validator = Validator::make($this->attributesToArray(),$rules);
-
-        if($this->validator->fails()){
-            $this->validationErrors = $this->validator->errors();
-            return false;
-        }
-
-        return true;
+        return $this->validator;
     }
 
     /**
@@ -97,8 +109,14 @@ trait ValidatableModel
         return $this->getValidationErrorMessageBag()->all($format);
     }
 
+    /**
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
     public function getValidatorInstance(){
-        return $this->validator;
+        if($this->validator === null){
+            $this->makeValidator($this->getValidationRules());
+        }
+        return clone $this->validator;
     }
 
 

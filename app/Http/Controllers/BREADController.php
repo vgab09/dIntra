@@ -7,6 +7,7 @@ use App\Http\Components\FormHelper\FormHelper;
 use App\Traits\AlertMessage;
 use App\Traits\DataTable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -186,7 +187,7 @@ abstract class BREADController extends Controller
     /**
      * Get DataTable rows
      *
-     * @return \Eloquent|Collection|QueryBuilder
+     * @return Model|Collection|Builder
      */
     protected function collectListData()
     {
@@ -198,9 +199,9 @@ abstract class BREADController extends Controller
         return $this->buildFormHelper($model);
     }
 
-    protected function getFormHelperToInsert($model)
+    protected function getFormHelperToInsert()
     {
-        return $this->buildFormHelper($model);
+        return $this->buildFormHelper(App::make($this->modelClass));
     }
 
     /**

@@ -46,9 +46,9 @@ class WorkdayController extends BREADController
         return parent::getFormHelperToUpdate($model)->setTitle('Plusz munkanapok szerkesztése');
     }
 
-    protected function getFormHelperToInsert($model)
+    protected function getFormHelperToInsert()
     {
-        return parent::getFormHelperToInsert($model)->setTitle('Új munkanap hozzáadása');
+        return parent::getFormHelperToInsert()->setTitle('Új munkanap hozzáadása');
     }
 
 

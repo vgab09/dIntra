@@ -36,7 +36,7 @@ class LeavePolicy extends Model
 
     protected $dates = ['deleted_at'];
 
-    protected function getValidationRules(): array
+    public function getValidationRules(): array
     {
         return [
             'id_leave_type' => 'required|int|exists:leave_types',

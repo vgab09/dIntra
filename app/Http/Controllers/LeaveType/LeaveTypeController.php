@@ -45,9 +45,9 @@ class LeaveTypeController extends BREADController
         return parent::getFormHelperToUpdate($model)->setTitle('Szabadság típusok szerkesztése');
     }
 
-    protected function getFormHelperToInsert($model)
+    protected function getFormHelperToInsert()
     {
-        return parent::getFormHelperToInsert($model)->setTitle('Új Szabadság típus hozzáadása');
+        return parent::getFormHelperToInsert()->setTitle('Új Szabadság típus hozzáadása');
     }
 
 

@@ -25,7 +25,7 @@ class EmploymentForm extends Model
 
     protected $fillable = ['name'];
 
-    protected function getValidationRules(): array
+    public function getValidationRules(): array
     {
         return [
             'name' => 'required|string',

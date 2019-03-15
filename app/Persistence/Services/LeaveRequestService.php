@@ -172,10 +172,9 @@ class LeaveRequestService
     public function createNew()
     {
         $this->build();
-        if (!$this->leaveRequest->validate()) {
-            throw new ValidationException($this->leaveRequest->getValidatorInstance());
-        }
+        $this->leaveRequest->validate();
         $this->leaveRequest->saveOrFail();
+
         return $this->leaveRequest;
     }
 
@@ -188,9 +187,7 @@ class LeaveRequestService
     public function accept()
     {
         $this->leaveRequest->status = LeaveRequest::STATUS_ACCEPTED;
-        if (!$this->leaveRequest->validate()) {
-            throw new ValidationException($this->leaveRequest->getValidatorInstance());
-        }
+        $this->leaveRequest->validate();
         $this->leaveRequest->saveOrFail();
 
         event(new LeaveRequestAccepted($this->leaveRequest, $this->user));
@@ -209,9 +206,7 @@ class LeaveRequestService
     {
 
         $this->leaveRequest->status = LeaveRequest::STATUS_DENIED;
-        if (!$this->leaveRequest->validate()) {
-            throw new ValidationException($this->leaveRequest->getValidatorInstance());
-        }
+        $this->leaveRequest->validate();
         $this->leaveRequest->saveOrFail();
 
         event(new LeaveRequestDenied($this->leaveRequest, $this->user));

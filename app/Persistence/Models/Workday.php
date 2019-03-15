@@ -31,7 +31,7 @@ class Workday extends Model implements ValidatableModelInterface
 
     protected $fillable = ['name','start','end','description'];
 
-    protected function getValidationRules(): array
+    public function getValidationRules(): array
     {
         return [
             'name' => 'required|string',

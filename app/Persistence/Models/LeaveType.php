@@ -27,7 +27,7 @@ class LeaveType extends Model implements ValidatableModelInterface
 
     protected $fillable = ['name'];
 
-    protected function getValidationRules(): array
+    public function getValidationRules(): array
     {
         return [
             'name' => 'required|string',
