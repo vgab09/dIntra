@@ -16,6 +16,8 @@ use App\Http\Components\FormHelper\FormInputFieldHelper;
 use App\Http\Components\FormHelper\FormSelectFieldHelper;
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
+use App\Http\Components\ToolbarLink\Link;
+use App\Http\Components\ToolbarLink\ToolbarLinks;
 use App\Http\Controllers\BREADController;
 use App\Persistence\Models\Department;
 use App\Persistence\Models\Employee;
@@ -91,7 +93,10 @@ class DepartmentController extends BREADController
                     ->addActionLinkIfCan('update_department', route('editDepartment', $model->getKey()), '<i class="fas fa-pencil-alt"></i> Szerkesztés')
                     ->addActionLinkIfCan('delete_department', route('deleteDepartment', $model->getKey()), '<i class="fas fa-trash-alt"></i> Törlés')
                     ->renderTag();
-            });
+            })
+            ->setToolbarLinkInstance(
+                ToolbarLinks::make()->addLinkIfCan('create_department',route('newDepartment'),'<i class="fas fa-plus-circle"></i> Új hozzáadása')
+            );
     }
 
     protected function collectListData()

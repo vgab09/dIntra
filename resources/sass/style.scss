@@ -935,6 +935,13 @@ header .form-inline {
                 border-left: 1px solid hsla(210,8%,51%,.4);
             }
         }
+        .card-title{
+            display: inline-block;
+            margin-bottom: 0rem;
+        }
+        .nav-link{
+            padding: 0rem 0.8rem;
+        }
     }
 
     .card-footer {
@@ -1001,9 +1008,7 @@ header .form-inline {
                 border-left: 1px solid rgba(120, 130, 140, 0.4);
                 color: #878787;
                 display: inline-block;
-                font-size: 16px;
                 float: left;
-                padding: 0 7px;
                 width: inherit;
                 text-align: center;
             }
@@ -1931,12 +1936,6 @@ header .form-inline {
             small {
                 float: left;
             }
-
-            .card-actions {
-                right: 0;
-                top: 0.75rem;
-                position: absolute;
-            }
         }
     }
 }
@@ -2054,10 +2053,6 @@ header .form-inline {
             padding: 0 10px;
 
             .card {
-                .card-title {
-                    margin-bottom: 0;
-                }
-
                 .card-footer {
                     padding: 15px 5px;
 
@@ -2084,19 +2079,12 @@ header .form-inline {
                 }
             }
 
-            .nav-pills,
-            .nav-tabs {
-                .nav-link {
-                    padding: 0.5rem;
-                }
-            }
-
             .tab-content.pl-3 {
                 padding-left: 0 ;
             }
 
             #bootstrap-data-table_wrapper {
-                font-size: 14px;
+                font-size: 12px;
                 padding: 0;
 
                 div[class*="col"] {

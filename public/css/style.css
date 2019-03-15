@@ -2231,6 +2231,15 @@ header .form-inline .search-form.close {
   border-left: 1px solid rgba(120, 130, 140, 0.4);
 }
 
+.card .card-header .card-title {
+  display: inline-block;
+  margin-bottom: 0rem;
+}
+
+.card .card-header .nav-link {
+  padding: 0rem 0.8rem;
+}
+
 .card .card-footer {
   padding: 0.65rem 1.25rem;
   background-color: #f0f3f5;
@@ -2291,9 +2300,7 @@ header .form-inline .search-form.close {
   border-left: 1px solid rgba(120, 130, 140, 0.4);
   color: #878787;
   display: inline-block;
-  font-size: 16px;
   float: left;
-  padding: 0 7px;
   width: inherit;
   text-align: center;
 }
@@ -3207,12 +3214,6 @@ header .form-inline .search-form.close {
   .card .card-header small {
     float: left;
   }
-
-  .card .card-header .card-actions {
-    right: 0;
-    top: 0.75rem;
-    position: absolute;
-  }
 }
 
 @media (max-width: 992px) {
@@ -3331,10 +3332,6 @@ header .form-inline .search-form.close {
     padding: 0 10px;
   }
 
-  .right-panel .content .card .card-title {
-    margin-bottom: 0;
-  }
-
   .right-panel .content .card .card-footer {
     padding: 15px 5px;
   }
@@ -3358,17 +3355,12 @@ header .form-inline .search-form.close {
     padding: 0 10px;
   }
 
-  .right-panel .content .nav-pills .nav-link,
-  .right-panel .content .nav-tabs .nav-link {
-    padding: 0.5rem;
-  }
-
   .right-panel .content .tab-content.pl-3 {
     padding-left: 0;
   }
 
   .right-panel .content #bootstrap-data-table_wrapper {
-    font-size: 14px;
+    font-size: 12px;
     padding: 0;
   }
 

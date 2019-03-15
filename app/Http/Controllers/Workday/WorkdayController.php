@@ -9,12 +9,13 @@
 namespace App\Http\Controllers\Workday;
 
 
-
 use App\Http\Components\FormHelper\FormDropDownFieldHelper;
 use App\Http\Components\FormHelper\FormHelper;
 use App\Http\Components\FormHelper\FormInputFieldHelper;
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
+use App\Http\Components\ToolbarLink\Link;
+use App\Http\Components\ToolbarLink\ToolbarLinks;
 use App\Http\Controllers\BREADController;
 use App\Persistence\Models\Workday;
 use Illuminate\Database\Eloquent\Model;
@@ -33,11 +34,11 @@ class WorkdayController extends BREADController
      */
     protected function buildFormHelper($model)
     {
-        return FormHelper::to('workday',$model,[
-            FormInputFieldHelper::toText('name','Név')->setRequired(),
-            FormInputFieldHelper::toDate('start','Kezdés')->setRequired(),
-            FormInputFieldHelper::toDate('end','Vége')->setRequired(),
-            FormInputFieldHelper::toTextarea('description','Megjegyzés'),
+        return FormHelper::to('workday', $model, [
+            FormInputFieldHelper::toText('name', 'Név')->setRequired(),
+            FormInputFieldHelper::toDate('start', 'Kezdés')->setRequired(),
+            FormInputFieldHelper::toDate('end', 'Vége')->setRequired(),
+            FormInputFieldHelper::toTextarea('description', 'Megjegyzés'),
         ]);
     }
 
@@ -58,12 +59,12 @@ class WorkdayController extends BREADController
      */
     protected function buildListHelper()
     {
-        return ListHelper::to('workday',[
-            ListFieldHelper::to('id_workday','#'),
-            ListFieldHelper::to('name','Név'),
-            ListFieldHelper::to('start','Kezdés'),
-            ListFieldHelper::to('end','Vége'),
-            ListFieldHelper::to('description','Megjegyzés')->setMaxLength(30),
+        return ListHelper::to('workday', [
+            ListFieldHelper::to('id_workday', '#'),
+            ListFieldHelper::to('name', 'Név'),
+            ListFieldHelper::to('start', 'Kezdés'),
+            ListFieldHelper::to('end', 'Vége'),
+            ListFieldHelper::to('description', 'Megjegyzés')->setMaxLength(30),
 
         ])
             ->addTimeStamps()
@@ -73,7 +74,10 @@ class WorkdayController extends BREADController
                     ->addActionLinkIfCan('update_workday', route('editWorkday', $model->getKey()), '<i class="fas fa-pencil-alt"></i> Szerkesztés')
                     ->addActionLinkIfCan('delete_workday', route('deleteWorkday', $model->getKey()), '<i class="fas fa-trash-alt"></i> Törlés')
                     ->renderTag();
-            });
+            })
+            ->setToolbarLinkInstance(
+                ToolbarLinks::make()->addLinkIfCan('create_workday',route('newWorkday'),'<i class="fas fa-plus-circle"></i> Új hozzáadása')
+            );
     }
 
     protected function collectListData()

@@ -16,6 +16,8 @@ use App\Http\Components\FormHelper\FormInputFieldHelper;
 use App\Http\Components\FormHelper\FormSelectFieldHelper;
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
+use App\Http\Components\ToolbarLink\Link;
+use App\Http\Components\ToolbarLink\ToolbarLinks;
 use App\Http\Controllers\BREADController;
 use App\Persistence\Models\Designation;
 use App\Persistence\Models\Employee;
@@ -55,8 +57,12 @@ class DesignationController extends BREADController
                 ->addActionLinkIfCan('delete_designation', route('deleteDesignation', $model->getKey()), '<i class="fas fa-trash-alt"></i> Törlés')
                 ->renderTag();
         })
+            ->setToolbarLinkInstance(
+                ToolbarLinks::make()->addLinkIfCan('create_designation',route('newDesignation'),'<i class="fas fa-plus-circle"></i> Új hozzáadása')
+            )
             ->setTitle('Beosztások')
             ->addTimeStamps();
+
     }
 
     protected function buildFormHelper($model)

@@ -9,6 +9,7 @@
 namespace App\Http\Components\ListHelper;
 
 use App\Http\Components\FormHelper\FormCheckboxFieldHelper;
+use App\Http\Components\ToolbarLink\ToolbarLinks;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Yajra\DataTables\EloquentDataTable;
@@ -73,6 +74,8 @@ class ListHelper
      */
     protected $iconClass;
 
+    protected $toolbarLinkInstance;
+
 
     /**
      * ListHelper constructor.
@@ -83,6 +86,7 @@ class ListHelper
         $this->baseTemplate = 'table.table';
         $this->setListName($name);
         $this->fieldList = new Collection;
+        $this->toolbarLinkInstance = new ToolbarLinks();
     }
 
     /**
@@ -433,6 +437,28 @@ class ListHelper
     {
         $this->iconClass = $iconClass;
         return $this;
+    }
+
+
+    /**
+     * @return ToolbarLinks
+     */
+    public function getToolbarLinkInstance(): ToolbarLinks
+    {
+        return $this->toolbarLinkInstance;
+    }
+
+    /**
+     * @param ToolbarLinks $toolbarLinkInstance
+     */
+    public function setToolbarLinkInstance(ToolbarLinks $toolbarLinkInstance): ListHelper
+    {
+        $this->toolbarLinkInstance = $toolbarLinkInstance;
+        return $this;
+    }
+
+    public function renderToolbarLinks(){
+        return $this->toolbarLinkInstance->render();
     }
 
 

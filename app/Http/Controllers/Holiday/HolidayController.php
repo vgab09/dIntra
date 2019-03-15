@@ -15,6 +15,8 @@ use App\Http\Components\FormHelper\FormHelper;
 use App\Http\Components\FormHelper\FormInputFieldHelper;
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
+use App\Http\Components\ToolbarLink\Link;
+use App\Http\Components\ToolbarLink\ToolbarLinks;
 use App\Http\Controllers\BREADController;
 use App\Persistence\Models\Holiday;
 use Illuminate\Database\Eloquent\Model;
@@ -73,7 +75,10 @@ class HolidayController extends BREADController
                     ->addActionLinkIfCan('update_holiday', route('editHoliday', $model->getKey()), '<i class="fas fa-pencil-alt"></i> Szerkesztés')
                     ->addActionLinkIfCan('delete_holiday', route('deleteHoliday', $model->getKey()), '<i class="fas fa-trash-alt"></i> Törlés')
                     ->renderTag();
-            });
+            })
+            ->setToolbarLinkInstance(
+                ToolbarLinks::make()->addLinkIfCan('create_holiday',route('newHoliday'),'<i class="fas fa-plus-circle"></i> Új hozzáadása')
+            );
     }
 
     protected function collectListData()
