@@ -63,6 +63,17 @@ Route::group(['middleware' => 'auth'], function () {
         $this->post('/delete/{id_leave_type}','LeaveTypeController@resolveContractAndDelete')->middleware('permission:delete_leave_type');
     });
 
+    //LeavePolicy
+    Route::group(['namespace'=>'LeavePolicy','prefix' => 'leavepolicy'], function () {
+        $this->get('/', 'LeavePolicyController@index')->middleware('permission:list_leave_policy')->name('indexLeavePolicy');
+        $this->get('/new', 'LeavePolicyController@new')->middleware('permission:create_leave_policy')->name('newLeavePolicy');
+        $this->post('/new', 'LeavePolicyController@insert')->middleware('permission:create_leave_policy');
+        $this->get('/edit/{id_leave_policy}', 'LeavePolicyController@edit')->middleware('permission:update_leave_policy')->name('editLeavePolicy');
+        $this->post('/edit/{id_leave_policy}', 'LeavePolicyController@update')->middleware('permission:update_leave_policy');
+        $this->get('/delete/{id_leave_policy}', 'LeavePolicyController@delete')->middleware('permission:delete_leave_policy')->name('deleteLeavePolicy');
+        $this->post('/delete/{id_leave_policy}','LeavePolicyController@resolveContractAndDelete')->middleware('permission:delete_leave_policy');
+    });
+
     //Workday
     Route::group(['namespace'=>'Workday','prefix' => 'workday'], function () {
         $this->get('/', 'WorkdayController@index')->middleware('permission:list_workday')->name('indexWorkday');

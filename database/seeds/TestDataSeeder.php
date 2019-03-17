@@ -23,7 +23,7 @@ class TestDataSeeder extends Seeder
     private const LEAVE_TYPE_COUNT = 0;
     private const EMPLOYEE_COUNT = 100;
     private const WORK_DAY_COUNT = 4;
-    private const LEAVE_POLICY_COUNT = 20;
+    private const LEAVE_POLICY_COUNT = 0;
     private const LEAVE_REQUEST_COUNT = 300;
 
     /**

@@ -85,6 +85,7 @@ class ListHelper
     {
         $this->baseTemplate = 'table.table';
         $this->setListName($name);
+        $this->setTitle($name);
         $this->fieldList = new Collection;
         $this->toolbarLinkInstance = new ToolbarLinks();
     }
@@ -277,6 +278,7 @@ class ListHelper
      */
     protected function applyDisplayModifier(ListFieldHelper $field)
     {
+
         $fieldName = $field->getName();
         switch ($field->getType()) {
             case 'bool':
@@ -301,8 +303,15 @@ class ListHelper
             case 'price':
                 break;
             default:
+                    if($field->hasSuffix()){
+                        $this->dataTablesInstance->editColumn($fieldName, function ($model) use ($fieldName,$field) {
+                            return $model->$fieldName . $field->getSuffix();
+                        });
+                    }
                 break;
         }
+
+
     }
 
     /**

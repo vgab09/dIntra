@@ -384,6 +384,10 @@ class ListFieldHelper
         return $this;
     }
 
+    public function hasSuffix(): bool{
+        return !empty($this->suffix);
+    }
+
     /**
      * @return string
      */

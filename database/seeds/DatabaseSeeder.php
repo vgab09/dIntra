@@ -8,6 +8,7 @@ use App\Persistence\Models\Holiday;
 use App\Persistence\Models\LeavePolicy;
 use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\LeaveRequestHistory;
+use App\Persistence\Models\LeaveType;
 use App\Persistence\Models\Workday;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
@@ -37,6 +38,13 @@ class DatabaseSeeder extends Seeder
      */
     private $employeeRole;
 
+    private $leaveTypes;
+
+    public function __construct()
+    {
+        $this->leaveTypes = collect();
+    }
+
     /**
      * Seed the application's database.
      *
@@ -50,6 +58,7 @@ class DatabaseSeeder extends Seeder
 
         $this->addEmploymentForms();
         $this->addLeaveTypes();
+        $this->addLeavePolicies();
         $this->addAdministrator();
         $this->addConstantHolidays();
 
@@ -111,14 +120,191 @@ class DatabaseSeeder extends Seeder
 
     }
 
-    private function addLeaveTypes(){
-        factory(LeaveType::class)->create(['name'=>'Szabadság']);
-        factory(LeaveType::class)->create(['name'=>'Beteg szabadság']);
+    private function addLeaveTypes()
+    {
+        $factory = factory(LeaveType::class);
+        $this->leaveTypes->push($factory->create(['name' => 'Szabadság']));
+        $this->leaveTypes->push($factory->create(['name' => 'Beteg szabadság']));
+    }
+
+    private function addLeavePolicies()
+    {
+        $factory = factory(LeavePolicy::class);
+        $start_at = $this->getDate(1, 1);
+        $end_at = $this->getDate(12, 31);
+        $holiday_leaveType = $this->leaveTypes->first()->getKey();
+        $ill_leaveType = $this->leaveTypes->get(1)->getKey();
+
+
+        $factory->create(
+            [
+                'name' => 'Alapszabadság',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 20,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Alap betegszabadság',
+                'id_leave_type' => $ill_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 15,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +1',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 1,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +2',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 1,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +3',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 3,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +4',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 4,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +5',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 5,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +6',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 6,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +7',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 7,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +7',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 7,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +8',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 8,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +9',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 9,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Gyermekek után +2',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 2,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Gyermekek után +4',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 4,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Gyermekek után +7',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 7,
+            ]
+        );
     }
 
     private function addAdministrator()
     {
-        $admin = factory(Employee::class)->create(['name' => 'Administrator', 'id_employment_form'=>'1', 'hiring_date' => Carbon::now(), 'termination_date' => null, 'email' => 'web@erppartner.hu', 'active' => 1]);
+        $admin = factory(Employee::class)->create(['name' => 'Administrator', 'id_employment_form' => '1', 'hiring_date' => Carbon::now(), 'termination_date' => null, 'email' => 'web@erppartner.hu', 'active' => 1]);
         $admin->assignRole($this->administratorRole);
     }
 
@@ -144,16 +330,16 @@ class DatabaseSeeder extends Seeder
         $this->assignPermissionsToRoles($this->createCRUDPermissions('holiday'), $this->administratorRole, $this->managerRole);
         $this->assignPermissionsToRoles($this->createCRUDPermissions('leave_policy'), $this->administratorRole, $this->managerRole);
 
-        $this->assignPermissionsToRoles(Permission::create(['name' => 'request_leave_request', '']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
-        $this->assignPermissionsToRoles(Permission::create(['name' => 'withdraw_leave_request', 'leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
-        $this->assignPermissionsToRoles(Permission::create(['name' => 'list_own_leave_request', 'leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
-        $this->assignPermissionsToRoles(Permission::create(['name' => 'show_leave_request_history', 'leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'request_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'withdraw_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'list_own_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'show_leave_request_history']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
 
-        $this->assignPermissionsToRoles(Permission::create(['name' => 'list_leave_request', 'leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
-        $this->assignPermissionsToRoles(Permission::create(['name' => 'accept_leave_request', 'leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
-        $this->assignPermissionsToRoles(Permission::create(['name' => 'denny_leave_request', 'leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'list_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'accept_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'denny_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
 
-        $this->assignPermissionsToRoles(Permission::create(['name' => 'show_leave_request', 'leave_request_history']), $this->administratorRole, $this->managerRole, $this->leaderRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'show_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
 
     }
 
