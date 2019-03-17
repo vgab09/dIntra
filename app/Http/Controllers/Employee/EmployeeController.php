@@ -74,19 +74,11 @@ class EmployeeController extends BREADController
             ListFieldHelper::to('designation.name','Beosztás')->setDefaultContent('-')->setSearchTypeSelect(Designation::getDesignationOptions()->prepend('-',''),'designations.id_designation'),
             ListFieldHelper::to('department.name','Osztály')->setDefaultContent('-')->setSearchTypeSelect(Department::getDepartmentOptions()),
             ListFieldHelper::to('employmentForm.name','EmploymentForm')->setDataName('employment_form.name'),
-            ListFieldHelper::to('hiring_date','Munkaviszony kezdete')->setType('datetime'),
-            ListFieldHelper::to('termination_date','Munkaviszony vége')->setType('datetime')->setDefaultContent('-'),
             ListFieldHelper::to('name','Név'),
-            ListFieldHelper::to('email','Email'),
             ListFieldHelper::to('active','Aktív')->setType('bool'),
             ListFieldHelper::to('employmentForm.name','EmploymentForm')->setDataName('employment_form.name'),
             ListFieldHelper::to('date_of_birth','Születési dátum')->setType('date'),
-            ListFieldHelper::to('hiring_date','Munkaviszony kezdete')->setType('datetime'),
-            ListFieldHelper::to('termination_date','Munkaviszony vége')->setType('datetime')->setDefaultContent('-'),
-
-
         ])
-            ->addTimeStamps()
             ->setTitle('Munkatársak')
             ->addRowActions(function ($model) {
                 return FormDropDownFieldHelper::to('action')
