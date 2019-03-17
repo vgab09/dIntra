@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int id_leave_type
  * @property string name
  * @property int days
- * @property string color
  * @property string description
  * @property string start_at
  * @property string end_at
@@ -32,7 +31,7 @@ class LeavePolicy extends Model
 
     protected $primaryKey = 'id_leave_policy';
 
-    protected $fillable = ['id_leave_type','name','days','color','description','start_at','end_at','active'];
+    protected $fillable = ['id_leave_type','name','days','description','start_at','end_at','active'];
 
     protected $dates = ['deleted_at'];
 
@@ -42,11 +41,6 @@ class LeavePolicy extends Model
             'id_leave_type' => 'required|int|exists:leave_types',
             'name' => 'required|string',
             'days' => 'required|int',
-            'color' => [
-                'required',
-                'string',
-                'regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i'
-            ],
             'description' => 'nullable|string',
             'start_at' => 'required|date',
             'end_at' => 'required|date',

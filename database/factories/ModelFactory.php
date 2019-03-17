@@ -95,7 +95,6 @@ $factory->define(\App\Persistence\Models\LeavePolicy::class, function (Faker $fa
     return [
         'name' => $faker->text(60),
         'days' => rand(20, 37),
-        'color' => $faker->hexColor(),
         'description' => $faker->text(),
         'start_at' => $startAt->format('Y-m-d'),
         'end_at' => $startAt->addYear(1)->format('Y-m-d'),
