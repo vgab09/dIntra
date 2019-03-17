@@ -415,6 +415,10 @@ div.dt-buttons a.btn.processing:after {
   -webkit-animation: dtb-spinner 1500ms infinite linear;
   -moz-animation: dtb-spinner 1500ms infinite linear;
 }
+table.dataTable {
+  font-size: 12px;
+}
+
 table.dataTable th {
   vertical-align: top;
 }

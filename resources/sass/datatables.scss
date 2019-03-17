@@ -1,21 +1,24 @@
 @import '~datatables.net-bs4/css/dataTables.bootstrap4.css';
 @import '~datatables.net-buttons-bs4/css/buttons.bootstrap4.css';
 
-table.dataTable th {
-   vertical-align: top;
+table.dataTable {
+  th {
+    vertical-align: top;
+  }
+  font-size: 12px;
 }
-div.dataTables_wrapper
-{
-   div.dataTables_paginate ul.pagination {
-      justify-content: initial;
-   }
-    div.dataTables_info {
-       margin: 10px 0px;
-       padding-top: 0em;
-       text-align: right;
-       white-space: nowrap;
-    }
-  div.dataTables_length{
+div.dataTables_wrapper {
+  div.dataTables_paginate ul.pagination {
+    justify-content: initial;
+  }
+  div.dataTables_info {
+    margin: 10px 0px;
+    padding-top: 0em;
+    text-align: right;
+    white-space: nowrap;
+  }
+  div.dataTables_length {
     margin: 5px 0px;
   }
 }
+
