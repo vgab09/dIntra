@@ -102,14 +102,184 @@ class TestDataSeeder extends Seeder
     }
 
     private function createLeaveTypes(){
-        $this->leaveTypes = factory(LeaveType::class,self::LEAVE_TYPE_COUNT)->create();
+        $factory = factory(LeaveType::class);
+        $this->leaveTypes[] = $factory->create(['name' => 'Szabadság']);
+        $this->leaveTypes[] = $factory->create(['name' => 'Beteg szabadság']);
     }
 
-    private function createLeavePolicies(){
-        $this->leavePolicies = factory(LeavePolicy::class,self::LEAVE_POLICY_COUNT)->make()->each(function (LeavePolicy $leavePolicy){
-            $leavePolicy->leaveType()->associate($this->faker->randomElement($this->leaveTypes));
-            $leavePolicy->save();
-        });
+    private function createLeavePolicies()
+    {
+        $factory = factory(LeavePolicy::class);
+        $start_at = Carbon::createFromDate(null, 1, 1)->format('Y-m-d');
+        $end_at = Carbon::createFromDate(null, 12, 31)->format('Y-m-d');
+        $holiday_leaveType = $this->leaveTypes[0]->getKey();
+        $ill_leaveType = $this->leaveTypes[1]->getKey();
+
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Alapszabadság',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 20,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Alap betegszabadság',
+                'id_leave_type' => $ill_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 15,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Életkor +1',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 1,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Életkor +2',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 1,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Életkor +3',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 3,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Életkor +4',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 4,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Életkor +5',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 5,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Életkor +6',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 6,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Életkor +7',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 7,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Életkor +7',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 7,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Életkor +8',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 8,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Életkor +9',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 9,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Gyermekek után +2',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 2,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Gyermekek után +4',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 4,
+            ]
+        );
+
+        $leavePolicies[] = $factory->create(
+            [
+                'name' => 'Gyermekek után +7',
+                'id_leave_type' => $holiday_leaveType,
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                'active' => 1,
+                'days' => 7,
+            ]
+        );
     }
 
     private function createEmployees(){
