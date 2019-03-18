@@ -116,7 +116,7 @@ class TestDataSeeder extends Seeder
         $ill_leaveType = $this->leaveTypes[1]->getKey();
 
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Alapszabadság',
                 'id_leave_type' => $holiday_leaveType,
@@ -127,7 +127,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Alap betegszabadság',
                 'id_leave_type' => $ill_leaveType,
@@ -138,7 +138,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Életkor +1',
                 'id_leave_type' => $holiday_leaveType,
@@ -149,7 +149,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Életkor +2',
                 'id_leave_type' => $holiday_leaveType,
@@ -160,7 +160,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Életkor +3',
                 'id_leave_type' => $holiday_leaveType,
@@ -171,7 +171,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Életkor +4',
                 'id_leave_type' => $holiday_leaveType,
@@ -182,7 +182,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Életkor +5',
                 'id_leave_type' => $holiday_leaveType,
@@ -193,7 +193,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Életkor +6',
                 'id_leave_type' => $holiday_leaveType,
@@ -204,7 +204,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Életkor +7',
                 'id_leave_type' => $holiday_leaveType,
@@ -215,7 +215,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Életkor +7',
                 'id_leave_type' => $holiday_leaveType,
@@ -226,7 +226,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Életkor +8',
                 'id_leave_type' => $holiday_leaveType,
@@ -237,7 +237,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Életkor +9',
                 'id_leave_type' => $holiday_leaveType,
@@ -248,7 +248,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Gyermekek után +2',
                 'id_leave_type' => $holiday_leaveType,
@@ -259,7 +259,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Gyermekek után +4',
                 'id_leave_type' => $holiday_leaveType,
@@ -270,7 +270,7 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        $leavePolicies[] = $factory->create(
+        $this->leavePolicies[] = $factory->create(
             [
                 'name' => 'Gyermekek után +7',
                 'id_leave_type' => $holiday_leaveType,
