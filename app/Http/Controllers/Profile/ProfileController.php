@@ -23,7 +23,7 @@ class ProfileController extends Controller
      */
     protected function buildFormHelper($model)
     {
-        return FormHelper::to('myProfile',Employee::class,$model,[
+        return FormHelper::to('myProfile',$model,[
             Input::toText('name','Név')->setRequired()->setIconClass('fas fa-user'),
             Input::toEmail('email','E-mail')->setRequired()->setIconClass('fas fa-at'),
             Input::toPassword('current_password','Jelenlegi jelszó')->setPlaceholder('Amivel bejelentkezel')->setRequired()->setIconClass('fas fa-key'),
