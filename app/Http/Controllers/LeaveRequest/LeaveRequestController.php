@@ -21,6 +21,7 @@ use App\Persistence\Services\LeaveRequestService;
 use App\Persistence\Models\Employee;
 use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\LeaveType;
+use http\Env\Request;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -91,8 +92,7 @@ class LeaveRequestController extends BREADController
         return LeaveRequest::query()
             ->select(['leave_requests.*', 'leave_types.name as leave_types_name', 'employees.name as employees_name'])
             ->from('leave_requests')
-            ->join('leave_policies', 'leave_requests.id_leave_policy', '=', 'leave_policies.id_leave_policy')
-            ->join('leave_types', 'leave_policies.id_leave_type', '=', 'leave_types.id_leave_type')
+            ->join('leave_types', 'leave_requests.id_leave_type', '=', 'leave_types.id_leave_type')
             ->join('employees', 'leave_requests.id_employee', '=', 'employees.id_employee')
             ->where('leave_requests.status', '=', LeaveRequest::STATUS_PENDING);
     }
@@ -109,10 +109,9 @@ class LeaveRequestController extends BREADController
          * @var LeaveRequest $leaveRequest
          */
         $leaveRequest = LeaveRequest::findOrFail($id_leave_request);
-        $service = new LeaveRequestService();
-        $service->setLeaveRequest($leaveRequest);
 
         try{
+            $service = new LeaveRequestService($leaveRequest);
             $service->accept();
         }
         catch (ValidationException $e){
@@ -166,11 +165,10 @@ class LeaveRequestController extends BREADController
          * @var LeaveRequest $leaveRequest
          */
         $leaveRequest = LeaveRequest::findOrFail($id_leave_request);
-        $service = new LeaveRequestService();
-        $service->setLeaveRequest($leaveRequest);
 
         try{
-            $service->denny();
+            $service = new LeaveRequestService($leaveRequest);
+            $service->denny(request('reason',''));
         }
         catch (ValidationException $e){
             return redirect(route('showDennyLeaveRequestForm', $leaveRequest->getKey()))->withErrors($e->validator->getMessageBag());

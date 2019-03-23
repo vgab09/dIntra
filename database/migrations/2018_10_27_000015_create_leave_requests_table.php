@@ -19,7 +19,7 @@ class CreateLeaveRequestsTable extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id_leave_request');
             $table->unsignedInteger('id_employee');
-            $table->unsignedInteger('id_leave_policy');
+            $table->unsignedInteger('id_leave_type');
             $table->date('start_at');
             $table->date('end_at');
             $table->unsignedInteger('days');

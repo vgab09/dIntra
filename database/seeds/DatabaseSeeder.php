@@ -12,6 +12,7 @@ use App\Persistence\Models\LeaveType;
 use App\Persistence\Models\Workday;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -39,6 +40,16 @@ class DatabaseSeeder extends Seeder
     private $employeeRole;
 
     /**
+     * @var \Illuminate\Support\Collection
+     */
+    private $leaveTypes;
+
+    public function __construct()
+    {
+        $this->leaveTypes = collect();
+    }
+
+    /**
      * Seed the application's database.
      *
      * @return void
@@ -50,6 +61,8 @@ class DatabaseSeeder extends Seeder
         $this->addPermissions();
 
         $this->addEmploymentForms();
+        $this->addLeaveTypes();
+        $this->addLeavePolicies();
         $this->addAdministrator();
         $this->addConstantHolidays();
 
@@ -109,6 +122,209 @@ class DatabaseSeeder extends Seeder
         factory(EmploymentForm::class)->create(['name' => 'Ideiglenes']);
         factory(EmploymentForm::class)->create(['name' => 'Gyakornok']);
 
+    }
+
+    private function addLeaveTypes()
+    {
+        $start_at = $this->getDate(1, 1);
+        $end_at = $this->getDate(12, 31);
+
+        $factory = factory(LeaveType::class);
+
+        $this->leaveTypes->push($factory->create(
+            [
+                'name' => 'Szabadság',
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+                ]
+        ));
+
+        $this->leaveTypes->push($factory->create(
+            [
+                'name' => 'Fizetetlen szabadság',
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+            ]
+        ));
+
+        $this->leaveTypes->push($factory->create(
+            [
+                'name' => 'Gyermek születési szabadság',
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+            ]
+        ));
+
+        $this->leaveTypes->push($factory->create(
+            [
+                'name' => 'Haláleseti szabadság',
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+            ]
+        ));
+
+        $this->leaveTypes->push($factory->create(
+            [
+                'name' => 'Beteg szabadság',
+                'start_at' => $start_at,
+                'end_at' => $end_at,
+            ]
+        ));
+    }
+
+    private function addLeavePolicies()
+    {
+        $factory = factory(LeavePolicy::class);
+        $leaveTypes = [];
+
+
+        foreach ($this->leaveTypes as $leaveType){
+            $leaveTypes[Str::snake($leaveType->name)] = $leaveType->getKey();
+        }
+
+        $factory->create(
+            [
+                'name' => 'Alapszabadság',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 20,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Fizetetlen szabadság',
+                'id_leave_type' => $leaveTypes['fizetetlen_szabadság'],
+                'active' => 1,
+                'days' => 365,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Alap betegszabadság',
+                'id_leave_type' => $leaveTypes['beteg_szabadság'],
+                'active' => 1,
+                'days' => 15,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +1',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 1,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +2',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 1,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +3',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 3,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +4',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 4,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +5',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 5,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +6',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 6,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +7',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 7,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +7',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 7,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +8',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 8,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Életkor +9',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 9,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Gyermekek után +2',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 2,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Gyermekek után +4',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 4,
+            ]
+        );
+
+        $factory->create(
+            [
+                'name' => 'Gyermekek után +7',
+                'id_leave_type' => $leaveTypes['szabadság'],
+                'active' => 1,
+                'days' => 7,
+            ]
+        );
     }
 
     private function addAdministrator()

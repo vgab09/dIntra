@@ -5,6 +5,7 @@ namespace App\Persistence\Models;
 use App\Traits\ValidatableModel;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -68,6 +69,20 @@ class Employee extends Authenticatable implements ValidatableModelInterface
                 'max:127'
             ]
         ];
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getLeaveTypes()
+    {
+       return LeaveType::query()
+            ->select(DB::raw( 'leave_types.*' ))
+            ->distinct()
+            ->join('leave_policies as lp','leave_types.id_leave_type','=','lp.id_leave_type')
+            ->join('employee_has_leave_policies as ehlp','lp.id_leave_policy','=','ehlp.id_leave_policy')
+            ->join('employees as e','ehlp.id_employee','=','e.id_employee')->where('e.id_employee','=',$this->getKey())
+            ->get();
     }
 
     /**

@@ -18,7 +18,10 @@ class CreateLeaveTypesTable extends Migration
         Schema::create('leave_types', function (Blueprint $table) {
             $table->increments('id_leave_type');
             $table->string('name', 191);
+            $table->date('start_at');
+            $table->date('end_at');
             $table->nullableTimestamps();
+            $table->softDeletes();
         });
     }
 

@@ -5,41 +5,18 @@ namespace App\Persistence\Services;
 
 use App\Events\LeaveRequestAccepted;
 use App\Events\LeaveRequestDenied;
+use App\Events\NewLeaveRequest;
 use App\Persistence\Models\Employee;
 use App\Persistence\Models\LeavePolicy;
 use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\LeaveRequestHistory;
+use App\Persistence\Models\LeaveType;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class LeaveRequestService
 {
-
-    /**
-     * @var Employee
-     */
-    private $employee;
-
-    /**
-     * @var Employee
-     */
-    private $user;
-
-    /**
-     * @var Carbon
-     */
-    private $startAt;
-
-    /**
-     * @var Carbon
-     */
-    private $endAt;
-
-    /**
-     * @var LeavePolicy
-     */
-    private $leavePolicy;
 
     /**
      * @var LeaveRequest
@@ -52,19 +29,23 @@ class LeaveRequestService
     private $leaveRequestHistory;
 
     /**
-     * @var string
+     * @var Employee
      */
-    private $comment;
+    protected $user;
 
     /**
-     * @var int
+     * LeaveRequestService constructor.
+     * @param LeaveRequest|null $instance
      */
-    private $days;
-
-    public function __construct()
+    public function __construct(?LeaveRequest $instance = null)
     {
-        $this->setLeaveRequest(new LeaveRequest());
-        $this->setUser(Auth::user());
+        $this->setLeaveRequest($instance);
+        $user = Auth::user();
+
+        if($user !== null){
+            $this->setUser($user);
+        }
+
     }
 
     /**
@@ -73,17 +54,7 @@ class LeaveRequestService
      */
     public function setEmployee(Employee $employee): LeaveRequestService
     {
-        $this->employee = $employee;
-        return $this;
-    }
-
-    /**
-     * @param Employee $user
-     * @return LeaveRequestService
-     */
-    public function setUser(Employee $user): LeaveRequestService
-    {
-        $this->user = $user;
+        $this->leaveRequest->employee()->associate($employee);
         return $this;
     }
 
@@ -94,8 +65,9 @@ class LeaveRequestService
      */
     public function setDuration(Carbon $startAt, Carbon $endAt): LeaveRequestService
     {
-        $this->startAt = $startAt;
-        $this->endAt = $startAt;
+        $this->leaveRequest->start_at = $startAt;
+        $this->leaveRequest->end_at = $endAt;
+        $this->setDays($startAt->diffInDays($endAt));
         return $this;
     }
 
@@ -105,27 +77,27 @@ class LeaveRequestService
      */
     public function setDays(int $days): LeaveRequestService
     {
-        $this->days = $days;
+        $this->leaveRequest->days = $days;
         return $this;
     }
 
     /**
-     * @param LeavePolicy $leavePolicy
+     * @param LeaveType $leaveType
      * @return LeaveRequestService
      */
-    public function setLeavePolicy(LeavePolicy $leavePolicy): LeaveRequestService
+    public function setLeaveType(LeaveType $leaveType): LeaveRequestService
     {
-        $this->leavePolicy = $leavePolicy;
+        $this->leaveRequest->leaveType()->associate($leaveType);
         return $this;
     }
 
     /**
-     * @param LeaveRequest $leaveRequest
+     * @param LeaveRequest|null $leaveRequest set null to create new LeaveRequest Instance
      * @return LeaveRequestService
      */
-    public function setLeaveRequest(LeaveRequest $leaveRequest): LeaveRequestService
+    public function setLeaveRequest(?LeaveRequest $leaveRequest = null): LeaveRequestService
     {
-        $this->leaveRequest = $leaveRequest;
+        $this->leaveRequest = ($leaveRequest === null) ?  new LeaveRequest() : $leaveRequest;
         return $this;
     }
 
@@ -145,23 +117,8 @@ class LeaveRequestService
      */
     public function setComment(string $comment): LeaveRequestService
     {
-        $this->comment = strip_tags($comment);
+        $this->leaveRequest->comment = strip_tags($comment);
         return $this;
-    }
-
-    /**
-     * @return LeaveRequest
-     */
-    public function build()
-    {
-        $this->leaveRequest->id_employee = $this->employee->id_employee;
-        $this->leaveRequest->id_leave_policy = $this->leavePolicy->id_leave_policy;
-        $this->leaveRequest->start_at = $this->startAt->toDateString();
-        $this->leaveRequest->end_at = $this->startAt->toDateString();
-        $this->leaveRequest->days = $this->days;
-        $this->leaveRequest->comment = $this->comment;
-        $this->leaveRequest->status = LeaveRequest::STATUS_PENDING;
-        return $this->leaveRequest;
     }
 
     /**
@@ -169,11 +126,11 @@ class LeaveRequestService
      * @return LeaveRequest
      * @throws \Throwable|ValidationException
      */
-    public function createNew()
+    public function create()
     {
-        $this->build();
         $this->leaveRequest->validate();
         $this->leaveRequest->saveOrFail();
+        event(new NewLeaveRequest($this->leaveRequest, $this->user));
 
         return $this->leaveRequest;
     }
@@ -198,14 +155,16 @@ class LeaveRequestService
     }
 
     /**
-     * Denny and save leave request
+     * @param string $reason
      * @return LeaveRequest
-     * @throws \Throwable|ValidationException
+     * @throws ValidationException
+     * @throws \Throwable
      */
-    public function denny()
+    public function denny($reason)
     {
 
         $this->leaveRequest->status = LeaveRequest::STATUS_DENIED;
+        $this->leaveRequest->reason = strip_tags($reason);
         $this->leaveRequest->validate();
         $this->leaveRequest->saveOrFail();
 
@@ -214,6 +173,14 @@ class LeaveRequestService
         $this->leaveRequest->load('history');
 
         return $this->leaveRequest;
+    }
+
+    /**
+     * @param Employee $user
+     */
+    public function setUser(Employee $user)
+    {
+        $this->user = $user;
     }
 
 

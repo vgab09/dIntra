@@ -39,6 +39,8 @@ class LeaveTypeController extends BREADController
     {
         return FormHelper::to('leave_type',$model,[
            FormInputFieldHelper::toText('name','Név')->setRequired(),
+            FormInputFieldHelper::toDate('start_at','Érvényeség kezdete')->setRequired(),
+            FormInputFieldHelper::toDate('end_at','Érvényesség vége')->setRequired(),
         ]);
     }
 
@@ -62,6 +64,8 @@ class LeaveTypeController extends BREADController
         return ListHelper::to('leave_type',[
             ListFieldHelper::to('id_leave_type','#'),
             ListFieldHelper::to('name','Név'),
+            ListFieldHelper::to('start_at','Érvényesség kezdete')->setType(ListFieldHelper::DATE_TYPE),
+            ListFieldHelper::to('end_at','Érvényesség vége')->setType(ListFieldHelper::DATE_TYPE),
         ])
             ->addTimeStamps()
             ->setTitle('Szabadság típusok')

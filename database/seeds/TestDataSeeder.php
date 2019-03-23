@@ -4,12 +4,11 @@ use App\Persistence\Models\Department;
 use App\Persistence\Models\Designation;
 use App\Persistence\Models\Employee;
 use App\Persistence\Models\EmploymentForm;
-use App\Persistence\Models\Holiday;
 use App\Persistence\Models\LeavePolicy;
 use App\Persistence\Models\LeaveRequest;
-use App\Persistence\Models\LeaveRequestHistory;
 use App\Persistence\Models\LeaveType;
 use App\Persistence\Models\Workday;
+use App\Persistence\Services\LeaveRequestService;
 use Illuminate\Database\Seeder;
 use Faker\Generator as Faker;
 use Illuminate\Support\Carbon;
@@ -20,10 +19,8 @@ class TestDataSeeder extends Seeder
 
     private const DESIGNATION_COUNT = 8;
     private const DEPARTMENT_COUNT = 5;
-    private const LEAVE_TYPE_COUNT = 0;
     private const EMPLOYEE_COUNT = 100;
     private const WORK_DAY_COUNT = 4;
-    private const LEAVE_POLICY_COUNT = 0;
     private const LEAVE_REQUEST_COUNT = 300;
 
     /**
@@ -58,7 +55,7 @@ class TestDataSeeder extends Seeder
     private $workDays;
 
     /**
-     * @var LeavePolicy[]
+     * @var \Illuminate\Support\Collection
      */
     private $leavePolicies;
 
@@ -84,10 +81,10 @@ class TestDataSeeder extends Seeder
         $this->faker = $faker;
 
         $this->employmentForms = EmploymentForm::all();
+        $this->leaveTypes = LeaveType::all();
+        $this->leavePolicies = LeavePolicy::all();
         $this->createDesignations();
         $this->createDepartments();
-        $this->createLeaveTypes();
-        $this->createLeavePolicies();
         $this->createEmployees();
         $this->createWorkDays();
         $this->createLeaveRequest();
@@ -101,199 +98,24 @@ class TestDataSeeder extends Seeder
         $this->departments = factory(Department::class,self::DEPARTMENT_COUNT)->create();
     }
 
-    private function createLeaveTypes(){
-        $factory = factory(LeaveType::class);
-        $this->leaveTypes[] = $factory->create(['name' => 'Szabadság']);
-        $this->leaveTypes[] = $factory->create(['name' => 'Beteg szabadság']);
-    }
-
-    private function createLeavePolicies()
-    {
-        $factory = factory(LeavePolicy::class);
-        $start_at = Carbon::createFromDate(null, 1, 1)->format('Y-m-d');
-        $end_at = Carbon::createFromDate(null, 12, 31)->format('Y-m-d');
-        $holiday_leaveType = $this->leaveTypes[0]->getKey();
-        $ill_leaveType = $this->leaveTypes[1]->getKey();
-
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Alapszabadság',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 20,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Alap betegszabadság',
-                'id_leave_type' => $ill_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 15,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Életkor +1',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 1,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Életkor +2',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 1,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Életkor +3',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 3,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Életkor +4',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 4,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Életkor +5',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 5,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Életkor +6',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 6,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Életkor +7',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 7,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Életkor +7',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 7,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Életkor +8',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 8,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Életkor +9',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 9,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Gyermekek után +2',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 2,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Gyermekek után +4',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 4,
-            ]
-        );
-
-        $this->leavePolicies[] = $factory->create(
-            [
-                'name' => 'Gyermekek után +7',
-                'id_leave_type' => $holiday_leaveType,
-                'start_at' => $start_at,
-                'end_at' => $end_at,
-                'active' => 1,
-                'days' => 7,
-            ]
-        );
-    }
-
     private function createEmployees(){
         $roles = $this->getRoles();
         $this->employees = factory(Employee::class,self::EMPLOYEE_COUNT)->make()->each(function (Employee $employee) use ($roles){
             $employee->designation()->associate($this->faker->randomElement($this->designations));
             $employee->department()->associate($this->faker->randomElement($this->departments));
             $employee->employmentForm()->associate($this->faker->randomElement($this->employmentForms));
-
-            foreach ($this->faker->randomElements($this->leavePolicies,rand(1,4),false) as $leavePolicy){
-                $employee->leavePolicies()->attach($leavePolicy->id_leave_policy);
-            }
             $employee->assignRole($this->faker->randomElement($roles));
             $employee->save();
+
+
+            $employee->leavePolicies()->attach($this->leavePolicies->where('name','=','Alapszabadság'));
+            $employee->leavePolicies()->attach($this->leavePolicies->where('name','=','Alap betegszabadság'));
+
+            foreach ($this->faker->randomElements($this->leavePolicies->whereNotIn('name',['Alapszabadság','Alap betegszabadság']),rand(1,4),false) as $leavePolicy){
+                $employee->leavePolicies()->attach($leavePolicy->id_leave_policy);
+            }
+
+
         });
     }
 
@@ -302,10 +124,37 @@ class TestDataSeeder extends Seeder
     }
 
     private function createLeaveRequest(){
+
+
         $this->leaveRequests = factory(LeaveRequest::class,self::LEAVE_REQUEST_COUNT)->make()->each(function(LeaveRequest $leaveRequest){
-            $leaveRequest->employee()->associate($this->faker->randomElement($this->employees));
-            $leaveRequest->leavePolicy()->associate($this->faker->randomElement($this->leavePolicies));
-            $leaveRequest->save();
+
+            /**
+             * @var Employee $employee
+             */
+            $employee = $this->faker->randomElement($this->employees);
+            $days = rand(1,13);
+            $start_at = Carbon::instance($this->faker->dateTimeThisYear())->setTime(0,0);
+            $end_at = (clone $start_at)->addDays($days);
+
+            $status = $this->faker->randomElement([LeaveRequest::STATUS_ACCEPTED,LeaveRequest::STATUS_PENDING,LeaveRequest::STATUS_DENIED,LeaveRequest::STATUS_PENDING]);
+
+            $service = new LeaveRequestService($leaveRequest);
+            $service->setEmployee($employee);
+            $service->setUser($employee);
+            $service->setLeaveType($this->faker->randomElement($employee->getLeaveTypes()));
+            $service->setDuration($start_at,$end_at);
+            $service->create();
+
+            switch ($status){
+                case LeaveRequest::STATUS_ACCEPTED:
+                    $service->accept();
+                    break;
+                case LeaveRequest::STATUS_DENIED:
+                    $service->denny($this->faker->text(60));
+                    break;
+                default:
+                    break;
+            }
         });
     }
 

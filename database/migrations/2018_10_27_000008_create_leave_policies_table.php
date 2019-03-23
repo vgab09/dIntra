@@ -21,8 +21,6 @@ class CreateLeavePoliciesTable extends Migration
             $table->string('name', 191);
             $table->integer('days');
             $table->text('description')->nullable();
-            $table->date('start_at');
-            $table->date('end_at');
             $table->tinyInteger('active')->default('1');
 
             $table->index(["id_leave_type"], 'fk_leave_policies_leave_types1_idx');

@@ -22,7 +22,7 @@ use Illuminate\Validation\Rule;
  *
  * @property int id_leave_request
  * @property int id_employee
- * @property int id_leave_policy
+ * @property int id_leave_type
  * @property string start_at
  * @property string end_at
  * @property int days
@@ -47,13 +47,13 @@ class LeaveRequest extends Model implements ValidatableModelInterface
 
     protected $primaryKey = 'id_leave_request';
 
-    protected $fillable = ['id_employee','id_leave_policy','start_at','end_at','days','comment','status','reason'];
+    protected $fillable = ['id_employee','id_leave_type','start_at','end_at','days','comment','status','reason'];
 
     public function getValidationRules(): array
     {
         return [
             'id_employee' => 'required|int|exists:employees',
-            'id_leave_policy' => 'required|int|exists:leave_policies',
+            'id_leave_type' => 'required|int|exists:leave_types',
             'start_at' => 'required|date',
             'end_at' => 'required|date',
             'days' => 'required|int',
@@ -75,24 +75,23 @@ class LeaveRequest extends Model implements ValidatableModelInterface
         return $this->load('history')->history;
     }
 
-    public function leavePolicy(){
-        return $this->belongsTo(LeavePolicy::class,'id_leave_policy','id_leave_policy',LeaveRequest::class);
-    }
-
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function leaveType(){
-        return $this->hasManyThrough(
-            LeaveType::class,
-            LeavePolicy::class,
-            'id_leave_policy',
-            'id_leave_type',
-            'id_leave_policy',
-            'id_leave_type');
+        return $this->belongsTo(LeaveType::class,'id_leave_type','id_leave_type',LeaveRequest::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function employee(){
         return $this->belongsTo(Employee::class,'id_employee','id_employee',LeaveRequest::class)->withDefault(['id_employee'=>0,'name'=>'Megszünt felhasználó']);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function history(){
         return $this->hasMany(LeaveRequestHistory::class,'id_leave_request','id_leave_request');
     }

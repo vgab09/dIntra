@@ -2,7 +2,7 @@
 
 <div class="blockquote">
     <h2>{{ $leaveRequest->employee->name }}
-        <small class="text-muted"> - Szabadság igénye</small>
+        <small class="text-muted"> - {{ $leaveRequest->leaveType->name}} igénye</small>
     </h2>
 
     <div class="blockquote-footer">Igényles leadva: {{ $leaveRequest->created_at }}</div>
@@ -14,19 +14,9 @@
             Szabadság típusa:
         </div>
         <div class="col col-md-8">
-            <span class="badge badge-secondary">{{ $leaveRequest->leaveType[0]->name}}</span>
+            <span class="badge badge-secondary">{{ $leaveRequest->leaveType->name}}</span>
         </div>
     </div>
-
-    <div class="row mb-2">
-        <div class="col col-md">
-            Szabadság szabály:
-        </div>
-        <div class="col col-md-8">
-            {{$leaveRequest->leavePolicy->name}}
-        </div>
-    </div>
-
     <div class="row mb-2">
         <div class="col col-md">
             Időszak:

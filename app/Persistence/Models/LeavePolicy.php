@@ -9,6 +9,7 @@
 namespace App\Persistence\Models;
 
 
+use App\Traits\ValidatableModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -21,17 +22,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string name
  * @property int days
  * @property string description
- * @property string start_at
- * @property string end_at
  * @property bool active
  */
-class LeavePolicy extends Model
+class LeavePolicy extends Model implements ValidatableModelInterface
 {
-    use SoftDeletes;
+    use SoftDeletes, ValidatableModel;
 
     protected $primaryKey = 'id_leave_policy';
 
-    protected $fillable = ['id_leave_type','name','days','description','start_at','end_at','active'];
+    protected $fillable = ['id_leave_type','name','days','description','active'];
 
     protected $dates = ['deleted_at'];
 
@@ -42,8 +41,6 @@ class LeavePolicy extends Model
             'name' => 'required|string',
             'days' => 'required|int',
             'description' => 'nullable|string',
-            'start_at' => 'required|date',
-            'end_at' => 'required|date',
             'active' => 'required|boolean',
         ];
     }

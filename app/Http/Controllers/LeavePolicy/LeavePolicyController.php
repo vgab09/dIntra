@@ -41,8 +41,6 @@ class LeavePolicyController extends BREADController
     {
        return ListHelper::to('leavePolicy',[
            ListFieldHelper::to('name','Név'),
-           ListFieldHelper::to('start_at','Érvényesség kezdete')->setType(ListFieldHelper::DATE_TYPE),
-           ListFieldHelper::to('end_at','Érvényesség vége')->setType(ListFieldHelper::DATE_TYPE),
            ListFieldHelper::to('days','Napok száma')->setSuffix(' nap'),
            ListFieldHelper::to('active','Engedélyezve')->setType(ListFieldHelper::BOOL_TYPE),
        ]);

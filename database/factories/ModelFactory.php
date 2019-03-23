@@ -40,8 +40,11 @@ $factory->define(\App\Persistence\Models\EmploymentForm::class, function (Faker 
 });
 
 $factory->define(\App\Persistence\Models\LeaveType::class, function (Faker $faker) {
+    $startAt = Carbon::instance($faker->dateTimeBetween('-1 years', '+1 years'))->firstOfYear();
     return [
-        'name' => $faker->domainWord,
+        'name' => $faker->words(2),
+        'start_at' => $startAt->format('Y-m-d'),
+        'end_at' => $startAt->addYear(1)->format('Y-m-d'),
     ];
 });
 
@@ -87,24 +90,17 @@ $factory->define(\App\Persistence\Models\Workday::class, function (Faker $faker)
 
 $factory->define(\App\Persistence\Models\LeavePolicy::class, function (Faker $faker) {
 
-    /**
-     * @todo: Évközi szabályt is kell generálni
-     */
-    $startAt = Carbon::instance($faker->dateTimeBetween('-2 years', '+2 years'))->firstOfYear();
-
     return [
         'name' => $faker->text(60),
         'days' => rand(20, 37),
         'description' => $faker->text(),
-        'start_at' => $startAt->format('Y-m-d'),
-        'end_at' => $startAt->addYear(1)->format('Y-m-d'),
         'active' => $faker->boolean(70),
     ];
 });
 
 $factory->define(\App\Persistence\Models\LeaveRequest::class, function (Faker $faker) {
 
-        $startAt = Carbon::instance($faker->dateTimeBetween('-2 years'));
+        $startAt = Carbon::instance($faker->dateTimeThisYear());
         $days = rand(1,13);
         $status = $faker->randomElement(['accepted','denied','pending']);
 
