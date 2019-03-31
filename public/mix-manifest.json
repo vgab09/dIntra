@@ -13,5 +13,7 @@
     "/js/fullcalendar.js": "/js/fullcalendar.js",
     "/js/app.js": "/js/app.js",
     "/css/chosen.min.css": "/css/chosen.min.css",
-    "/css/fullcalendar.min.css": "/css/fullcalendar.min.css"
+    "/css/fullcalendar.min.css": "/css/fullcalendar.min.css",
+    "/css/fullcalendar.list.min.css": "/css/fullcalendar.list.min.css",
+    "/css/fullcalendar.daygrid.min.css": "/css/fullcalendar.daygrid.min.css"
 }

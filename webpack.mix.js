@@ -27,7 +27,10 @@ mix.scripts([
 
 mix.scripts([
     'node_modules/@fullcalendar/core/main.min.js',
-    'node_modules/@fullcalendar/core/locales/hu.min.js'
+    'node_modules/@fullcalendar/list/main.min.js',
+    'node_modules/@fullcalendar/daygrid/main.min.js',
+    'node_modules/@fullcalendar/core/locales/hu.js'
+
 ],'public/js/fullcalendar.js');
 
 mix.scripts('resources/js/app.js', 'public/js/app.js');
@@ -38,4 +41,6 @@ mix.sass('node_modules/bootstrap/scss/bootstrap.scss','public/css')
     .sass('resources/sass/datatables.scss', 'public/css').sourceMaps();
 
 mix.copy('node_modules/chosen-js/chosen.min.css','public/css/chosen.min.css')
-    .copy('node_modules/@fullcalendar/core/main.min.css', 'public/css/fullcalendar.min.css');
+    .copy('node_modules/@fullcalendar/core/main.min.css', 'public/css/fullcalendar.min.css')
+    .copy('node_modules/@fullcalendar/list/main.min.css', 'public/css/fullcalendar.list.min.css')
+    .copy('node_modules/@fullcalendar/daygrid/main.min.css', 'public/css/fullcalendar.daygrid.min.css');

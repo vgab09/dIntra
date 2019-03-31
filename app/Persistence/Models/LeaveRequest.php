@@ -32,7 +32,7 @@ use Illuminate\Validation\Rule;
  * @property string created_at
  * @property string updated_at
  * @property Employee employee
- * @property LeaveType[] leaveType
+ * @property LeaveType leaveType
  * @property LeavePolicy leavePolicy
  * @property LeaveRequestHistory[] history
  */

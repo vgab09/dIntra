@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 
+use App\Http\Components\Providers\FullCalendarProvider;
 use App\Http\Controllers\Controller;
 use App\Persistence\Models\Employee;
 use App\Persistence\Models\LeaveRequest;
@@ -11,9 +12,13 @@ class DashboardController extends Controller
 {
     public function dashboard(){
 
+        $provider = new FullCalendarProvider();
+        $provider->collectEvents();
+
         return view('dashboard.dashboard',[
             'employeCount' => $this->countEmployees(),
             'pendingCount' => $this->countPendingLeaveRequest(),
+            'fullCalendarProvider' => $provider
         ]);
     }
 

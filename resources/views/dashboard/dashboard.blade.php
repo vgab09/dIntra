@@ -2,7 +2,6 @@
 @section('content')
     <div class="animated fadeIn">
         <div class="row">
-
             <div class="col-lg-4 col-md-6">
                 <div class="card">
                     <div class="card-body">
@@ -16,7 +15,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-lg-4 col-md-6">
                 <div class="card">
                     <div class="card-body">
@@ -30,7 +28,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-lg-4 col-md-6">
                 <div class="card">
                     <div class="card-body">
@@ -45,5 +42,45 @@
                 </div>
             </div>
         </div><!-- .row -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Szabadságok</div>
+            </div>
+            <div class="card-body card-block">
+                <div id='calendar'></div>
+            </div>
+        </div>
     </div>
 @endsection
+@push('stylesheet')
+    <link href="{{ mix('/css/fullcalendar.min.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ mix('/css/fullcalendar.daygrid.min.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ mix('/css/fullcalendar.list.min.css') }}" rel="stylesheet" type="text/css"/>
+@endpush
+@push('headJavascript')
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: [  'dayGrid', 'list' ],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                },
+                events: {!! $fullCalendarProvider->provide() !!},
+                locale: "hu",
+                buttonIcons: true, // show the prev/next text
+                weekNumbers: true,
+                navLinks: true, // can click day/week names to navigate views
+            });
+
+            calendar.render();
+        });
+        </script>
+@endpush
+@push('javascript')
+    <script src="{{ mix('/js/fullcalendar.js') }}"></script>
+@endpush
