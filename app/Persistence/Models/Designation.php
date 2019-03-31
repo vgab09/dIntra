@@ -54,7 +54,7 @@ class Designation extends Model implements ValidatableModelInterface
     public static function getDesignationOptions(){
         return static::query()
             ->select('id_designation', 'name')
-            ->pluck('name', 'id_designation');
+            ->pluck('name', 'name');
     }
 
     public function employees(){

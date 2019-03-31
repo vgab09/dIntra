@@ -36,6 +36,26 @@
     </div>
 
     <div class="row mb-2">
+        <div class="col col-md">
+            Állapot:
+        </div>
+        <div class="col col-md-8">
+            @switch($leaveRequest->status)
+                @case(\App\Persistence\Models\LeaveRequest::STATUS_ACCEPTED)
+                    <span class="badge badge-success">Elfogadva</span>
+                @break;
+                @case(\App\Persistence\Models\LeaveRequest::STATUS_DENIED)
+                    <span class="badge badge-danger">Elutasítva</span>
+                @break;
+                @default
+                    <span class="badge badge-primary">Döntésre vár</span>
+                @break;
+            @endswitch
+        </div>
+    </div>
+</div>
+<div class="container border p-2 mb-2">
+    <div class="row mb-2">
         <div class="col">
             Megjegyzés:
         </div>
@@ -48,3 +68,20 @@
         </div>
     </div>
 </div>
+@if($leaveRequest->status == \App\Persistence\Models\LeaveRequest::STATUS_DENIED)
+<div class="container border p-2 mb-2">
+        <div class="row mb-2">
+            <div class="col">
+                Elutasítás oka:
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col">
+                <p>
+                    {{ $leaveRequest->reason }}
+                </p>
+            </div>
+        </div>
+</div>
+    @endif
+

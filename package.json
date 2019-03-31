@@ -1,5 +1,5 @@
 {
-  "name": "uIntra",
+  "name": "uintra",
   "description": "",
   "version": "1.0.0",
   "license": "MIT",
@@ -14,20 +14,24 @@
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "devDependencies": {
+    "cross-env": "^5.1",
+    "laravel-mix": "^4.0",
+    "less-loader": "^4.1.0",
+    "resolve-url-loader": "^2.3.1",
+    "sass": "^1.17.3",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "dependencies": {
+    "jquery": "^3.3.1",
     "bootstrap": "^4.2.1",
     "@fortawesome/fontawesome-free": "^5.7.0",
     "chart.js": "^2.7.2",
-    "cross-env": "^5.1",
-    "laravel-mix": "^2.0",
     "chosen-js": "^1.8.7",
+    "popper.js": "^1.14.6",
     "datatables.net-bs4": "^1.10.19",
     "datatables.net-buttons-bs4": "^1.5.4",
     "datatables.net-responsive-bs4": "^2.2.3",
-    "jquery": "^3.3.1",
-    "popper.js": "^1.14.6"
-  },
-  "dependencies": {
-    "datatables.net-bs4": "^1.10.19",
-    "datatables.net-buttons-bs4": "^1.5.4"
+    "@fullcalendar/core": "^4.0.1"
   }
 }

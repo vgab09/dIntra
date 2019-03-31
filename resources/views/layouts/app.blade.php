@@ -24,6 +24,7 @@
 
             <div class="col-sm-7">
                 <div class="header-right">
+                    <a href="#" class="btn btn-outline-primary" role="button" aria-pressed="true">Szabadság kérés</a>
                     <div class="dropdown for-notification">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-bell"></i>
@@ -55,6 +56,7 @@
 <!-- Right Panel -->
 
 <script src="{{ mix('/js/app.js') }}"></script>
+<script src="{{ mix('/js/vendor.js') }}"></script>
 @stack('javascript')
 
 </body>

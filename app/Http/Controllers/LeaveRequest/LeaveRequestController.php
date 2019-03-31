@@ -16,6 +16,7 @@ use App\Http\Components\FormHelper\FormHelper;
 use App\Http\Components\FormHelper\FormInputFieldHelper;
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
+use App\Http\Components\ToolbarLink\ToolbarLinks;
 use App\Http\Controllers\BREADController;
 use App\Persistence\Services\LeaveRequestService;
 use App\Persistence\Models\Employee;
@@ -52,7 +53,62 @@ class LeaveRequestController extends BREADController
         $user = Auth::user();
         $history = $user->can('show_leave_request_history') ? $leaveRequest->history : null;
 
-        return view('leaves.show',['leaveRequest' => $leaveRequest,'history'=>$history]);
+        $toolbar = new ToolbarLinks();
+
+        switch ($leaveRequest->status){
+            case LeaveRequest::STATUS_ACCEPTED:
+            case LeaveRequest::STATUS_DENIED:
+            $toolbar->addLinkIfCan(['accept_leave_request','denny_leave_request'], route('setPendingLeaveRequest', $leaveRequest->getKey()), '<i class="fas fa-undo-alt"></i> Visszavonás');
+                break;
+            default:
+                $toolbar->addLinkIfCan('accept_leave_request', route('acceptLeaveRequest', $leaveRequest->getKey()), '<i class="far fa-check-circle"></i> Elfogadás');
+                $toolbar->addLinkIfCan('denny_leave_request', route('showDennyLeaveRequestForm', $leaveRequest->getKey()), '<i class="far fa-times-circle"></i> Elutasítás');
+                break;
+        }
+
+        return view('leaves.show',['leaveRequest' => $leaveRequest,'history'=>$history,'toolbar'=>$toolbar]);
+    }
+
+    /**
+     * (B)READ Browse data
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Exception
+     */
+    public function indexPending(\Illuminate\Http\Request $request)
+    {
+        $list = $this->buildListHelper();
+        $list->setTitle('Függő szabadság igények');
+        $list->addRowActions(function ($model) {
+            return FormDropDownFieldHelper::to('action')
+                ->addActionLinkIfCan('accept_leave_request', route('acceptLeaveRequest', $model->getKey()), '<i class="far fa-check-circle"></i> Elfogadás')
+                ->addActionLinkIfCan('list_leave_request', route('showLeaveRequest', $model->getKey()), '<i class="far fa-eye"></i> Megtekintés')
+                ->addActionLinkIfCan('denny_leave_request', route('showDennyLeaveRequestForm', $model->getKey()), '<i class="far fa-times-circle"></i> Elutasítás')
+                ->renderTag();
+        });
+        if ($request->ajax()) {
+            return $list->createDataTables($this->collectListData()->where('leave_requests.status', '=', LeaveRequest::STATUS_PENDING))->make(true);
+        }
+
+        return $list->render();
+    }
+
+    public function index(\Illuminate\Http\Request $request){
+
+        $list = $this->buildListHelper();
+        $list->addField(
+            ListFieldHelper::to('status','Állapot')
+                ->setSearchTypeSelect(LeaveRequest::getStatuses()
+                    ->prepend('-', '')
+                )
+        );
+
+        if ($request->ajax()) {
+            return $list->createDataTables($this->collectListData())->make(true);
+        }
+
+        return $list->render();
+
     }
 
     /**
@@ -64,8 +120,8 @@ class LeaveRequestController extends BREADController
 
         return ListHelper::to('LeaveRequest', [
             ListFieldHelper::to('id_leave_request', '#'),
-            ListFieldHelper::to('employees.name', 'Munkatárs'),
-            ListFieldHelper::to('leave_types.name', 'Típus')->setSearchTypeSelect(LeaveType::getLeaveTypeOptions()->prepend('-', '')),
+            ListFieldHelper::to('employee.name', 'Munkatárs'),
+            ListFieldHelper::to('leaveType.name', 'Típus')->setSearchTypeSelect(LeaveType::getLeaveTypeOptions()->prepend('-', '')),
             ListFieldHelper::to('start_at', 'Kezdet')->setType('date'),
             ListFieldHelper::to('end_at', 'Vége')->setType('date'),
             ListFieldHelper::to('days', 'Napok száma'),
@@ -75,9 +131,7 @@ class LeaveRequestController extends BREADController
             ->setTitle('Szabadság igények')
             ->addRowActions(function ($model) {
                 return FormDropDownFieldHelper::to('action')
-                    ->addActionLinkIfCan('accept_leave_request', route('acceptLeaveRequest', $model->getKey()), '<i class="far fa-check-circle"></i> Elfogadás')
                     ->addActionLinkIfCan('list_leave_request', route('showLeaveRequest', $model->getKey()), '<i class="far fa-eye"></i> Megtekintés')
-                    ->addActionLinkIfCan('denny_leave_request', route('showDennyLeaveRequestForm', $model->getKey()), '<i class="far fa-times-circle"></i> Elutasítás')
                     ->renderTag();
             });
     }
@@ -89,12 +143,7 @@ class LeaveRequestController extends BREADController
      */
     protected function collectListData()
     {
-        return LeaveRequest::query()
-            ->select(['leave_requests.*', 'leave_types.name as leave_types_name', 'employees.name as employees_name'])
-            ->from('leave_requests')
-            ->join('leave_types', 'leave_requests.id_leave_type', '=', 'leave_types.id_leave_type')
-            ->join('employees', 'leave_requests.id_employee', '=', 'employees.id_employee')
-            ->where('leave_requests.status', '=', LeaveRequest::STATUS_PENDING);
+        return LeaveRequest::with('leaveType','employee');
     }
 
     /**

@@ -121,6 +121,10 @@ class LeaveRequestService
         return $this;
     }
 
+    public function setStatus($status){
+        $this->leaveRequest->status = $status;
+    }
+
     /**
      * Create new leave request and save
      * @return LeaveRequest
@@ -128,6 +132,7 @@ class LeaveRequestService
      */
     public function create()
     {
+        $this->setStatus(LeaveRequest::STATUS_PENDING);
         $this->leaveRequest->validate();
         $this->leaveRequest->saveOrFail();
         event(new NewLeaveRequest($this->leaveRequest, $this->user));
@@ -143,7 +148,7 @@ class LeaveRequestService
      */
     public function accept()
     {
-        $this->leaveRequest->status = LeaveRequest::STATUS_ACCEPTED;
+        $this->setStatus(LeaveRequest::STATUS_ACCEPTED);
         $this->leaveRequest->validate();
         $this->leaveRequest->saveOrFail();
 
@@ -163,7 +168,7 @@ class LeaveRequestService
     public function denny($reason)
     {
 
-        $this->leaveRequest->status = LeaveRequest::STATUS_DENIED;
+        $this->setStatus(LeaveRequest::STATUS_DENIED);
         $this->leaveRequest->reason = strip_tags($reason);
         $this->leaveRequest->validate();
         $this->leaveRequest->saveOrFail();

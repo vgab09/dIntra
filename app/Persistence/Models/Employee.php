@@ -38,7 +38,7 @@ class Employee extends Authenticatable implements ValidatableModelInterface
      * @var array
      */
     protected $fillable = [
-        'id_designation','id_department','id_employment_form','hiring_date','termination_date','name', 'email', 'password','date_of_birth','reporting_to_id_employee','active',
+        'id_designation', 'id_department', 'id_employment_form', 'hiring_date', 'termination_date', 'name', 'email', 'password', 'date_of_birth', 'reporting_to_id_employee', 'active',
     ];
 
     /**
@@ -76,19 +76,62 @@ class Employee extends Authenticatable implements ValidatableModelInterface
      */
     public function getLeaveTypes()
     {
-       return LeaveType::query()
-            ->select(DB::raw( 'leave_types.*' ))
+        return LeaveType::query()
+            ->select(DB::raw('leave_types.*'))
             ->distinct()
-            ->join('leave_policies as lp','leave_types.id_leave_type','=','lp.id_leave_type')
-            ->join('employee_has_leave_policies as ehlp','lp.id_leave_policy','=','ehlp.id_leave_policy')
-            ->join('employees as e','ehlp.id_employee','=','e.id_employee')->where('e.id_employee','=',$this->getKey())
+            ->join('leave_policies as lp', 'leave_types.id_leave_type', '=', 'lp.id_leave_type')
+            ->join('employee_has_leave_policies as ehlp', 'lp.id_leave_policy', '=', 'ehlp.id_leave_policy')
+            ->join('employees as e', 'ehlp.id_employee', '=', 'e.id_employee')->where('e.id_employee', '=', $this->getKey())
             ->get();
+    }
+
+    public function getAssignedLeaveDaysCount()
+    {
+        return LeaveType::query()
+            ->selectRaw('leave_policies.id_leave_type,leave_types.name,SUM(leave_policies.days) as assigned')
+            ->join('leave_policies', 'leave_policies.id_leave_type', '=', 'leave_types.id_leave_type')
+            ->join('employee_has_leave_policies', 'employee_has_leave_policies.id_leave_policy', '=', 'leave_policies.id_leave_policy')
+            ->where('employee_has_leave_policies.id_employee', '=', $this->getKey())
+            ->whereNull('leave_policies.deleted_at')
+            ->groupBy('leave_policies.id_leave_type', 'leave_types.name')
+            ->get();
+    }
+
+    public function getUsedLeaveDaysCount()
+    {
+        return LeaveType::query()
+            ->selectRaw('leave_requests.id_leave_type,leave_types.name,SUM(leave_requests.days) as used')
+            ->join('leave_requests', 'leave_requests.id_leave_type', '=', 'leave_types.id_leave_type')
+            ->where('leave_requests.id_employee', '=', $this->getKey())
+            ->where('leave_requests.status', '<>', LeaveRequest::STATUS_DENIED)
+            ->groupBy('leave_requests.id_leave_type', 'leave_types.name')
+            ->get();
+
+    }
+
+    public function getAvailableLeaveDaysCount(){
+
+        $assignedPolicies = $this->getAssignedLeaveDaysCount()->keyBy('id_leave_type');
+        $usedRequests = $this->getUsedLeaveDaysCount()->keyBy('id_leave_type');
+
+        foreach ($assignedPolicies as $id_leave_type => &$assigned){
+
+            if($usedRequests->has($id_leave_type)){
+
+                $assigned->available = $assigned->assigned - $usedRequests->get($id_leave_type)->used;
+            }
+            else{
+                $assigned->available = $assigned->assigned;
+            }
+        }
+
+        return $assignedPolicies;
     }
 
     /**
      * Hash the employee's password if is it necessary.
      *
-     * @param  string  $value
+     * @param  string $value
      * @return void
      */
     public function setPasswordAttribute($value)
@@ -96,30 +139,35 @@ class Employee extends Authenticatable implements ValidatableModelInterface
         $this->attributes['password'] = Hash::needsRehash($value) ? Hash::make($value) : $value;
     }
 
-    public function department(){
-        return $this->belongsTo(Department::class,'id_department','id_department',Employee::class);
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'id_department', 'id_department', Employee::class);
     }
 
-    public function designation(){
-        return $this->belongsTo(Designation::class,'id_designation','id_designation',Employee::class);
+    public function designation()
+    {
+        return $this->belongsTo(Designation::class, 'id_designation', 'id_designation', Employee::class);
     }
 
-    public function employmentForm(){
-        return $this->belongsTo(EmploymentForm::class,'id_employment_form','id_employment_form',Employee::class);
+    public function employmentForm()
+    {
+        return $this->belongsTo(EmploymentForm::class, 'id_employment_form', 'id_employment_form', Employee::class);
     }
 
-    public function leavePolicies(){
-        return $this->belongsToMany(LeavePolicy::class,'employee_has_leave_policies','id_employee','id_leave_policy',null,null,Employee::class);
+    public function leavePolicies()
+    {
+        return $this->belongsToMany(LeavePolicy::class, 'employee_has_leave_policies', 'id_employee', 'id_leave_policy', null, null, Employee::class);
     }
 
-    public function leaveRequests(){
-        return $this->hasMany(LeaveRequest::class,'id_employee','id_employee');
+    public function leaveRequests()
+    {
+        return $this->hasMany(LeaveRequest::class, 'id_employee', 'id_employee');
     }
 
-    public function leaveRequestHistories(){
-        return $this->hasMany(LeaveRequestHistory::class,'id_employee','id_employee');
+    public function leaveRequestHistories()
+    {
+        return $this->hasMany(LeaveRequestHistory::class, 'id_employee', 'id_employee');
     }
-
 
 
 }

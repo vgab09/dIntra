@@ -4,6 +4,7 @@ namespace App\Http\Components\ListHelper;
 
 use App\Http\Components\FormHelper\FormInputFieldHelper;
 use App\Http\Components\FormHelper\FormSelectFieldHelper;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Html\Column;
 
@@ -105,7 +106,7 @@ class ListFieldHelper
     public function __construct(string $name, string $title)
     {
         $this->setName($name);
-        $this->setDataName(Str::snake(str_replace('.','_',$name)));
+        $this->setDataName(Str::snake($name));
         $this->setTitle($title);
     }
 
@@ -236,7 +237,7 @@ class ListFieldHelper
 
     /**
      * Set searchable to true, and set search type to select.
-     * @param array $options Select options
+     * @param array|Collection|iterable $options Select options
      * @return ListFieldHelper
      */
     public function setSearchTypeSelect($options)

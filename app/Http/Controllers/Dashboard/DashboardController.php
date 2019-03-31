@@ -1,20 +1,35 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: g09
- * Date: 2018.12.01.
- * Time: 8:54
- */
 
 namespace App\Http\Controllers\Dashboard;
 
 
 use App\Http\Controllers\Controller;
+use App\Persistence\Models\Employee;
+use App\Persistence\Models\LeaveRequest;
 
 class DashboardController extends Controller
 {
     public function dashboard(){
-        return view('layouts.app');
+
+        return view('dashboard.dashboard',[
+            'employeCount' => $this->countEmployees(),
+            'pendingCount' => $this->countPendingLeaveRequest(),
+        ]);
+    }
+
+    protected function countEmployees(){
+        return Employee::query()
+            ->select('id_employee')
+            ->where('active','=',1)
+            ->whereNull('termination_date')
+            ->count();
+    }
+
+    protected function countPendingLeaveRequest(){
+        return LeaveRequest::query()
+            ->select('id_leave_request')
+            ->where('status','=',LeaveRequest::STATUS_PENDING)
+            ->count();
     }
 
 }

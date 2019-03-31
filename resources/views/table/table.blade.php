@@ -38,7 +38,7 @@
 @endsection
 
 @push('javascript')
-    <script src="{{ mix('/js/datatable.js') }}"></script>
+    <script src="{{ mix('/js/datatables.js') }}"></script>
     <script>
         window.LaravelDataTables["tableList-{{$listHelper->getListName()}}"] = $("#tableList-{{$listHelper->getListName()}}")
             .on('stateLoadParams.dt', window.dTstateLoadParams)

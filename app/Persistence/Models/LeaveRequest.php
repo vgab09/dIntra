@@ -68,6 +68,17 @@ class LeaveRequest extends Model implements ValidatableModelInterface
     }
 
     /**
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getStatuses(){
+        $statuses = collect();
+        $statuses->put(static::STATUS_PENDING,'Döntésre vár');
+        $statuses->put(static::STATUS_ACCEPTED,'Elfogadva');
+        $statuses->put(static::STATUS_DENIED,'Elutasítva');
+        return $statuses;
+    }
+
+    /**
      * @return \Illuminate\Support\Collection|LeaveRequestHistory[]
      */
     public function getHistoryData(){
@@ -93,7 +104,7 @@ class LeaveRequest extends Model implements ValidatableModelInterface
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function history(){
-        return $this->hasMany(LeaveRequestHistory::class,'id_leave_request','id_leave_request');
+        return $this->hasMany(LeaveRequestHistory::class,'id_leave_request','id_leave_request')->orderByDesc('created_at');
     }
 
 }

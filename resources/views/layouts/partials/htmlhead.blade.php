@@ -9,10 +9,12 @@
     <link rel="apple-touch-icon" href="{{asset('images/apple-icon.png')}}">
     <link rel="shortcut icon" href="{{asset('images/favicon.ico')}}">
 
-    <link href="{{ mix('/css/bootsrap.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ mix('/css/bootstrap.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ mix('/css/fontawesome.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ mix('/css/chosen.min.css') }}" rel="stylesheet" type="text/css" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
     <link href="{{ mix('/css/style.css') }}" rel="stylesheet" type="text/css" />
+
     @stack('stylesheet')
     @stack('headJavascript')
 </head>
