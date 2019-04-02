@@ -65,16 +65,18 @@
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 plugins: [  'dayGrid', 'list' ],
+                locales: [ 'hu' ],
+                locale: 'hu',
                 header: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
                 },
-                events: {!! $fullCalendarProvider->provide() !!},
-                locale: "hu",
-                buttonIcons: true, // show the prev/next text
+                eventLimit: true,
+                buttonIcons: true,
                 weekNumbers: true,
-                navLinks: true, // can click day/week names to navigate views
+                navLinks: true,
+                events: {!! $fullCalendarProvider->provide() !!}
             });
 
             calendar.render();
