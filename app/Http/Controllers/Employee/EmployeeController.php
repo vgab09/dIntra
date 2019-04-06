@@ -45,7 +45,7 @@ class EmployeeController extends BREADController
             FormInputFieldHelper::toDate('date_of_birth','Születési dátum'),
             FormSelectFieldHelper::to('id_designation','Beosztás')->setRequired(),
             FormSelectFieldHelper::to('id_department','Osztály')->setRequired(),
-            FormSelectFieldHelper::to('id_employment_form','EmploymentForm')->setRequired(),
+            FormSelectFieldHelper::to('id_employment_form','Munkarend')->setRequired(),
             FormInputFieldHelper::toDate('hiring_date','Munkaviszony kezdete')->setRequired(),
             FormInputFieldHelper::toDate('termination_date','Munkaviszony vége'),
             FormCheckboxFieldHelper::toSwitch('active','Aktív'),

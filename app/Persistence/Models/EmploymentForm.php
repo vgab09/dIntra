@@ -9,6 +9,7 @@
 namespace App\Persistence\Models;
 
 
+use App\Traits\ValidatableModel;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -16,10 +17,12 @@ use Illuminate\Database\Eloquent\Model;
  * @package App\Persistence\Models
  *
  * @property int id_employment_form
- * @property string name *
+ * @property string name
+ * @property Employee[] employees
  */
-class EmploymentForm extends Model
+class EmploymentForm extends Model implements ValidatableModelInterface
 {
+    use ValidatableModel;
 
     protected $primaryKey = 'id_employment_form';
 
@@ -34,6 +37,16 @@ class EmploymentForm extends Model
 
     public function employees(){
         return $this->hasMany(Employee::class,'id_employment_form','id_employment_form');
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAlternativeEmploymentOptions()
+    {
+        return $this->query('id_employment_form', 'name')
+            ->whereKeyNot($this->getKey())
+            ->pluck('name', 'id_employment_form');
     }
 
 }
