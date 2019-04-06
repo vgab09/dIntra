@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: g09
- * Date: 2019.03.08.
- * Time: 7:03
- */
 
 namespace App\Http\Controllers\LeaveRequest;
 
