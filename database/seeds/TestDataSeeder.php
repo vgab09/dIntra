@@ -132,8 +132,12 @@ class TestDataSeeder extends Seeder
              * @var Employee $employee
              */
             $employee = $this->faker->randomElement($this->employees);
-            $days = rand(1,13);
-            $start_at = Carbon::instance($this->faker->dateTimeThisYear())->setTime(0,0);
+
+            $start_at = Carbon::instance($this->faker->dateTimeBetween('first day of January ' . date('Y'),'last day of december ' . date('Y')))
+                ->nextWeekday()
+                ->setTime(0,0);
+
+            $days = $days = rand(0,5-$start_at->dayOfWeek);
             $end_at = (clone $start_at)->addDays($days);
 
             $status = $this->faker->randomElement([LeaveRequest::STATUS_ACCEPTED,LeaveRequest::STATUS_PENDING,LeaveRequest::STATUS_DENIED,LeaveRequest::STATUS_PENDING]);

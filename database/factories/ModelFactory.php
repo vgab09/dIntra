@@ -100,8 +100,11 @@ $factory->define(\App\Persistence\Models\LeavePolicy::class, function (Faker $fa
 
 $factory->define(\App\Persistence\Models\LeaveRequest::class, function (Faker $faker) {
 
-        $startAt = Carbon::instance($faker->dateTimeThisYear());
-        $days = rand(1,13);
+    $startAt = Carbon::instance($this->faker->dateTimeBetween('first day of January ' . date('Y'),'last day of december ' . date('Y')))
+            ->nextWeekday()
+            ->setTime(0,0);
+
+        $days = $days = rand(0,5-$startAt->dayOfWeek);
         $status = $faker->randomElement(['accepted','denied','pending']);
 
         return[
