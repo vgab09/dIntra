@@ -16,7 +16,6 @@
   "devDependencies": {
     "cross-env": "^5.1",
     "laravel-mix": "^4.0",
-    "less-loader": "^4.1.0",
     "resolve-url-loader": "^2.3.1",
     "sass": "^1.17.3",
     "sass-loader": "^7.1.0",
@@ -33,7 +32,10 @@
     "datatables.net-buttons-bs4": "^1.5.4",
     "datatables.net-responsive-bs4": "^2.2.3",
     "@fullcalendar/core": "^4.0.1",
-	"@fullcalendar/list": "^4.0.1",
-	"@fullcalendar/daygrid": "^4.0.1"
+    "@fullcalendar/list": "^4.0.1",
+    "@fullcalendar/daygrid": "^4.0.1",
+    "moment": "^2.24.0",
+    "moment-range": "^4.0.2",
+    "daterangepicker": "^3.0.3"
   }
 }

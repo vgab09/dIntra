@@ -1,0 +1,1 @@
+window['moment-range'].extendMoment(moment);

@@ -26,6 +26,9 @@ Route::group(['middleware' => 'auth'], function () {
     //Dashboard
     $this->get('/','Dashboard\DashboardController@dashboard')->name('dashboard');
 
+    //FullCalendar
+    $this->get('/calendar/getFullCalendarEvents','Dashboard\DashboardController@getFullCalendarEvents')->name('getFullCalendarEvents');
+
     //Profile
     $this->get('/profile','Profile\ProfileController@edit')->name('editProfile');
     $this->post('/profile','Profile\ProfileController@update')->name('updateProfile');
@@ -50,6 +53,17 @@ Route::group(['middleware' => 'auth'], function () {
         $this->post('/edit/{id_department}', 'DepartmentController@update')->middleware('permission:update_department');
         $this->get('/delete/{id_department}', 'DepartmentController@delete')->middleware('permission:delete_department')->name('deleteDepartment');
         $this->post('/delete/{id_department}','DepartmentController@resolveContractAndDelete')->middleware('permission:delete_department');
+    });
+
+    //EmploymentForm
+    Route::group(['namespace'=>'EmploymentForm','prefix' => 'employmentform'], function () {
+        $this->get('/', 'EmploymentFormController@index')->middleware('permission:list_employment_form')->name('indexEmploymentForm');
+        $this->get('/new', 'EmploymentFormController@new')->middleware('permission:create_employment_form')->name('newEmploymentForm');
+        $this->post('/new', 'EmploymentFormController@insert')->middleware('permission:create_employment_form');
+        $this->get('/edit/{id_employment_form}', 'EmploymentFormController@edit')->middleware('permission:update_employment_form')->name('editEmploymentForm');
+        $this->post('/edit/{id_employment_form}', 'EmploymentFormController@update')->middleware('permission:update_employment_form');
+        $this->get('/delete/{id_employment_form}', 'EmploymentFormController@delete')->middleware('permission:delete_employment_form')->name('deleteEmploymentForm');
+        $this->post('/delete/{id_employment_form}','EmploymentFormController@resolveContractAndDelete')->middleware('permission:delete_employment_form');
     });
     
     //LeaveType
@@ -125,6 +139,10 @@ Route::group(['middleware' => 'auth'], function () {
 
         $this->get('/denny/{id_leave_request}', 'LeaveRequestController@showDennyForm')->middleware('permission:denny_leave_request')->name('showDennyLeaveRequestForm');
         $this->post('/denny/{id_leave_request}', 'LeaveRequestController@denny')->middleware('permission:denny_leave_request');
+
+        //Withdraw Leave
+        $this->get('/withdraw/','WithdrawLeaveRequestController@withdraw')->middleware('permission:withdraw_leave_request')->name('withdrawLeaveRequest');
     });
+
 });
 

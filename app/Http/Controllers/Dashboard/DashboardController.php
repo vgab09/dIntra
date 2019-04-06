@@ -7,19 +7,26 @@ use App\Http\Components\Providers\FullCalendarProvider;
 use App\Http\Controllers\Controller;
 use App\Persistence\Models\Employee;
 use App\Persistence\Models\LeaveRequest;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+
 
 class DashboardController extends Controller
 {
     public function dashboard(){
 
-        $provider = new FullCalendarProvider();
-        $provider->collectEvents();
-
         return view('dashboard.dashboard',[
             'employeCount' => $this->countEmployees(),
             'pendingCount' => $this->countPendingLeaveRequest(),
-            'fullCalendarProvider' => $provider
         ]);
+    }
+
+    public function getFullCalendarEvents(Request $request){
+        $start = $request->get('start',Carbon::parse('first day of this month'));
+        $end = $request->get('end',Carbon::parse('last day of this month'));
+
+        $provider = new FullCalendarProvider($start,$end);
+        return $provider->provide();
     }
 
     protected function countEmployees(){

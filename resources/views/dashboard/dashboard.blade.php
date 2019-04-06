@@ -54,8 +54,6 @@
 @endsection
 @push('stylesheet')
     <link href="{{ mix('/css/fullcalendar.min.css') }}" rel="stylesheet" type="text/css"/>
-    <link href="{{ mix('/css/fullcalendar.daygrid.min.css') }}" rel="stylesheet" type="text/css"/>
-    <link href="{{ mix('/css/fullcalendar.list.min.css') }}" rel="stylesheet" type="text/css"/>
 @endpush
 @push('headJavascript')
     <script>
@@ -76,7 +74,16 @@
                 buttonIcons: true,
                 weekNumbers: true,
                 navLinks: true,
-                events: {!! $fullCalendarProvider->provide() !!}
+                eventSources: [
+
+                    {
+                        url: '{{route('getFullCalendarEvents')}}',
+                        method: 'GET',
+                        failure: function() {
+                            alert('there was an error while fetching events!');
+                        }
+                    }
+                ]
             });
 
             calendar.render();

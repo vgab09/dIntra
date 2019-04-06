@@ -15,6 +15,7 @@ use App\Persistence\Models\Workday;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Database\Eloquent\JsonEncodingException;
 use JsonSerializable;
+use stdClass;
 
 class Event implements Jsonable, JsonSerializable
 {
@@ -23,6 +24,24 @@ class Event implements Jsonable, JsonSerializable
     protected $title;
     protected $rendering;
     protected $color;
+
+    public function __construct($element = null)
+    {
+        switch (get_class(is_null($element)? new stdClass() : $element)){
+            case LeaveRequest::class:
+                $this->buildFromLeaveRequest($element);
+                break;
+            case Holiday::class:
+                $this->buildFromHoliday($element);
+                break;
+            case Workday::class:
+                $this->buildFromWorkDay($element);
+                break;
+            default:
+                break;
+        }
+
+    }
 
     /**
      * @return mixed
@@ -115,48 +134,76 @@ class Event implements Jsonable, JsonSerializable
     }
 
 
-
     /**
      * @param Holiday $holiday
      * @return Event
      */
-    public static function fromHoliday(Holiday $holiday){
-        $event = new static();
-        $event->setTitle($holiday->name);
-        $event->setStart($holiday->start);
-        $event->setEnd($holiday->end);
-
-        return $event;
+    public static function fromHoliday(Holiday $holiday)
+    {
+        return (new static())->buildFromHoliday($holiday);
     }
 
     /**
      * @param Workday $workday
      * @return Event
      */
-    public static function fromWorkDay(Workday $workday){
-        $event = new static();
-        $event->setTitle($workday->name);
-        $event->setStart($workday->start);
-        $event->setEnd($workday->end);
-
-        return $event;
+    public static function fromWorkDay(Workday $workday)
+    {
+        return (new static())->buildFromWorkDay($workday);
     }
 
 
     public static function fromLeaveRequest(LeaveRequest $leaveRequest)
     {
-        $event = new static();
-        $event->setTitle($leaveRequest->employee->name . ' ' . $leaveRequest->leaveType->name);
-        $event->setStart($leaveRequest->start_at);
-        $event->setEnd($leaveRequest->end_at);
+        return (new static())->buildFromLeaveRequest($leaveRequest);
+    }
 
-        return $event;
+    /**
+     * @param Holiday $holiday
+     * @return Event
+     */
+    public function buildFromHoliday(Holiday $holiday)
+    {
+        $this->setTitle($holiday->name);
+        $this->setStart($holiday->start);
+        $this->setEnd($holiday->end);
+
+        return $this;
+    }
+
+    /**
+     * @param Workday $workday
+     * @return Event
+     */
+    public function buildFromWorkDay(Workday $workday)
+    {
+        $this->setTitle($workday->name);
+        $this->setStart($workday->start);
+        $this->setEnd($workday->end);
+
+        return $this;
+    }
+
+
+    /**
+     * @param LeaveRequest $leaveRequest
+     * @return $this
+     */
+    public function buildFromLeaveRequest(LeaveRequest $leaveRequest)
+    {
+
+        $this->setTitle($leaveRequest->employee->name . ' ' . $leaveRequest->leaveType->name);
+        $this->setStart($leaveRequest->start_at);
+        $this->setEnd($leaveRequest->end_at);
+
+        return $this;
     }
 
     /**
      * @return array
      */
-    public function toArray(){
+    public function toArray()
+    {
         return [
             'title' => $this->getTitle(),
             'start' => $this->getStart(),
@@ -170,7 +217,7 @@ class Event implements Jsonable, JsonSerializable
     /**
      * Convert the model instance to JSON.
      *
-     * @param  int  $options
+     * @param  int $options
      * @return string
      *
      * @throws \Illuminate\Database\Eloquent\JsonEncodingException
