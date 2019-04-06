@@ -24,7 +24,9 @@
 
             <div class="col-sm-7">
                 <div class="header-right">
-                    <a href="#" class="btn btn-outline-primary" role="button" aria-pressed="true">Szabadság kérés</a>
+                    @can('withdraw_leave_request')
+                    <a href="{{route('withdrawLeaveRequest')}}" class="btn btn-outline-primary" role="button" aria-pressed="true">Szabadság igénylés</a>
+                    @endcan
                     <div class="dropdown for-notification">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-bell"></i>
@@ -45,9 +47,10 @@
     </header><!-- /header -->
     <!-- Header-->
     <div class="content mt-3">
-
-        <div class="col-sm-12">
-            {!! $presenter->renderAlerts() !!}
+        <div class="row">
+            <div class="col-sm-12">
+                {!! $presenter->renderAlerts() !!}
+            </div>
         </div>
         @yield('content')
     </div> <!-- .content -->
