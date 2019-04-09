@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Permission;
 
 
+use App\Http\Components\FormHelper\FormDropDownFieldHelper;
 use App\Http\Components\FormHelper\FormHelper;
+use App\Http\Components\FormHelper\FormInputFieldHelper;
+use App\Http\Components\FormHelper\FormSelectFieldHelper;
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
+use App\Http\Components\ToolbarLink\ToolbarLinks;
 use App\Http\Controllers\BREADController;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Contracts\Role;
@@ -42,7 +46,17 @@ class PermissionController extends BREADController
             ListFieldHelper::to('id','Azonosító'),
             ListFieldHelper::to('name','Név')
         ])
-            ->setTitle('Jogosultságok')
-            ->addTimeStamps();
+            ->addTimeStamps()
+            ->addRowActions(function ($model) {
+                return FormDropDownFieldHelper::to('action')
+                    ->addActionLinkIfCan('update_permission', route('editPermission', $model->getKey()), '<i class="fas fa-pencil-alt"></i> Szerkesztés')
+                    ->addActionLinkIfCan('delete_permission', route('deletePermission', $model->getKey()), '<i class="fas fa-trash-alt"></i> Törlés')
+                    ->renderTag();
+            })
+            ->setToolbarLinkInstance(
+                ToolbarLinks::make()->addLinkIfCan('create_permission',route('newPermission'),'<i class="fas fa-plus-circle"></i> Új hozzáadása')
+            )
+            ->setTitle('Jogosultságok');
+
     }
 }

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Permission;
 
 
+use App\Http\Components\FormHelper\FormDropDownFieldHelper;
 use App\Http\Components\FormHelper\FormHelper;
 use App\Http\Components\FormHelper\FormInputFieldHelper;
 use App\Http\Components\FormHelper\FormSelectFieldHelper;
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
+use App\Http\Components\ToolbarLink\ToolbarLinks;
 use App\Http\Controllers\BREADController;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Guard;
@@ -41,9 +43,18 @@ class RoleController extends BREADController
     {
         return ListHelper::to('roles',[
             ListFieldHelper::to('name','Név'),
-            ListFieldHelper::to('guard','Típus'),
         ])
-            ->setTitle('Felhasználói csoportok')
-            ->addTimeStamps();
+            ->addTimeStamps()
+            ->addRowActions(function ($model) {
+                return FormDropDownFieldHelper::to('action')
+                    ->addActionLinkIfCan('update_role', route('editRole', $model->getKey()), '<i class="fas fa-pencil-alt"></i> Szerkesztés')
+                    ->addActionLinkIfCan('delete_role', route('deleteRole', $model->getKey()), '<i class="fas fa-trash-alt"></i> Törlés')
+                    ->renderTag();
+            })
+            ->setToolbarLinkInstance(
+                ToolbarLinks::make()->addLinkIfCan('create_role',route('newRole'),'<i class="fas fa-plus-circle"></i> Új hozzáadása')
+            )
+            ->setTitle('Felhasználói csoportok');
+
     }
 }
