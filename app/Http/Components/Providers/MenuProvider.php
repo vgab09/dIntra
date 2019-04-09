@@ -37,8 +37,9 @@ class MenuProvider implements ProviderInterface
                 ->linkIfCan('list_employment_form',route('indexEmploymentForm'), '<i class="menu-icon fas fa-users-cog"></i>Munkarend')
 
             ->html('<h3 class="menu-title">Beállítások</h3>')
-            ->link('#', '<i class="menu-icon fas fa-object-ungroup"></i>Felhasználói csoportok')
-            ->link('#', '<i class="menu-icon fas fa-user-shield"></i>Jogosultságok');
+            ->link(route('indexRole'), '<i class="menu-icon fas fa-object-ungroup"></i>Felhasználói csoportok')
+            ->link(route('indexPermission'), '<i class="menu-icon fas fa-user-shield"></i>Jogosultságok');
+
 
         return $menu;
 

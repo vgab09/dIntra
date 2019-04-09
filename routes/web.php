@@ -121,6 +121,29 @@ Route::group(['middleware' => 'auth'], function () {
         $this->post('/delete/{id_employee}','EmployeeController@resolveContractAndDelete')->middleware('permission:delete_employee');
     });
 
+    Route::group(['namespace'=>'Permission','prefix' => 'role'], function () {
+
+        //Roles
+        $this->get('/', 'RoleController@index')->middleware('permission:list_role')->name('indexRole');
+        $this->get('/new', 'RoleController@new')->middleware('permission:create_role')->name('newRole');
+        $this->post('/new', 'RoleController@insert')->middleware('permission:create_role');
+        $this->get('/edit/{id}', 'RoleController@edit')->middleware('permission:update_role')->name('editRole');
+        $this->post('/edit/{id}', 'RoleController@update')->middleware('permission:update_role');
+        $this->get('/delete/{id}', 'RoleController@delete')->middleware('permission:delete_role')->name('deleteRole');
+        $this->post('/delete/{id}','RoleController@resolveContractAndDelete')->middleware('permission:delete_role');
+
+    });
+    Route::group(['namespace'=>'Permission','prefix' => 'permission'], function () {
+        //permissions
+        $this->get('/', 'PermissionController@index')->middleware('permission:list_permission')->name('indexPermission');
+        $this->get('/new', 'PermissionController@new')->middleware('permission:create_permission')->name('newPermission');
+        $this->post('/new', 'PermissionController@insert')->middleware('permission:create_permission');
+        $this->get('/edit/{id}', 'PermissionController@edit')->middleware('permission:update_permission')->name('editPermission');
+        $this->post('/edit/{id}', 'PermissionController@update')->middleware('permission:update_permission');
+        $this->get('/delete/{id}', 'PermissionController@delete')->middleware('permission:delete_permission')->name('deletePermission');
+        $this->post('/delete/{id}','PermissionController@resolveContractAndDelete')->middleware('permission:delete_permission');
+    });
+
     //LeaveRequest
     Route::group(['namespace'=>'LeaveRequest','prefix' => 'leave'], function () {
         $this->get('/', 'LeaveRequestController@index')->middleware('permission:list_leave_request')->name('indexLeaveRequest');
