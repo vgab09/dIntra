@@ -22,3 +22,7 @@
 @section('card-footer')
     {!! $formHelper->renderSubmit() !!}
 @endsection
+
+@push('stylesheet')
+    <link href="{{ mix('/css/chosen.min.css') }}" rel="stylesheet" type="text/css"/>
+@endpush

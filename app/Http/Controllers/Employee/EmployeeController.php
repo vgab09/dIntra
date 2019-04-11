@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Employee;
 
 
 use App\Http\Components\FormHelper\FormCheckboxFieldHelper;
+use App\Http\Components\FormHelper\FormChosenSelectFieldHelper;
 use App\Http\Components\FormHelper\FormDropDownFieldHelper;
 use App\Http\Components\FormHelper\FormHelper;
 use App\Http\Components\FormHelper\FormInputFieldHelper;
@@ -24,6 +25,7 @@ use App\Persistence\Models\Department;
 use App\Persistence\Models\Designation;
 use App\Persistence\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Role;
 
 class EmployeeController extends BREADController
 {
@@ -49,6 +51,7 @@ class EmployeeController extends BREADController
             FormInputFieldHelper::toDate('hiring_date','Munkaviszony kezdete')->setRequired(),
             FormInputFieldHelper::toDate('termination_date','Munkaviszony vége'),
             FormCheckboxFieldHelper::toSwitch('active','Aktív'),
+            FormChosenSelectFieldHelper::to('roles','Jogosultsági csoport',Role::all(['id','name'])->pluck('name','id')->toArray()),
         ]);
     }
 
