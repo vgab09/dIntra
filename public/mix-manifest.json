@@ -13,7 +13,9 @@
     "/js/fullcalendar.js": "/js/fullcalendar.js",
     "/js/daterangepicker.js": "/js/daterangepicker.js",
     "/js/app.js": "/js/app.js",
-    "/css/chosen.min.css": "/css/chosen.min.css",
+    "/css/chosen/chosen.min.css": "/css/chosen/chosen.min.css",
+    "/css/chosen/chosen-sprite.png": "/css/chosen/chosen-sprite.png",
+    "/css/chosen/chosen-sprite@2x.png": "/css/chosen/chosen-sprite@2x.png",
     "/css/fullcalendar.min.css": "/css/fullcalendar.min.css",
     "/css/darerangepicker.min.css": "/css/darerangepicker.min.css"
 }

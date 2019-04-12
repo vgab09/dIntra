@@ -48,7 +48,9 @@ mix.sass('node_modules/bootstrap/scss/bootstrap.scss', 'public/css')
     .sass('resources/sass/style.scss', 'public/css')
     .sass('resources/sass/datatables.scss', 'public/css').sourceMaps();
 
-mix.copy('node_modules/chosen-js/chosen.min.css', 'public/css/chosen.min.css');
+mix.copy('node_modules/chosen-js/chosen.min.css', 'public/css/chosen/chosen.min.css');
+mix.copy('node_modules/chosen-js/chosen-sprite.png','public/css/chosen/chosen-sprite.png');
+mix.copy('node_modules/chosen-js/chosen-sprite@2x.png','public/css/chosen/chosen-sprite@2x.png');
 
 mix.styles([
     'node_modules/@fullcalendar/core/main.min.css',

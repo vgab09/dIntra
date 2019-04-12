@@ -11,9 +11,9 @@
 
     <link href="{{ mix('/css/bootstrap.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ mix('/css/fontawesome.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ mix('/css/chosen.min.css') }}" rel="stylesheet" type="text/css" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
     <link href="{{ mix('/css/style.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ mix('/css/chosen/chosen.min.css') }}" rel="stylesheet" type="text/css"/>
 
     @stack('stylesheet')
     @stack('headJavascript')
