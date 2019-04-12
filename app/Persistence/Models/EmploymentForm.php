@@ -28,6 +28,15 @@ class EmploymentForm extends Model implements ValidatableModelInterface
 
     protected $fillable = ['name'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public static function getEmploymentFormOptions()
+    {
+        return static::query()
+            ->select('id_employment_form', 'name')->get();
+    }
+
     public function getValidationRules(): array
     {
         return [

@@ -24,6 +24,7 @@ use App\Http\Controllers\BREADController;
 use App\Persistence\Models\Department;
 use App\Persistence\Models\Designation;
 use App\Persistence\Models\Employee;
+use App\Persistence\Models\EmploymentForm;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Role;
 
@@ -45,13 +46,29 @@ class EmployeeController extends BREADController
             FormInputFieldHelper::toText('name','Név')->setRequired(),
             FormInputFieldHelper::toEmail('email','Email')->setRequired(),
             FormInputFieldHelper::toDate('date_of_birth','Születési dátum'),
-            FormSelectFieldHelper::to('id_designation','Beosztás')->setRequired(),
-            FormSelectFieldHelper::to('id_department','Osztály')->setRequired(),
-            FormSelectFieldHelper::to('id_employment_form','Munkarend')->setRequired(),
+            FormSelectFieldHelper::to('id_designation','Beosztás',
+                Designation::getActiveDesignationOptions()
+                    ->pluck('name','id_designation')
+                    ->prepend('-','')
+            )
+                ->setRequired(),
+            FormSelectFieldHelper::to('id_department','Osztály',Department::getActiveDepartmentOptions()
+                ->pluck('name','id_department')
+                ->prepend('-','')
+            )
+                ->setRequired(),
+            FormSelectFieldHelper::to('id_employment_form','Munkarend',
+                EmploymentForm::getEmploymentFormOptions()
+                    ->pluck('name','id_employment_form')
+            )->setRequired(),
             FormInputFieldHelper::toDate('hiring_date','Munkaviszony kezdete')->setRequired(),
             FormInputFieldHelper::toDate('termination_date','Munkaviszony vége'),
             FormCheckboxFieldHelper::toSwitch('active','Aktív'),
-            FormChosenSelectFieldHelper::to('roles','Jogosultsági csoport',Role::all(['id','name'])->pluck('name','id')->toArray()),
+            FormChosenSelectFieldHelper::to('roles','Jogosultsági csoport',
+                Role::all(['id','name'])
+                    ->pluck('name','id')
+                    ->toArray()
+            ),
         ]);
     }
 
@@ -74,12 +91,31 @@ class EmployeeController extends BREADController
     {
         return ListHelper::to('employee',[
             ListFieldHelper::to('id_employee','#'),
-            ListFieldHelper::to('designation.name','Beosztás')->setDefaultContent('-')->setSearchTypeSelect(Designation::getDesignationOptions()->prepend('-',''),'designations.id_designation'),
-            ListFieldHelper::to('department.name','Osztály')->setDefaultContent('-')->setSearchTypeSelect(Department::getDepartmentOptions()),
-            ListFieldHelper::to('employmentForm.name','EmploymentForm')->setDataName('employment_form.name'),
+
+            ListFieldHelper::to('designation.name','Beosztás')
+                ->setDefaultContent('-')
+                ->setSearchTypeSelect(
+                    Designation::getDesignationOptions()
+                        ->pluck('name','name')
+                        ->prepend('-','')),
+
+            ListFieldHelper::to('department.name','Osztály')
+                ->setDefaultContent('-')
+                ->setSearchTypeSelect(
+                    Department::getDepartmentOptions()
+                        ->pluck('name','name')
+                        ->prepend('-','')
+                ),
+            ListFieldHelper::to('employmentForm.name','EmploymentForm')
+            ->setSearchTypeSelect(
+                EmploymentForm::getEmploymentFormOptions()
+                ->pluck('name','name')
+                ->prepend('-','')),
             ListFieldHelper::to('name','Név'),
-            ListFieldHelper::to('active','Aktív')->setType('bool'),
-            ListFieldHelper::to('employmentForm.name','EmploymentForm')->setDataName('employment_form.name'),
+            ListFieldHelper::to('active','Aktív')
+                ->setType('bool')
+            ->setSearchTypeBool(),
+
             ListFieldHelper::to('date_of_birth','Születési dátum')->setType('date'),
         ])
             ->setTitle('Munkatársak')

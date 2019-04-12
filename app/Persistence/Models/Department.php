@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: g09
- * Date: 2018.10.28.
- * Time: 12:44
- */
 
 namespace App\Persistence\Models;
 
@@ -57,12 +51,22 @@ class Department extends Model implements ValidatableModelInterface
     }
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
     public static function getDepartmentOptions(){
         return Department::query('id_department', 'name')
-            ->pluck('name', 'name')
-            ->prepend('-','');
+            ->get();
+    }
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public static function getActiveDepartmentOptions(){
+        return Department::query()
+            ->select('id_department','name')
+            ->where('active','=','1')
+            ->get();
     }
 
     public function employees(){

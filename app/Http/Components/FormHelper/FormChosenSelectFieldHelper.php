@@ -13,7 +13,14 @@ class FormChosenSelectFieldHelper extends FormSelectFieldHelper
 {
     public const SELECT_TYPE = 'chosen';
 
-    public function __construct(string $name, string $label = '', array $options = [], ?string $selectedValue = null)
+    /**
+     * FormChosenSelectFieldHelper constructor.
+     * @param string $name
+     * @param string $label
+     * @param array|iterable $options
+     * @param null|string $selectedValue
+     */
+    public function __construct(string $name, string $label = '', $options = [], ?string $selectedValue = null)
     {
         parent::__construct($name, $label, $options, $selectedValue);
         $this->addClass('chosen-select');

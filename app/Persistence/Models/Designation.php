@@ -51,10 +51,21 @@ class Designation extends Model implements ValidatableModelInterface
             ->pluck('name', 'id_designation');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
     public static function getDesignationOptions(){
         return static::query()
+            ->select('id_designation', 'name')->get();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public static function getActiveDesignationOptions(){
+        return static::query()
             ->select('id_designation', 'name')
-            ->pluck('name', 'name');
+            ->where('active','=','1')->get();
     }
 
     public function employees(){
