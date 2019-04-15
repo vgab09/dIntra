@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int created_at
  * @property int updated_at
  * @property int deleted_at
+ * @property \Illuminate\Support\Collection leavePolicies
+ * @property \Illuminate\Support\Collection leaveRequests
  */
 class LeaveType extends Model implements ValidatableModelInterface
 {
@@ -42,10 +44,16 @@ class LeaveType extends Model implements ValidatableModelInterface
         ];
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function leavePolicies(){
         return $this->hasMany(LeavePolicy::class,'id_leave_type','id_leave_type');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function leaveRequests(){
         return $this->hasMany(LeaveRequest::class,'id_leave_type','id_leave_type');
     }
@@ -61,6 +69,9 @@ class LeaveType extends Model implements ValidatableModelInterface
             ->pluck('name', 'id_leave_type');
     }
 
+    /**
+     * @return \Illuminate\Support\Collection
+     */
     public static function getLeaveTypeOptions(){
         return static::query()
             ->select('id_leave_type', 'name')

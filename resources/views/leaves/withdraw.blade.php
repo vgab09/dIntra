@@ -35,6 +35,36 @@
             </form>
         </div>
     </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">Elérhető szabadságok</div>
+        </div>
+        <div class="card-body card-block">
+            <table class="table table-sm table-striped align-middle">
+                <thead>
+                <tr>
+                    <th scope="col">Szabadás típus</th>
+                    <th class="text-info" scope="col">Hozzárendelt</th>
+                    <th scope="col">Elhasznált</th>
+                    <th class="text-success" scope="col">Elérhető</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($leaveTypes as $leaveType)
+                <tr>
+                    <td scope="row">
+                        {{$leaveType->name}}
+                        <div class="text-info"><small>{{$leaveType->start_at}} - {{$leaveType->end_at}}</small></div>
+                    </td>
+                    <td class="text-info align-middle">{{$leaveType->assigned}}</td>
+                    <td class="align-middle">{{$leaveType->used}}</td>
+                    <td class="text-success align-middle">{{$leaveType->available}}</td>
+                </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 @endsection
 
 @push('javascript')

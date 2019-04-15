@@ -14,6 +14,7 @@ use App\Persistence\Models\Employee;
 use App\Persistence\Services\LeaveCalendarService;
 use App\Persistence\Services\LeaveRequestService;
 use App\Traits\AlertMessage;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class WithdrawLeaveRequestController
@@ -36,29 +37,33 @@ class WithdrawLeaveRequestController
         $this->LeaveRequestService = new LeaveRequestService();
     }
 
-    public function withdraw(){
+    public function withdraw()
+    {
         /**
          * @var Employee $user
          */
         $user = Auth::user();
-        $leaveTypes = $user->getAssignedLeaveDaysCount();
-        if($leaveTypes->isEmpty()){
-            return $this->redirectError(route('dashboard'),'Nincs szabadság szabály hozzárendelve a felhasználóhoz. Szabadság így nem igényelhető.');
+
+
+        $leaveTypes = $user->getAvailableLeaveDaysCount();
+
+        if ($leaveTypes->isEmpty()) {
+            return $this->redirectError(route('dashboard'), 'Nincs szabadság szabály hozzárendelve a felhasználóhoz. Szabadság így nem igényelhető.');
         }
 
-        $start_at = '2018.12.01';
-        $end_at = '2020.01.31';
+        $start_at = (new Carbon())->setDate(null,12,1)->subYear();
+        $end_at = (new Carbon())->setDate(null,1,31)->addYear();
 
-        $holidays = $this->LeaveCalendarService->getHolidays($start_at,$end_at)->mapInto(Event::class);
-        $workdays = $this->LeaveCalendarService->getWorkDays($start_at,$end_at)->mapInto(Event::class);
-        $leaveRequests = $this->LeaveCalendarService->getLeaveRequests($start_at,$end_at,$user)->mapInto(Event::class);
+        $holidays = $this->LeaveCalendarService->getHolidays($start_at, $end_at)->mapInto(Event::class);
+        $workdays = $this->LeaveCalendarService->getWorkDays($start_at, $end_at)->mapInto(Event::class);
+        $leaveRequests = $this->LeaveCalendarService->getLeaveRequests($start_at, $end_at, $user)->mapInto(Event::class);
 
         return view('leaves.withdraw',
             [
-                'leaveTypes' =>$leaveTypes,
-                'holidays' =>$holidays,
-                'workdays' =>$workdays,
-                'leaves' =>$leaveRequests
+                'leaveTypes' => $leaveTypes,
+                'holidays' => $holidays,
+                'workdays' => $workdays,
+                'leaves' => $leaveRequests
             ]);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Persistence\Models;
 
 use App\Traits\ValidatableModel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string date_of_birth
  * @property int reporting_to_id_employee
  * @property bool active
+ * @property Collection leaveTypes
+ * @property Collection leavePolicies
  *
  */
 class Employee extends Authenticatable implements ValidatableModelInterface
@@ -31,6 +34,9 @@ class Employee extends Authenticatable implements ValidatableModelInterface
     use Notifiable, HasRoles, ValidatableModel;
 
     protected $primaryKey = 'id_employee';
+
+    private $assignedDaysLoaded = false;
+    private $usedDaysLoaded = false;
 
     /**
      * The attributes that are mass assignable.
@@ -76,56 +82,88 @@ class Employee extends Authenticatable implements ValidatableModelInterface
      */
     public function getLeaveTypes()
     {
-        return LeaveType::query()
+        $this->leaveTypes = LeaveType::query()
             ->select(DB::raw('leave_types.*'))
             ->distinct()
             ->join('leave_policies as lp', 'leave_types.id_leave_type', '=', 'lp.id_leave_type')
             ->join('employee_has_leave_policies as ehlp', 'lp.id_leave_policy', '=', 'ehlp.id_leave_policy')
             ->join('employees as e', 'ehlp.id_employee', '=', 'e.id_employee')->where('e.id_employee', '=', $this->getKey())
             ->get();
+
+        return $this->leaveTypes->keyBy('id_leave_type');
     }
 
     public function getAssignedLeaveDaysCount()
     {
-        return LeaveType::query()
-            ->selectRaw('leave_policies.id_leave_type,leave_types.name,SUM(leave_policies.days) as assigned')
-            ->join('leave_policies', 'leave_policies.id_leave_type', '=', 'leave_types.id_leave_type')
-            ->join('employee_has_leave_policies', 'employee_has_leave_policies.id_leave_policy', '=', 'leave_policies.id_leave_policy')
-            ->where('employee_has_leave_policies.id_employee', '=', $this->getKey())
-            ->whereNull('leave_policies.deleted_at')
-            ->groupBy('leave_policies.id_leave_type', 'leave_types.name')
-            ->get();
+        if (empty($this->leaveTypes)) {
+            $this->getLeaveTypes();
+        }
+
+        $this->leaveTypes->map(function (LeaveType $leaveType) {
+            $leaveType->load(['leavePolicies' => function ($query) {
+                $query
+                    ->select('leave_policies.*')
+                    ->join('employee_has_leave_policies as ehlp', 'leave_policies.id_leave_policy', '=', 'ehlp.id_leave_policy')
+                    ->join('employees as e', 'ehlp.id_employee', '=', 'e.id_employee')
+                    ->where('e.id_employee', '=', $this->getKey())
+                    ->where('leave_policies.active', '=', 1);
+            }]);
+
+            return $leaveType;
+        });
+
+        $this->leaveTypes->map(function (LeaveType $leaveType) {
+            $leaveType->assigned = $leaveType->leavePolicies->sum('days');
+            return $leaveType;
+        });
+
+        $this->assignedDaysLoaded = true;
+
+        return $this->leaveTypes;
     }
 
     public function getUsedLeaveDaysCount()
     {
-        return LeaveType::query()
-            ->selectRaw('leave_requests.id_leave_type,leave_types.name,SUM(leave_requests.days) as used')
-            ->join('leave_requests', 'leave_requests.id_leave_type', '=', 'leave_types.id_leave_type')
-            ->where('leave_requests.id_employee', '=', $this->getKey())
-            ->where('leave_requests.status', '<>', LeaveRequest::STATUS_DENIED)
-            ->groupBy('leave_requests.id_leave_type', 'leave_types.name')
-            ->get();
 
-    }
-
-    public function getAvailableLeaveDaysCount(){
-
-        $assignedPolicies = $this->getAssignedLeaveDaysCount()->keyBy('id_leave_type');
-        $usedRequests = $this->getUsedLeaveDaysCount()->keyBy('id_leave_type');
-
-        foreach ($assignedPolicies as $id_leave_type => &$assigned){
-
-            if($usedRequests->has($id_leave_type)){
-
-                $assigned->available = $assigned->assigned - $usedRequests->get($id_leave_type)->used;
-            }
-            else{
-                $assigned->available = $assigned->assigned;
-            }
+        if (empty($this->leaveTypes)) {
+            $this->getLeaveTypes();
         }
 
-        return $assignedPolicies;
+        if(!$this->assignedDaysLoaded){
+            $this->getAssignedLeaveDaysCount();
+        }
+
+        $this->leaveTypes->map(function (LeaveType $leaveType) {
+            $leaveType->load(['leaveRequests' => function ($query) {
+                $query
+                    ->select('leave_requests.*')
+                    ->where('leave_requests.id_employee', '=', $this->getKey())
+                    ->where('leave_requests.status', '<>', LeaveRequest::STATUS_DENIED);
+            }]);
+            $leaveType->used = $leaveType->leaveRequests->sum('days');
+            return $leaveType;
+        });
+        $this->usedDaysLoaded = true;
+        return $this->leaveTypes;
+    }
+
+    public function getAvailableLeaveDaysCount()
+    {
+        if (empty($this->leaveTypes)) {
+            $this->getLeaveTypes();
+        }
+
+        if(!$this->usedDaysLoaded){
+            $this->getUsedLeaveDaysCount();
+        }
+
+        $this->leaveTypes->map(function (LeaveType $leaveType){
+           $leaveType->available = $leaveType->assigned - $leaveType->used;
+           return $leaveType;
+        });
+
+
+        return $this->leaveTypes;
     }
 
     /**
