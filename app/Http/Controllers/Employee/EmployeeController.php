@@ -66,7 +66,7 @@ class EmployeeController extends BREADController
                 Role::all(['id','name'])
                     ->pluck('name','id')
                     ->toArray()
-            ),
+            )->setIsMultiple(),
             FormChosenSelectFieldHelper::to('leavePolicies', 'Hozzárendelt szabadság szabályok',
                 LeaveType::with('leavePolicies')
                     ->get()
@@ -75,7 +75,7 @@ class EmployeeController extends BREADController
                         function ($item) {
                             return $item->pluck('name', 'id_leave_policy');
                         })
-            ),
+            )->setIsMultiple(),
         ]);
     }
 

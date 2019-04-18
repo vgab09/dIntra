@@ -1,6 +1,6 @@
 <?php /** @var \App\Http\Components\FormHelper\FormInputFieldHelper $field */ ?>
 <div class="form-group">
-    {{ Form::label($field->getName(),$field->getLabel()) }}
+    {{ Form::label($field->getFieldName(),$field->getLabel()) }}
     <div class="input-group">
         @if($field->hasIcon())
             <div class="input-group-addon">

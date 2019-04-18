@@ -3,6 +3,7 @@
 namespace App\Persistence\Models;
 
 use App\Traits\ValidatableModel;
+use Collective\Html\Eloquent\FormAccessible;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -31,7 +32,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class Employee extends Authenticatable implements ValidatableModelInterface
 {
-    use Notifiable, HasRoles, ValidatableModel;
+    use Notifiable, HasRoles, ValidatableModel, FormAccessible;
 
     protected $primaryKey = 'id_employee';
 

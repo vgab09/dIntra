@@ -67,6 +67,11 @@ class FormAlertFieldHelper implements FormFieldHelperInterface
         return $this->name;
     }
 
+    public function getFieldName()
+    {
+        return $this->getName();
+    }
+
     public function getType(){
         return $this->alertInstance->getType();
     }

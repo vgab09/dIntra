@@ -122,6 +122,14 @@ abstract class FormFieldHelper implements FormFieldHelperInterface
     }
 
     /**
+     * @return string
+     */
+    public function getFieldName()
+    {
+        return $this->getName();
+    }
+
+    /**
      * @param string $name
      * @return FormFieldHelper
      */

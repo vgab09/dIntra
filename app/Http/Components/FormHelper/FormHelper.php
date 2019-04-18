@@ -197,7 +197,7 @@ class FormHelper
         }
 
         $this->model->fill($this->getRequest());
-
+        $this->model->relat
         if (!$this->model->isValid()) {
             $this->errors->merge($this->model->getValidationErrorMessageBag()->toArray());
 

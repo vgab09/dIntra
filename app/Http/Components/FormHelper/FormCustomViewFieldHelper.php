@@ -68,6 +68,14 @@ class FormCustomViewFieldHelper implements FormFieldHelperInterface
         return $this->name;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getFieldName()
+    {
+        return $this->getName();
+    }
+
     public function getValue()
     {
         return $this->getView();
