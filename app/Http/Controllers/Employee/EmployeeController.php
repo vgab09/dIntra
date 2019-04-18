@@ -8,8 +8,6 @@
 
 namespace App\Http\Controllers\Employee;
 
-
-
 use App\Http\Components\FormHelper\FormCheckboxFieldHelper;
 use App\Http\Components\FormHelper\FormChosenSelectFieldHelper;
 use App\Http\Components\FormHelper\FormDropDownFieldHelper;
@@ -18,13 +16,13 @@ use App\Http\Components\FormHelper\FormInputFieldHelper;
 use App\Http\Components\FormHelper\FormSelectFieldHelper;
 use App\Http\Components\ListHelper\ListFieldHelper;
 use App\Http\Components\ListHelper\ListHelper;
-use App\Http\Components\ToolbarLink\Link;
 use App\Http\Components\ToolbarLink\ToolbarLinks;
 use App\Http\Controllers\BREADController;
 use App\Persistence\Models\Department;
 use App\Persistence\Models\Designation;
 use App\Persistence\Models\Employee;
 use App\Persistence\Models\EmploymentForm;
+use App\Persistence\Models\LeaveType;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Role;
 
@@ -37,7 +35,7 @@ class EmployeeController extends BREADController
     }
 
     /**
-     * @param Model|null $model
+     * @param Employee|Model|null $model
      * @return FormHelper
      */
     protected function buildFormHelper($model)
@@ -68,6 +66,15 @@ class EmployeeController extends BREADController
                 Role::all(['id','name'])
                     ->pluck('name','id')
                     ->toArray()
+            ),
+            FormChosenSelectFieldHelper::to('leavePolicies', 'Hozzárendelt szabadság szabályok',
+                LeaveType::with('leavePolicies')
+                    ->get()
+                    ->pluck('leavePolicies', 'name')
+                    ->map(
+                        function ($item) {
+                            return $item->pluck('name', 'id_leave_policy');
+                        })
             ),
         ]);
     }
