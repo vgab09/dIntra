@@ -312,6 +312,6 @@ class FormInputFieldHelper extends FormFieldHelper
      */
     public function renderTag()
     {
-        return Form::input($this->getType(),$this->getName(),$this->getValue(),$this->collectAttributes());
+        return Form::input($this->getType(),$this->getFieldName(),$this->getValue(),$this->collectAttributes());
     }
 }

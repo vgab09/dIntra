@@ -3,7 +3,7 @@
 <button
         id="{{$field->getElementId()}}"
         class="{{$field->getClass()}}"
-        name="{{$field->getFieldName()}}"
+        name="{{$field->getName()}}"
         type="{{$field->getType()}}"
         {{!$field->isDisabled() ?: 'disabled'}}
                 >

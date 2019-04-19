@@ -73,6 +73,11 @@ abstract class FormFieldHelper implements FormFieldHelperInterface
     protected $class;
 
     /**
+     * @var bool
+     */
+    protected $multiple = false;
+
+    /**
      * @var string
      */
     protected $elementId;
@@ -126,6 +131,10 @@ abstract class FormFieldHelper implements FormFieldHelperInterface
      */
     public function getFieldName()
     {
+        if($this->isMultiple()){
+            return $this->getName().'[]';
+        }
+
         return $this->getName();
     }
 
@@ -372,6 +381,25 @@ abstract class FormFieldHelper implements FormFieldHelperInterface
     public function getElementId()
     {
         return $this->elementId;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isMultiple(): bool
+    {
+        return $this->multiple;
+    }
+
+    /**
+     * @param bool $isMultiple
+     * @return $this
+     */
+    public function setMultiple(bool $isMultiple = true)
+    {
+        $this->multiple = $isMultiple;
+        return $this;
     }
 
     /**

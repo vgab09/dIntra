@@ -13,8 +13,6 @@ class FormChosenSelectFieldHelper extends FormSelectFieldHelper
 {
     public const SELECT_TYPE = 'chosen';
 
-    protected $isMultiple = false;
-
     /**
      * FormChosenSelectFieldHelper constructor.
      * @param string $name
@@ -26,31 +24,11 @@ class FormChosenSelectFieldHelper extends FormSelectFieldHelper
     {
         parent::__construct($name, $label, $options, $selectedValue);
         $this->addClass('chosen-select');
-        $this->setSelectAttributes(array_merge($this->getSelectAttributes(),['multiple'=>'multiple']));
-    }
+        if(is_iterable(collect($options)->first())){
+            $this->setMultiple();
+            $this->addSelectAttribute('multiple','multiple');
+        }
 
-    /**
-     * @return bool
-     */
-    public function isMultiple(): bool
-    {
-        return $this->isMultiple;
     }
-
-    /**
-     * @param bool $isMultiple
-     * @return $this
-     */
-    public function setIsMultiple(bool $isMultiple = true)
-    {
-        $this->isMultiple = $isMultiple;
-        return $this;
-    }
-
-    public function getFieldName()
-    {
-        return $this->getName().'[]';
-    }
-
 
 }
