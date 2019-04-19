@@ -12,13 +12,11 @@ namespace App\Http\Components\Calendar;
 use App\Persistence\Models\Holiday;
 use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\Workday;
-use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Database\Eloquent\JsonEncodingException;
 use Illuminate\Support\Carbon;
-use JsonSerializable;
-use stdClass;
 
-class Event implements Jsonable, JsonSerializable
+
+class Event implements EventInterface
 {
     protected $start;
     protected $end;
@@ -27,9 +25,13 @@ class Event implements Jsonable, JsonSerializable
     protected $color;
     protected $textColor;
 
-    public function __construct($element = null)
+    /**
+     * Event constructor.
+     * @param LeaveRequest|Holiday|Workday $element
+     */
+    public function __construct($element)
     {
-        switch (get_class(is_null($element)? new stdClass() : $element)){
+        switch ($element){
             case LeaveRequest::class:
                 $this->buildFromLeaveRequest($element);
                 break;
