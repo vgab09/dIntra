@@ -14,6 +14,7 @@ use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\Workday;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Database\Eloquent\JsonEncodingException;
+use Illuminate\Support\Carbon;
 use JsonSerializable;
 use stdClass;
 
@@ -24,6 +25,7 @@ class Event implements Jsonable, JsonSerializable
     protected $title;
     protected $rendering;
     protected $color;
+    protected $textColor;
 
     public function __construct($element = null)
     {
@@ -133,6 +135,26 @@ class Event implements Jsonable, JsonSerializable
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getTextColor()
+    {
+        return $this->textColor;
+    }
+
+    /**
+     * @param mixed $textColor
+     * @return Event
+     */
+    public function setTextColor($textColor)
+    {
+        $this->textColor = $textColor;
+        return $this;
+    }
+
+
+
 
     /**
      * @param Holiday $holiday
@@ -167,6 +189,8 @@ class Event implements Jsonable, JsonSerializable
         $this->setTitle($holiday->name);
         $this->setStart($holiday->start);
         $this->setEnd($holiday->end);
+        $this->setColor('#e34f26');
+        $this->setTextColor('#fff');
 
         return $this;
     }
@@ -180,6 +204,8 @@ class Event implements Jsonable, JsonSerializable
         $this->setTitle($workday->name);
         $this->setStart($workday->start);
         $this->setEnd($workday->end);
+        $this->setColor('#28a745');
+        $this->setTextColor('#4875b4');
 
         return $this;
     }
@@ -196,6 +222,14 @@ class Event implements Jsonable, JsonSerializable
         $this->setStart($leaveRequest->start_at);
         $this->setEnd($leaveRequest->end_at);
 
+        if($leaveRequest->status == LeaveRequest::STATUS_PENDING){
+            $this->setColor('#ffc107');
+        }
+        else{
+            $this->setColor('#28a745');
+            $this->setTextColor('#fff');
+        }
+
         return $this;
     }
 
@@ -207,9 +241,11 @@ class Event implements Jsonable, JsonSerializable
         return [
             'title' => $this->getTitle(),
             'start' => $this->getStart(),
-            'end' => $this->getEnd(),
+            'end' => (new Carbon($this->getEnd()))->addDay()->toDateString(),             //Fullcalendar correction.
             'rendering' => $this->getRendering(),
             'color' => $this->getColor(),
+            'textColor'=>$this->getTextColor(),
+            'allDay' => 'true',
         ];
     }
 
