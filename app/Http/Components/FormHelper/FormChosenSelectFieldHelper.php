@@ -24,8 +24,11 @@ class FormChosenSelectFieldHelper extends FormSelectFieldHelper
     {
         parent::__construct($name, $label, $options, $selectedValue);
         $this->addClass('chosen-select');
-        $this->setSelectAttributes(array_merge($this->getSelectAttributes(),['multiple'=>'multiple']));
-    }
+        if(is_iterable(collect($options)->first())){
+            $this->setMultiple();
+            $this->addSelectAttribute('multiple','multiple');
+        }
 
+    }
 
 }

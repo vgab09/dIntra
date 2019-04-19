@@ -128,9 +128,19 @@ class FormSelectFieldHelper extends FormFieldHelper
      * @param array $selectAttributes
      * @return FormSelectFieldHelper
      */
-    public function setSelectAttributes(array $selectAttributes): FormSelectFieldHelper
+    public function setSelectAttributes($selectAttributes): FormSelectFieldHelper
     {
         $this->selectAttributes = $selectAttributes;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param string $value
+     * @return FormSelectFieldHelper
+     */
+    public function addSelectAttribute($name,$value): FormSelectFieldHelper{
+        $this->selectAttributes[$name] = $value;
         return $this;
     }
 
@@ -197,7 +207,7 @@ class FormSelectFieldHelper extends FormFieldHelper
     public function renderTag()
     {
         return Form::select(
-            $this->getName(),
+            $this->getFieldName(),
             $this->getOptions(),
             $this->getValue(),
             $this->collectAttributes(),

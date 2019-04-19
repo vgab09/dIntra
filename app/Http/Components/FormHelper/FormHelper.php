@@ -94,9 +94,6 @@ class FormHelper
      */
     private $formBuilderInstance;
 
-
-
-
         /**
      * FormHelper constructor.
      * @param string $name Form name
@@ -197,7 +194,6 @@ class FormHelper
         }
 
         $this->model->fill($this->getRequest());
-
         if (!$this->model->isValid()) {
             $this->errors->merge($this->model->getValidationErrorMessageBag()->toArray());
 

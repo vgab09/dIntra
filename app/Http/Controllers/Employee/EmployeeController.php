@@ -43,6 +43,7 @@ class EmployeeController extends BREADController
         return FormHelper::to('employee',$model,[
             FormInputFieldHelper::toText('name','Név')->setRequired(),
             FormInputFieldHelper::toEmail('email','Email')->setRequired(),
+            FormInputFieldHelper::toPassword('password','Jelszó')->setRequired()->setDescription('Minimum 6 karakter, kis - nagy betű, szám és speciális karakter')->setValue(''),
             FormInputFieldHelper::toDate('date_of_birth','Születési dátum'),
             FormSelectFieldHelper::to('id_designation','Beosztás',
                 Designation::getActiveDesignationOptions()
@@ -60,13 +61,6 @@ class EmployeeController extends BREADController
                     ->pluck('name','id_employment_form')
             )->setRequired(),
             FormInputFieldHelper::toDate('hiring_date','Munkaviszony kezdete')->setRequired(),
-            FormInputFieldHelper::toDate('termination_date','Munkaviszony vége'),
-            FormCheckboxFieldHelper::toSwitch('active','Aktív'),
-            FormChosenSelectFieldHelper::to('roles','Jogosultsági csoport',
-                Role::all(['id','name'])
-                    ->pluck('name','id')
-                    ->toArray()
-            ),
             FormChosenSelectFieldHelper::to('leavePolicies', 'Hozzárendelt szabadság szabályok',
                 LeaveType::with('leavePolicies')
                     ->get()
@@ -76,6 +70,13 @@ class EmployeeController extends BREADController
                             return $item->pluck('name', 'id_leave_policy');
                         })
             ),
+            FormChosenSelectFieldHelper::to('roles','Jogosultsági csoport',
+                Role::all(['id','name'])
+                    ->pluck('name','id')
+                    ->toArray()
+            ),
+            FormInputFieldHelper::toDate('termination_date','Munkaviszony vége'),
+            FormCheckboxFieldHelper::toSwitch('active','Aktív'),
         ]);
     }
 
@@ -141,4 +142,58 @@ class EmployeeController extends BREADController
     {
         return Employee::with('designation','department','employmentForm');
     }
+
+    /**
+     * Update resource
+     *
+     * @param int $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View|RedirectResponse
+     * @throws \Exception
+     */
+    public function update($id)
+    {
+        $form = $this->getFormHelperToUpdate(Employee::findOrFail($id));
+
+        if(!$form->validate() || !$this->save($form->getModel())){
+            return $form->render();
+        }
+
+        return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Sikeres modósítás');
+    }
+
+    public function insert()
+    {
+        $form = $this->getFormHelperToInsert();
+
+        if(!$form->validateAndSave() || !$this->save($form->getModel())){
+            return $form->render();
+        }
+
+        return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Sikeres létrehozás');
+
+    }
+
+    /**
+     * @param Employee $model
+     * @return bool
+     */
+    protected function save($model)
+    {
+        $roles = request('roles');
+        $leavePolicies = request('leavePolicies',[]);
+
+        if(empty($roles)){
+            $this->alertError('A felhasználót legalább egy csoporthoz hozzá kell rendelni.');
+            return false;
+        }
+
+        $model->syncRoles($roles);
+        $model->leavePolicies()->sync($leavePolicies);
+        $model->save();
+
+        return true;
+
+    }
+
+
 }

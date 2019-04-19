@@ -41,7 +41,7 @@ class FormTextareaFieldHelper extends FormInputFieldHelper
      */
     public function renderTag()
     {
-        return Form::textarea($this->getName(),$this->getValue(),$this->collectAttributes());
+        return Form::textarea($this->getFieldName(),$this->getValue(),$this->collectAttributes());
     }
 
 }

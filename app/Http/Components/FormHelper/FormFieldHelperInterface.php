@@ -29,6 +29,8 @@ interface FormFieldHelperInterface
 
     public function getName();
 
+    public function getFieldName();
+
     public function getValue();
 
     public function setValue($value);

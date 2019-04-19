@@ -73,6 +73,14 @@ class FormCustomHTMLFieldHelper implements FormFieldHelperInterface
     /**
      * @return string
      */
+    public function getFieldName()
+    {
+        return $this->getName();
+    }
+
+    /**
+     * @return string
+     */
     public function getValue()
     {
         return $this->html;
