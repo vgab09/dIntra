@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -23,6 +24,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string termination_date
  * @property string name
  * @property string email
+ * @property string password
  * @property string date_of_birth
  * @property int reporting_to_id_employee
  * @property bool active
@@ -69,6 +71,7 @@ class Employee extends Authenticatable implements ValidatableModelInterface
             'date_of_birth' => 'required|date',
             'reporting_to_id_employee' => 'nullable|int|exists:employees',
             'active' => 'required|boolean',
+            'password' => 'required|string|min:6',
             'email' => [
                 'required',
                 'email',
@@ -76,6 +79,28 @@ class Employee extends Authenticatable implements ValidatableModelInterface
                 'max:127'
             ]
         ];
+    }
+
+    /**
+     * @param $validationRules
+     * @param $ruleName
+     * @return \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Factory
+     */
+
+    protected function makeValidator($validationRules, $ruleName = null){
+
+        if(empty($ruleName)){
+            $rules = $validationRules;
+        }
+        elseif(array_key_exists($ruleName,$validationRules)){
+            $rules = $validationRules[$ruleName];
+        }
+        else{
+            $rules = [];
+        }
+
+        $this->validator = Validator::make(array_merge($this->attributesToArray(),['password' => $this->password]),$rules);
+        return $this->validator;
     }
 
     /**
