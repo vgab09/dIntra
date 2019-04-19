@@ -16,6 +16,8 @@ use App\Persistence\Services\LeaveRequestService;
 use App\Persistence\Models\Employee;
 use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\LeaveType;
+use Carbon\CarbonInterval;
+use Exception;
 use http\Env\Request;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
@@ -29,6 +31,68 @@ class LeaveRequestController extends BREADController
     {
         $this->modelClass = LeaveRequest::class;
     }
+
+    /**
+     * Save resource
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     * @throws \Exception
+     * @throws \Throwable
+     */
+    public function insert()
+    {
+        $leaveType = LeaveType::findOrFail(intval(request('id_leave_type')));
+        $dateRange = request('date_range',false);
+        $comment = htmlspecialchars(request('date_range'));
+        $id_user = request('id_user',false);
+        $range = [];
+
+        if(empty($dateRange)){
+            return $this->redirectError(url()->previous(),'Az időtartalm kitöltése kötelező');
+        }
+
+        preg_match('/^(?P<start>([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])))\s(-|to)\s(?P<end>([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])))$/is',$dateRange,$range);
+
+        if(empty($range['start']) || empty($range['end'])){
+            if(empty($dateRange)){
+                return $this->redirectError(url()->previous(),'Nem megfelelő időtartam formátum. Helyes formátum: ÉÉÉÉ-HH-NN - ÉÉÉÉ-HH-NN');
+            }
+        }
+
+        try{
+            $start_at = new Carbon($range['start']);
+            $end_at = new Carbon($range['end']);
+            unset($range);
+        }
+        catch (\InvalidArgumentException $e)
+        {
+            return $this->redirectError(url()->previous(),'Nem megfelelő időtartam formátum. A megadott dátumok nem értelmezhetőek. Helyes formátum: ÉÉÉÉ-HH-NN - ÉÉÉÉ-HH-NN');
+        }
+
+        /**
+         * @var Employee $user
+         */
+        $user = $id_user ? Employee::findOrFail($id_user) : Auth::user();
+        unset($id_user);
+
+        $service = new LeaveRequestService();
+
+        try{
+            $service->setUser($user)
+                ->setLeaveType($leaveType)
+                ->setDuration($start_at, $end_at)
+                ->setComment($comment)
+                ->create();
+        }
+        catch (ValidationException $e){
+            return redirect(url()->previous())->withErrors($e->validator->getMessageBag());
+        }
+        catch( Exception $e )
+        {
+            return redirect(url()->previous())->withErrors($e->getMessage());
+        }
+    }
+
 
     /**
      * @param $id_leave_request

@@ -11,11 +11,6 @@ use App\Persistence\Models\Workday;
 class LeaveCalendarService
 {
 
-    public function __construct()
-    {
-
-    }
-
     /**
      * @param \DateTimeInterface|string $start date
      * @param \DateTimeInterface|string  date
@@ -59,6 +54,10 @@ class LeaveCalendarService
         }
 
         return $leaveRequest->get();
+
+    }
+
+    public function getWeekends($start,$end){
 
     }
 

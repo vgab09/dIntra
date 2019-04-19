@@ -355,16 +355,21 @@ class DatabaseSeeder extends Seeder
         $this->assignPermissionsToRoles($this->createCRUDPermissions('holiday'), $this->administratorRole, $this->managerRole);
         $this->assignPermissionsToRoles($this->createCRUDPermissions('leave_policy'), $this->administratorRole, $this->managerRole);
 
-        $this->assignPermissionsToRoles(Permission::create(['name' => 'request_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
+
         $this->assignPermissionsToRoles(Permission::create(['name' => 'withdraw_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
         $this->assignPermissionsToRoles(Permission::create(['name' => 'list_own_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
         $this->assignPermissionsToRoles(Permission::create(['name' => 'show_leave_request_history']), $this->administratorRole, $this->managerRole, $this->leaderRole, $this->employeeRole);
 
         $this->assignPermissionsToRoles(Permission::create(['name' => 'list_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'show_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
+
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'create_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
+        $this->assignPermissionsToRoles(Permission::create(['name' => 'update_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
+
         $this->assignPermissionsToRoles(Permission::create(['name' => 'accept_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
         $this->assignPermissionsToRoles(Permission::create(['name' => 'denny_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
 
-        $this->assignPermissionsToRoles(Permission::create(['name' => 'show_leave_request']), $this->administratorRole, $this->managerRole, $this->leaderRole);
+
 
     }
 

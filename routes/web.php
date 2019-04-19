@@ -121,6 +121,7 @@ Route::group(['middleware' => 'auth'], function () {
         $this->post('/delete/{id_employee}','EmployeeController@resolveContractAndDelete')->middleware('permission:delete_employee');
     });
 
+    //Roles
     Route::group(['namespace'=>'Permission','prefix' => 'role'], function () {
 
         //Roles
@@ -133,6 +134,8 @@ Route::group(['middleware' => 'auth'], function () {
         $this->post('/delete/{id}','RoleController@resolveContractAndDelete')->middleware('permission:delete_role');
 
     });
+
+    //Permissions
     Route::group(['namespace'=>'Permission','prefix' => 'permission'], function () {
         //permissions
         $this->get('/', 'PermissionController@index')->middleware('permission:list_permission')->name('indexPermission');
@@ -165,6 +168,7 @@ Route::group(['middleware' => 'auth'], function () {
 
         //Withdraw Leave
         $this->get('/withdraw/','WithdrawLeaveRequestController@withdraw')->middleware('permission:withdraw_leave_request')->name('withdrawLeaveRequest');
+
     });
 
 });

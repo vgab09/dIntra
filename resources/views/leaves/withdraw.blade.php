@@ -7,13 +7,14 @@
         <div class="card-header">
             <div class="card-title">Szabadság igény rögzítése</div>
         </div>
-        <div class="card-body card-block">
-            <form>
+        <form method="POST" action="{{action('LeaveRequest\LeaveRequestController@insert')}}">
+            @csrf
+            <div class="card-body card-block">
                 <div class="form-group row">
                     <label for="date_range" class="col-sm-3 col-form-label-lg">Szabadság típusa:</label>
                     <div class="col-sm-9">
                         <div class="input-group">
-                            <select class="custom-select custom-select-lg mb-3">
+                            <select name="id_leave_type" class="custom-select custom-select-lg mb-3">
                                 @foreach($leaveTypes as $leaveType)
                                     <option value="{{$leaveType->id_leave_type}}">{{$leaveType->name}}</option>
                                 @endforeach
@@ -25,15 +26,31 @@
                     <label for="date_range" class="col-sm-3 col-form-label-lg">Időtartam:</label>
                     <div class="col-sm-9">
                         <div class="input-group">
-                            <input name="date_range" type="text" class="date-range-picker form-control-lg" placeholder="">
+                            <input name="date_range" type="text" class="date-range-picker form-control-lg"
+                                   placeholder="">
                             <div class="input-group-append">
-                                <button class="btn btn-lg btn-outline-secondary date-range-picker-calendar-button" type="button"><i class="far fa-calendar-alt"></i></button>
+                                <button class="btn btn-lg btn-outline-secondary date-range-picker-calendar-button"
+                                        type="button"><i class="far fa-calendar-alt"></i></button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
+                <div class="form-group row">
+                    <label for="comment" class="col-sm-3 col-form-label-lg">Megjegyzés:</label>
+                    <div class="col-sm-9">
+                        <div class="input-group">
+                            <textarea id="comment" class=" form-control" name="comment" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button id="submit" class="btn btn-primary" name="submit" type="submit">
+                    <i class="far fa-save"></i>
+                    Igénylés
+                </button>
+            </div>
+        </form>
     </div>
     <div class="card">
         <div class="card-header">
@@ -51,15 +68,17 @@
                 </thead>
                 <tbody>
                 @foreach($leaveTypes as $leaveType)
-                <tr>
-                    <td scope="row">
-                        {{$leaveType->name}}
-                        <div class="text-info"><small>{{$leaveType->start_at}} - {{$leaveType->end_at}}</small></div>
-                    </td>
-                    <td class="text-info align-middle">{{$leaveType->assigned}}</td>
-                    <td class="align-middle">{{$leaveType->used}}</td>
-                    <td class="text-success align-middle">{{$leaveType->available}}</td>
-                </tr>
+                    <tr>
+                        <td scope="row">
+                            {{$leaveType->name}}
+                            <div class="text-info">
+                                <small>{{$leaveType->start_at}} - {{$leaveType->end_at}}</small>
+                            </div>
+                        </td>
+                        <td class="text-info align-middle">{{$leaveType->assigned}}</td>
+                        <td class="align-middle">{{$leaveType->used}}</td>
+                        <td class="text-success align-middle">{{$leaveType->available}}</td>
+                    </tr>
                 @endforeach
                 </tbody>
             </table>
@@ -78,7 +97,7 @@
             $('.date-range-picker').daterangepicker({
                 "showWeekNumbers": false,
                 "locale": {
-                    "format": "YYYY-MM-DD.",
+                    "format": "YYYY-MM-DD",
                     "separator": " - ",
                     "applyLabel": "Kiválaszt",
                     "cancelLabel": "Mégse",
@@ -119,7 +138,7 @@
 
                     if (date.isoWeekday() == 6 || date.isoWeekday() == 7) {
                         for (index = 0, len = workdays.length; index < len; ++index) {
-                            if(moment.range(workdays[index].start,workdays[index].end).contains(date)){
+                            if (moment.range(workdays[index].start, workdays[index].end).contains(date)) {
                                 return false;
                             }
                         }
@@ -127,13 +146,13 @@
                     }
 
                     for (index = 0, len = hollidays.length; index < len; ++index) {
-                        if(moment.range(hollidays[index].start,hollidays[index].end).contains(date)){
+                        if (moment.range(hollidays[index].start, hollidays[index].end).contains(date)) {
                             return true;
                         }
                     }
 
                     for (index = 0, len = leaves.length; index < len; ++index) {
-                        if(moment.range(leaves[index].start,leaves[index].end).contains(date)){
+                        if (moment.range(leaves[index].start, leaves[index].end).contains(date)) {
                             return true;
                         }
                     }

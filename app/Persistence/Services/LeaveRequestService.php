@@ -12,6 +12,7 @@ use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\LeaveRequestHistory;
 use App\Persistence\Models\LeaveType;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -125,6 +126,27 @@ class LeaveRequestService
         $this->leaveRequest->status = $status;
     }
 
+    protected function checkAvailableDays(){
+        $available = $this->user->getAvailableLeaveDaysCount()->find($this->leaveRequest->id_leave_type);
+
+        if($available - $this->leaveRequest->days < 0){
+            throw new Exception('Nincs elegendő szabadság, a '.$this->leaveRequest->leaveType->name . ' szabadság típus esetén.');
+        }
+    }
+
+    protected function checkDateRange()
+    {
+        $start_at = $this->leaveRequest->start_at;
+        $end_at = $this->leaveRequest->end_at;
+
+        $service = new LeaveCalendarService();
+
+        $weekends = $service->getWeekends($start_at,$end_at);
+        $holidays = $service->getHolidays($start_at,$end_at);
+        $workdays = $service->getWorkDays($start_at,$end_at);
+        $leaveRequest = $service->getLeaveRequests($start_at,$end_at,$this->user);
+    }
+
     /**
      * Create new leave request and save
      * @return LeaveRequest
@@ -133,6 +155,8 @@ class LeaveRequestService
     public function create()
     {
         $this->setStatus(LeaveRequest::STATUS_PENDING);
+        $this->checkDateRange();
+        $this->checkAvailableDays();
         $this->leaveRequest->validate();
         $this->leaveRequest->saveOrFail();
         event(new NewLeaveRequest($this->leaveRequest, $this->user));
@@ -182,10 +206,13 @@ class LeaveRequestService
 
     /**
      * @param Employee $user
+     * @return LeaveRequestService
      */
-    public function setUser(Employee $user)
+    public function setUser(Employee $user): LeaveRequestService
     {
         $this->user = $user;
+        $this->leaveRequest->id_employee = $this->user->getKey();
+        return $this;
     }
 
 
