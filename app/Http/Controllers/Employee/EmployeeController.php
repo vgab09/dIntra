@@ -43,19 +43,17 @@ class EmployeeController extends BREADController
         return FormHelper::to('employee',$model,[
             FormInputFieldHelper::toText('name','Név')->setRequired(),
             FormInputFieldHelper::toEmail('email','Email')->setRequired(),
-            FormInputFieldHelper::toPassword('password','Jelszó')->setRequired()->setDescription('Minimum 6 karakter, kis - nagy betű, szám és speciális karakter')->setValue(''),
+            //FormInputFieldHelper::toPassword('password','Jelszó')->setRequired()->setDescription('Minimum 6 karakter, kis - nagy betű, szám és speciális karakter')->setValue(''),
             FormInputFieldHelper::toDate('date_of_birth','Születési dátum'),
             FormSelectFieldHelper::to('id_designation','Beosztás',
                 Designation::getActiveDesignationOptions()
                     ->pluck('name','id_designation')
                     ->prepend('-','')
-            )
-                ->setRequired(),
+            ),
             FormSelectFieldHelper::to('id_department','Osztály',Department::getActiveDepartmentOptions()
                 ->pluck('name','id_department')
                 ->prepend('-','')
-            )
-                ->setRequired(),
+            ),
             FormSelectFieldHelper::to('id_employment_form','Munkarend',
                 EmploymentForm::getEmploymentFormOptions()
                     ->pluck('name','id_employment_form')

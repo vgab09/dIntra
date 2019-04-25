@@ -68,8 +68,45 @@ class LeaveRequestService
     {
         $this->leaveRequest->start_at = $startAt;
         $this->leaveRequest->end_at = $endAt;
-        $this->setDays($startAt->diffInDays($endAt));
+        $this->setDays($this->calculateDaysCount());
         return $this;
+    }
+
+    protected function calculateDaysCount(Carbon $startAt, Carbon $endAt){
+
+        $service = new LeaveCalendarService();
+
+        $holidays = $service->getHolidays($startAt,$endAt);
+        $workdays = $service->getWorkDays($startAt,$endAt);
+        $leaveRequest = $service->getLeaveRequests($startAt,$endAt,$this->user,$this->leaveRequest->leaveType);
+
+        return $startAt->diffInDaysFiltered(function (Carbon $date) use($holidays,$workdays,$leaveRequest){
+
+            foreach ($workdays as $workday){
+                if($date->between($workday->start,$workday->end)){
+                    return true;
+                }
+            }
+
+            if($date->isWeekend()){
+                return false;
+            }
+
+            foreach ($holidays as $holiday){
+                if($date->between($holiday->start,$holiday->end)){
+                    return false;
+                }
+            }
+
+            foreach ($leaveRequest as $leaveRequest){
+                if($date->between($leaveRequest->start_at,$leaveRequest->end_at)){
+                    return false;
+                }
+            }
+
+            return true;
+
+        },$endAt);
     }
 
     /**
