@@ -50,9 +50,8 @@ class WithdrawLeaveRequestController
         if ($leaveTypes->isEmpty()) {
             return $this->redirectError(route('dashboard'), 'Nincs szabadság szabály hozzárendelve a felhasználóhoz. Szabadság így nem igényelhető.');
         }
-
-        $start_at = (new Carbon())->setDate(null,12,1)->subYear();
-        $end_at = (new Carbon())->setDate(null,1,31)->addYear();
+        $start_at = $leaveTypes->min('start_at');
+        $end_at = $leaveTypes->max('end_at');
 
         $holidays = $this->LeaveCalendarService->getHolidays($start_at, $end_at)->mapInto(Event::class);
         $workdays = $this->LeaveCalendarService->getWorkDays($start_at, $end_at)->mapInto(Event::class);
@@ -61,6 +60,8 @@ class WithdrawLeaveRequestController
         return view('leaves.withdraw',
             [
                 'leaveTypes' => $leaveTypes,
+                'minDate' => $start_at,
+                'maxDate' => $end_at,
                 'holidays' => $holidays,
                 'workdays' => $workdays,
                 'leaves' => $leaveRequests

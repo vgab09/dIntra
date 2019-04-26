@@ -31,7 +31,7 @@ class Event implements EventInterface
      */
     public function __construct($element)
     {
-        switch ($element){
+        switch (get_class($element)){
             case LeaveRequest::class:
                 $this->buildFromLeaveRequest($element);
                 break;
@@ -164,7 +164,7 @@ class Event implements EventInterface
      */
     public static function fromHoliday(Holiday $holiday)
     {
-        return (new static())->buildFromHoliday($holiday);
+        return new static($holiday);
     }
 
     /**
@@ -173,13 +173,13 @@ class Event implements EventInterface
      */
     public static function fromWorkDay(Workday $workday)
     {
-        return (new static())->buildFromWorkDay($workday);
+        return new static($workday);
     }
 
 
     public static function fromLeaveRequest(LeaveRequest $leaveRequest)
     {
-        return (new static())->buildFromLeaveRequest($leaveRequest);
+        return new static($leaveRequest);
     }
 
     /**

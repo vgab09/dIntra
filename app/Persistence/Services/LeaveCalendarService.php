@@ -43,10 +43,10 @@ class LeaveCalendarService
      * @param  \DateTimeInterface|string $start
      * @param  \DateTimeInterface|string $end
      * @param int|Employee|null $user
-     * @param LeaveType|null $leaveType
+     * @param int|LeaveType|null $leaveType
      * @return LeaveRequest[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
      */
-    public function getLeaveRequests($start,$end,$user = null, ?LeaveType $leaveType = null){
+    public function getLeaveRequests($start,$end,$user = null, $leaveType = null){
         $leaveRequest =  LeaveRequest::with(['employee','leaveType'])
             ->where('status','<>',LeaveRequest::STATUS_DENIED)
             ->whereDate('start_at','>=',$start)
@@ -56,8 +56,8 @@ class LeaveCalendarService
             $leaveRequest->where('id_employee','=',is_int($user) ? $user : $user->getKey());
         }
 
-        if($leaveType !== null){
-            $leaveRequest->where('leaveTypes.id_leave_type','=',$leaveType->getKey());
+        if(isset($leaveType)){
+            $leaveRequest->where('id_leave_type','=',is_int($leaveType) ? $leaveType : $leaveType->getKey());
         }
 
         return $leaveRequest->get();

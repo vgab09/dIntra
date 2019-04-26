@@ -68,7 +68,7 @@ class LeaveRequestService
     {
         $this->leaveRequest->start_at = $startAt;
         $this->leaveRequest->end_at = $endAt;
-        $this->setDays($this->calculateDaysCount());
+        $this->setDays($this->calculateDaysCount($startAt,$endAt));
         return $this;
     }
 
@@ -83,7 +83,7 @@ class LeaveRequestService
         return $startAt->diffInDaysFiltered(function (Carbon $date) use($holidays,$workdays,$leaveRequest){
 
             foreach ($workdays as $workday){
-                if($date->between($workday->start,$workday->end)){
+                if($date->between(new Carbon($workday->start),new Carbon($workday->end))){
                     return true;
                 }
             }
@@ -93,20 +93,20 @@ class LeaveRequestService
             }
 
             foreach ($holidays as $holiday){
-                if($date->between($holiday->start,$holiday->end)){
+                if($date->between(new Carbon($holiday->start), new Carbon($holiday->end))){
                     return false;
                 }
             }
 
             foreach ($leaveRequest as $leaveRequest){
-                if($date->between($leaveRequest->start_at,$leaveRequest->end_at)){
+                if($date->between(new Carbon($leaveRequest->start_at), new Carbon($leaveRequest->end_at))){
                     return false;
                 }
             }
 
             return true;
 
-        },$endAt);
+        },$endAt->addDay());
     }
 
     /**
@@ -166,22 +166,9 @@ class LeaveRequestService
     protected function checkAvailableDays(){
         $available = $this->user->getAvailableLeaveDaysCount()->find($this->leaveRequest->id_leave_type);
 
-        if($available - $this->leaveRequest->days < 0){
+        if($available->available - $this->leaveRequest->days < 0){
             throw new Exception('Nincs elegendő szabadság, a '.$this->leaveRequest->leaveType->name . ' szabadság típus esetén.');
         }
-    }
-
-    protected function checkDateRange()
-    {
-        $start_at = $this->leaveRequest->start_at;
-        $end_at = $this->leaveRequest->end_at;
-
-        $service = new LeaveCalendarService();
-
-        $weekends = $service->getWeekends($start_at,$end_at);
-        $holidays = $service->getHolidays($start_at,$end_at);
-        $workdays = $service->getWorkDays($start_at,$end_at);
-        $leaveRequest = $service->getLeaveRequests($start_at,$end_at,$this->user);
     }
 
     /**
@@ -192,7 +179,6 @@ class LeaveRequestService
     public function create()
     {
         $this->setStatus(LeaveRequest::STATUS_PENDING);
-        $this->checkDateRange();
         $this->checkAvailableDays();
         $this->leaveRequest->validate();
         $this->leaveRequest->saveOrFail();

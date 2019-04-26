@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\LeaveRequest;
 
 
+use App\Http\Components\Alert\Alert;
 use App\Http\Components\FormHelper\FormButtonFieldHelper;
 use App\Http\Components\FormHelper\FormCustomViewFieldHelper;
 use App\Http\Components\FormHelper\FormDropDownFieldHelper;
@@ -91,6 +92,7 @@ class LeaveRequestController extends BREADController
         {
             return redirect(url()->previous())->withErrors($e->getMessage());
         }
+        return $this->redirectSuccess(route('dashboard'),'Sikeres szabadság igénylés');
     }
 
 
@@ -222,9 +224,9 @@ class LeaveRequestController extends BREADController
             $service->accept();
         }
         catch (ValidationException $e){
-            return redirect(route('showDennyLeaveRequestForm', $leaveRequest->getKey()))->withErrors($e->validator->getMessageBag());
+            return redirect(url()->previous())->withErrors($e->validator->getMessageBag());
         }
-        return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Szabadság elfogadva');
+        return redirect(url()->previous())->with(Alert::SUCCESS,'Szabadság elfogadva');
 
     }
 
@@ -278,7 +280,7 @@ class LeaveRequestController extends BREADController
             $service->denny(request('reason',''));
         }
         catch (ValidationException $e){
-            return redirect(route('showDennyLeaveRequestForm', $leaveRequest->getKey()))->withErrors($e->validator->getMessageBag());
+            return redirect(url()->previous())->withErrors($e->validator->getMessageBag());
         }
 
         return $this->redirectInfo($this->getSuccessRedirectUrl(), 'Szabadság elutasítva');

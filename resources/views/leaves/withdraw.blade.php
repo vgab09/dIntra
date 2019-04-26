@@ -104,6 +104,8 @@
                     "fromLabel": "tól",
                     "toLabel": "ig",
                     "customRangeLabel": "Egyéni",
+                    "minDate": "{{$minDate}}",
+                    "maxDate": "{{$maxDate}}",
                     "daysOfWeek": [
                         "V",
                         "H",

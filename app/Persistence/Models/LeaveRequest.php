@@ -63,7 +63,7 @@ class LeaveRequest extends Model implements ValidatableModelInterface
                 'string',
                 Rule::in([self::STATUS_PENDING,self::STATUS_DENIED,self::STATUS_ACCEPTED])
             ],
-            'reason' => 'required_unless:status,'.self::STATUS_PENDING.','.self::STATUS_ACCEPTED.'|string',
+            'reason' => 'required_unless:status,'.self::STATUS_PENDING.','.self::STATUS_ACCEPTED,
         ];
     }
 
