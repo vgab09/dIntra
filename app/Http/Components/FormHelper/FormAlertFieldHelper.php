@@ -20,6 +20,7 @@ class FormAlertFieldHelper implements FormFieldHelperInterface
     public function __construct($message, $type, $name='alert')
     {
         $this->alertInstance = new Alert($message, $type);
+        $this->setName($name);
     }
 
     public static function to($message, $type,$name='alert')
