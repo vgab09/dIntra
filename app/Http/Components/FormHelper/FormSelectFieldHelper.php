@@ -66,6 +66,12 @@ class FormSelectFieldHelper extends FormFieldHelper
         return new static($name, $label, $options, $selected);
     }
 
+    public function setMultiple(bool $isMultiple = true)
+    {
+        parent::setMultiple($isMultiple);
+        $this->addSelectAttribute('multiple','multiple');
+        return $this;
+    }
 
     /**
      * Add one option to select
@@ -93,9 +99,17 @@ class FormSelectFieldHelper extends FormFieldHelper
      */
     public function addSelectOptions($options)
     {
+        $isSimple = true;
+
         foreach ($options as $value => $name) {
+
+            if($isSimple && is_iterable($value)){
+                $isSimple = false;
+                $this->setMultiple();
+            }
             $this->addSelectOption($name, $value);
         }
+
 
         return $this;
     }
