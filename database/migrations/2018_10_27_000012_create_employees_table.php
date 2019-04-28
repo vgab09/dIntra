@@ -26,7 +26,6 @@ class CreateEmployeesTable extends Migration
             $table->string('email', 127);
             $table->string('password');
             $table->date('date_of_birth');
-            $table->unsignedInteger('reporting_to_id_employee')->nullable();
             $table->tinyInteger('active')->default('1');
             $table->string('remember_token', 100)->nullable();
 

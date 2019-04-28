@@ -66,8 +66,8 @@ class LeaveRequestService
      */
     public function setDuration(Carbon $startAt, Carbon $endAt): LeaveRequestService
     {
-        $this->leaveRequest->start_at = $startAt;
-        $this->leaveRequest->end_at = $endAt;
+        $this->leaveRequest->start_at = clone $startAt;
+        $this->leaveRequest->end_at = clone $endAt;
         $this->setDays($this->calculateDaysCount($startAt,$endAt));
         return $this;
     }
@@ -78,9 +78,15 @@ class LeaveRequestService
 
         $holidays = $service->getHolidays($startAt,$endAt);
         $workdays = $service->getWorkDays($startAt,$endAt);
-        $leaveRequest = $service->getLeaveRequests($startAt,$endAt,$this->user,$this->leaveRequest->leaveType);
+        $leaveRequests = $service->getLeaveRequests($startAt,$endAt,$this->user,$this->leaveRequest->leaveType);
 
-        return $startAt->diffInDaysFiltered(function (Carbon $date) use($holidays,$workdays,$leaveRequest){
+        return $startAt->diffInDaysFiltered(function (Carbon $date) use($holidays,$workdays,$leaveRequests){
+
+            foreach ($leaveRequests as $leaveRequest){
+                if($date->between(new Carbon($leaveRequest->start_at), new Carbon($leaveRequest->end_at))){
+                    return false;
+                }
+            }
 
             foreach ($workdays as $workday){
                 if($date->between(new Carbon($workday->start),new Carbon($workday->end))){
@@ -98,15 +104,9 @@ class LeaveRequestService
                 }
             }
 
-            foreach ($leaveRequest as $leaveRequest){
-                if($date->between(new Carbon($leaveRequest->start_at), new Carbon($leaveRequest->end_at))){
-                    return false;
-                }
-            }
-
             return true;
 
-        },$endAt->addDay());
+        },(clone $endAt)->addDay());
     }
 
     /**
@@ -221,6 +221,23 @@ class LeaveRequestService
         $this->leaveRequest->saveOrFail();
 
         event(new LeaveRequestDenied($this->leaveRequest, $this->user));
+
+        $this->leaveRequest->load('history');
+
+        return $this->leaveRequest;
+    }
+
+    public function setPending(){
+        $this->setStatus(LeaveRequest::STATUS_PENDING);
+        $this->leaveRequest->reason = '';
+        $this->leaveRequest->validate();
+        $this->leaveRequest->saveOrFail();
+
+        $history = new LeaveRequestHistory();
+        $history->id_leave_request = $this->leaveRequest->id_leave_request;
+        $history->event = 'Szabadság kérelem döntésre vár.';
+        $history->created_by = $this->user->getKey();
+        $history->save();
 
         $this->leaveRequest->load('history');
 
