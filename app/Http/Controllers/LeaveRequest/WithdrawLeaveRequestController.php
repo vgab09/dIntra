@@ -10,6 +10,7 @@ namespace App\Http\Controllers\LeaveRequest;
 
 
 use App\Http\Components\Calendar\Event;
+use App\Http\Controllers\Controller;
 use App\Persistence\Models\Employee;
 use App\Persistence\Services\LeaveCalendarService;
 use App\Persistence\Services\LeaveRequestService;
@@ -17,7 +18,7 @@ use App\Traits\AlertMessage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
-class WithdrawLeaveRequestController
+class WithdrawLeaveRequestController extends Controller
 {
     use AlertMessage;
 
