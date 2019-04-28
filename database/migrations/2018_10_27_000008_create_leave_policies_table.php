@@ -24,7 +24,6 @@ class CreateLeavePoliciesTable extends Migration
             $table->tinyInteger('active')->default('1');
 
             $table->index(["id_leave_type"], 'fk_leave_policies_leave_types1_idx');
-            $table->softDeletes();
             $table->nullableTimestamps();
 
 

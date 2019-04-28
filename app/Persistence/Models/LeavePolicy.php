@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class LeavePolicy extends Model implements ValidatableModelInterface
 {
-    use SoftDeletes, ValidatableModel;
+    use ValidatableModel;
 
     protected $primaryKey = 'id_leave_policy';
 
