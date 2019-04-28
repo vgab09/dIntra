@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Html\Column;
 
-class ListFieldHelper
+class ListFieldHelper implements ListFieldHelperInterface
 {
 
 
@@ -114,7 +114,7 @@ class ListFieldHelper
      * Create new ListFieldHelper instance
      * @param string $name
      * @param string $title
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
     public static function to(string $name, string $title)
     {
@@ -131,9 +131,9 @@ class ListFieldHelper
 
     /**
      * @param string $name
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setName(string $name): ListFieldHelper
+    public function setName(string $name): ListFieldHelperInterface
     {
         $this->name = $name;
         return $this;
@@ -149,9 +149,9 @@ class ListFieldHelper
 
     /**
      * @param string $title
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setTitle(string $title): ListFieldHelper
+    public function setTitle(string $title): ListFieldHelperInterface
     {
         $this->title = $title;
         return $this;
@@ -167,9 +167,9 @@ class ListFieldHelper
 
     /**
      * @param string $width
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setWidth(string $width): ListFieldHelper
+    public function setWidth(string $width): ListFieldHelperInterface
     {
         $this->width = $width;
         return $this;
@@ -185,9 +185,9 @@ class ListFieldHelper
 
     /**
      * @param string $align
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setAlign(string $align): ListFieldHelper
+    public function setAlign(string $align): ListFieldHelperInterface
     {
         $this->align = $align;
         return $this;
@@ -203,9 +203,9 @@ class ListFieldHelper
 
     /**
      * @param bool $orderable
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setOrderable(bool $orderable): ListFieldHelper
+    public function setOrderable(bool $orderable): ListFieldHelperInterface
     {
         $this->orderable = $orderable;
         return $this;
@@ -222,9 +222,9 @@ class ListFieldHelper
     /**
      * Set column searchable. The default search html element is text.
      * @param bool $searchable
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setSearchable(bool $searchable): ListFieldHelper
+    public function setSearchable(bool $searchable): ListFieldHelperInterface
     {
         $this->searchable = $searchable;
 
@@ -238,7 +238,7 @@ class ListFieldHelper
     /**
      * Set searchable to true, and set search type to select.
      * @param array|Collection|iterable $options Select options
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
     public function setSearchTypeSelect($options)
     {
@@ -252,7 +252,7 @@ class ListFieldHelper
 
     /**
      * Set searchable to true, and set search type to select. Fill options 1 => yes 0 => No.
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
     public function setSearchTypeBool()
     {
@@ -262,7 +262,7 @@ class ListFieldHelper
 
     /**
      * Set searchable to true, and set search type to text.
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
     public function setSearchTypeText()
     {
@@ -305,9 +305,9 @@ class ListFieldHelper
 
     /**
      * @param int $maxLength
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setMaxLength(int $maxLength): ListFieldHelper
+    public function setMaxLength(int $maxLength): ListFieldHelperInterface
     {
         $this->maxLength = $maxLength;
         return $this;
@@ -323,9 +323,9 @@ class ListFieldHelper
 
     /**
      * @param string $type
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setType(string $type): ListFieldHelper
+    public function setType(string $type): ListFieldHelperInterface
     {
         $this->type = $type;
         return $this;
@@ -341,9 +341,9 @@ class ListFieldHelper
 
     /**
      * @param string $class
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setClass(string $class): ListFieldHelper
+    public function setClass(string $class): ListFieldHelperInterface
     {
         $this->class = $class;
         return $this;
@@ -359,9 +359,9 @@ class ListFieldHelper
 
     /**
      * @param string $hint
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setHint(string $hint): ListFieldHelper
+    public function setHint(string $hint): ListFieldHelperInterface
     {
         $this->hint = $hint;
         return $this;
@@ -377,9 +377,9 @@ class ListFieldHelper
 
     /**
      * @param bool $show
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setShow(bool $show): ListFieldHelper
+    public function setShow(bool $show): ListFieldHelperInterface
     {
         $this->show = $show;
         return $this;
@@ -399,9 +399,9 @@ class ListFieldHelper
 
     /**
      * @param string $suffix
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setSuffix(string $suffix): ListFieldHelper
+    public function setSuffix(string $suffix): ListFieldHelperInterface
     {
         $this->suffix = $suffix;
         return $this;
@@ -434,9 +434,9 @@ class ListFieldHelper
 
     /**
      * @param string $dataName
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setDataName(string $dataName): ListFieldHelper
+    public function setDataName(string $dataName): ListFieldHelperInterface
     {
         $this->dataName = $dataName;
         return $this;
@@ -452,9 +452,9 @@ class ListFieldHelper
 
     /**
      * @param string $defaultContent
-     * @return ListFieldHelper
+     * @return ListFieldHelperInterface
      */
-    public function setDefaultContent(string $defaultContent): ListFieldHelper
+    public function setDefaultContent(string $defaultContent): ListFieldHelperInterface
     {
         $this->defaultContent = $defaultContent;
         return $this;

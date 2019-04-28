@@ -1,6 +1,6 @@
 <?php
 /** @var \App\Http\Components\ListHelper\ListHelper $listHelper */
-/** @var \App\Http\Components\ListHelper\ListFieldHelper $column */
+/** @var \App\Http\Components\ListHelper\ListFieldHelperInterface $column */
 ?>
 
 

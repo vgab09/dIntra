@@ -114,10 +114,10 @@ class ListHelper
 
     /**
      * Add new Entry to list.
-     * @param ListFieldHelper $field
+     * @param ListFieldHelperInterface $field
      * @return ListHelper
      */
-    public function addField(ListFieldHelper $field): ListHelper
+    public function addField(ListFieldHelperInterface $field): ListHelper
     {
         $this->fieldList[$field->getName()] = $field;
         return $this;
@@ -232,7 +232,7 @@ class ListHelper
 
     /**
      * Get table list item, check fields
-     * @return ListFieldHelper[]|Collection
+     * @return ListFieldHelperInterface[]|Collection
      */
     public function getListItems()
     {
@@ -249,7 +249,7 @@ class ListHelper
         $this->dataTablesInstance = Datatables::of($source);
 
         /**
-         * @var ListFieldHelper $field
+         * @var ListFieldHelperInterface $field
          */
         foreach ($this->fieldList as $field) {
             $this->applyDisplayModifier($field);
@@ -274,9 +274,9 @@ class ListHelper
 
     /**
      * Format values
-     * @param ListFieldHelper $field
+     * @param ListFieldHelperInterface $field
      */
-    protected function applyDisplayModifier(ListFieldHelper $field)
+    protected function applyDisplayModifier(ListFieldHelperInterface $field)
     {
 
         $fieldName = $field->getName();
@@ -316,9 +316,9 @@ class ListHelper
 
     /**
      * Trim values
-     * @param ListFieldHelper $field
+     * @param ListFieldHelperInterface $field
      */
-    protected function applyLengthModifier(ListFieldHelper $field)
+    protected function applyLengthModifier(ListFieldHelperInterface $field)
     {
         $maxLength = $field->getMaxLength();
         $fieldName = $field->getName();
