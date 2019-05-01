@@ -67,12 +67,14 @@ class EmployeeController extends BREADController
                         function ($item) {
                             return $item->pluck('name', 'id_leave_policy');
                         })
-            ),
+            )
+                ->setMultiple(),
             FormChosenSelectFieldHelper::to('roles','Jogosultsági csoport',
                 Role::all(['id','name'])
                     ->pluck('name','id')
                     ->toArray()
-            ),
+            )
+                ->setMultiple(),
             FormInputFieldHelper::toDate('termination_date','Munkaviszony vége'),
             FormCheckboxFieldHelper::toSwitch('active','Aktív'),
         ]);
