@@ -13,7 +13,7 @@ use App\Http\Components\ToolbarLink\ToolbarLinks;
 use App\Http\Controllers\BREADController;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Guard;
-use Spatie\Permission\Models\Role;
+use App\Persistence\Models\Role;
 
 class RoleController extends BREADController
 {
@@ -31,7 +31,6 @@ class RoleController extends BREADController
     {
         return FormHelper::to('role',$model,[
             FormInputFieldHelper::to('name','text')->setRequired(),
-            FormSelectFieldHelper::to('guard_name',Guard::getNames(Role::class))
         ]);
     }
 

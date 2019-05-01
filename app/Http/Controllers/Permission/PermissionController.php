@@ -14,7 +14,7 @@ use App\Http\Controllers\BREADController;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Contracts\Role;
 use Spatie\Permission\Guard;
-use Spatie\Permission\Models\Permission;
+use App\Persistence\Models\Permission;
 
 class PermissionController extends BREADController
 {
@@ -32,7 +32,6 @@ class PermissionController extends BREADController
     {
         return FormHelper::to('role',$model,[
             FormInputFieldHelper::to('name','text')->setRequired(),
-            FormSelectFieldHelper::to('guard_name',Guard::getNames(Role::class))
         ]);
     }
 
