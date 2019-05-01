@@ -6,7 +6,7 @@
             <div class="login-content">
                 <div class="login-logo">
                     <a href="{{url('/')}}">
-                        uIntra
+                        <span class="font-weight-bolder">Day off</span>&nbsp;Intranet
                     </a>
                 </div>
                 <div class="login-form">
