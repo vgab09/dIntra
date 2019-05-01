@@ -21,10 +21,14 @@ class CreateEmployeeHasLeavePoliciesTable extends Migration
 
             $table->primary(['id_employee','id_leave_policy']);
             $table->index(["id_leave_policy"], 'fk_employee_has_leave_policies_leave_policies1_idx');
-
+            $table->index(["id_employee"], 'fk_employee_has_leave_policies_employees1_idx');
 
             $table->foreign('id_leave_policy', 'fk_employee_has_leave_policies_leave_policies1_idx')
                 ->references('id_leave_policy')->on('leave_policies')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->foreign('id_employee', 'fk_employee_has_leave_policies_employees1_idx')
+                ->references('id_employee')->on('employees')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
