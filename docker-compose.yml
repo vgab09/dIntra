@@ -1,0 +1,26 @@
+version: "3.6"
+services:
+  mysql:
+    image: mysql:5
+    container_name: dintra_mysql
+    volumes:
+    - mysql_data:/var/lib/mysql
+    environment:
+    - MYSQL_ROOT_PASSWORD=password
+    - MYSQL_DATABASE=dintra
+    ports:
+    - "3306:3306"
+  web72:
+    depends_on:
+    - mysql
+    build: ./images/php72apache/
+    image: web72
+    container_name: dintra_webserver
+    environment:
+    - APACHE_CONFDIR=/etc/apache2/
+    - HTTPS_METHOD=noredirect
+    volumes:
+    - website_data: /var/www/html/
+volumes:
+  mysql_data:
+  website_data:
