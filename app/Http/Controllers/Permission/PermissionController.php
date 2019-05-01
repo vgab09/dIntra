@@ -30,8 +30,8 @@ class PermissionController extends BREADController
      */
     protected function buildFormHelper($model)
     {
-        return FormHelper::to('role',$model,[
-            FormInputFieldHelper::to('name','text')->setRequired(),
+        return FormHelper::to('permissions',$model,[
+            FormInputFieldHelper::to('name','text','Név')->setRequired(),
         ]);
     }
 
@@ -57,5 +57,15 @@ class PermissionController extends BREADController
             )
             ->setTitle('Jogosultságok');
 
+    }
+
+    protected function getFormHelperToUpdate($model)
+    {
+        return parent::getFormHelperToUpdate($model)->setTitle('Jogosultság szerkesztése');
+    }
+
+    protected function getFormHelperToInsert()
+    {
+        return parent::getFormHelperToInsert()->setTitle('Új jogosultság rögzítése');
     }
 }

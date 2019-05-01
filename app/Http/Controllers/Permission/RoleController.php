@@ -30,7 +30,7 @@ class RoleController extends BREADController
     protected function buildFormHelper($model)
     {
         return FormHelper::to('role',$model,[
-            FormInputFieldHelper::to('name','text')->setRequired(),
+            FormInputFieldHelper::to('name','text','Név')->setRequired(),
         ]);
     }
 
@@ -55,5 +55,15 @@ class RoleController extends BREADController
             )
             ->setTitle('Felhasználói csoportok');
 
+    }
+
+    protected function getFormHelperToUpdate($model)
+    {
+        return parent::getFormHelperToUpdate($model)->setTitle('Jogosultsági csoport szerkesztése');
+    }
+
+    protected function getFormHelperToInsert()
+    {
+        return parent::getFormHelperToInsert()->setTitle('Új jogosultsági csoport rögzítése');
     }
 }
