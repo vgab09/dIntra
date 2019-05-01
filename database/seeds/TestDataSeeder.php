@@ -142,12 +142,18 @@ class TestDataSeeder extends Seeder
 
             $status = $this->faker->randomElement([LeaveRequest::STATUS_ACCEPTED,LeaveRequest::STATUS_PENDING,LeaveRequest::STATUS_DENIED,LeaveRequest::STATUS_PENDING]);
 
-            $service = new LeaveRequestService($leaveRequest);
-            $service->setEmployee($employee);
-            $service->setUser($employee);
-            $service->setLeaveType($this->faker->randomElement($employee->getLeaveTypes()));
-            $service->setDuration($start_at,$end_at);
-            $service->create();
+            try{
+                $service = new LeaveRequestService($leaveRequest);
+                $service->setEmployee($employee);
+                $service->setUser($employee);
+                $service->setLeaveType($this->faker->randomElement($employee->getLeaveTypes()));
+                $service->setDuration($start_at,$end_at);
+                $service->create();
+            }
+            catch (Exception $e){
+                return;
+            }
+
 
             switch ($status){
                 case LeaveRequest::STATUS_ACCEPTED:
