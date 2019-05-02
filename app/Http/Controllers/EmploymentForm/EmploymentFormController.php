@@ -95,4 +95,14 @@ class EmploymentFormController extends BREADController
         }
         return $resolve;
     }
+
+    protected function getFormHelperToUpdate($model)
+    {
+        return parent::getFormHelperToUpdate($model)->setTitle('Munkarend szerkesztése');
+    }
+
+    protected function getFormHelperToInsert()
+    {
+        return parent::getFormHelperToInsert()->setTitle('Új Munkarend rögzítése');
+    }
 }

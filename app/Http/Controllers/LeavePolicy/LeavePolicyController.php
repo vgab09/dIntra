@@ -51,13 +51,13 @@ class LeavePolicyController extends BREADController
     protected function buildListHelper()
     {
        return ListHelper::to('leavePolicy',[
-           ListFieldHelper::to('LeaveType.name','Szabadság típus')->setSearchTypeSelect(LeaveType::getLeaveTypeOptions()->prepend('-','')),
            ListFieldHelper::to('name','Név'),
+           ListFieldHelper::to('LeaveType.name','Szabadság típus')->setSearchTypeSelect(LeaveType::getLeaveTypeOptions()->prepend('-','')),
            ListFieldHelper::to('days','Napok száma')->setSuffix(' nap'),
            ListFieldHelper::to('active','Engedélyezve')->setType(ListFieldHelper::BOOL_TYPE),
        ])
            ->setTitle('Szabadság szabályok')
-           ->addRowActions(function ($model) {
+          ->addRowActions(function ($model) {
                return FormDropDownFieldHelper::to('action')
                    ->addActionLinkIfCan('update_leave_policy', route('editLeavePolicy', $model->getKey()), '<i class="fas fa-pencil-alt"></i> Szerkesztés')
                    ->addActionLinkIfCan('delete_leave_policy', route('deleteLeavePolicy', $model->getKey()), '<i class="fas fa-trash-alt"></i> Törlés')
@@ -76,6 +76,16 @@ class LeavePolicyController extends BREADController
     protected function collectListData()
     {
         return LeavePolicy::with('LeaveType');
+    }
+
+    protected function getFormHelperToUpdate($model)
+    {
+        return parent::getFormHelperToUpdate($model)->setTitle('Szabadság szabály szerkesztése');
+    }
+
+    protected function getFormHelperToInsert()
+    {
+        return parent::getFormHelperToInsert()->setTitle('Új szabadság szabály rögzítése');
     }
 
 

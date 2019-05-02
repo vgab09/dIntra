@@ -197,8 +197,8 @@ class LeaveRequestController extends BREADController
             ListFieldHelper::to('end_at', 'Vége')->setType('date'),
             ListFieldHelper::to('days', 'Napok száma'),
             ListFieldHelper::to('comment', 'Megjegyzés')->setMaxLength('60'),
+            ListFieldHelper::to('created_at','Igényelve')
         ])
-            ->addTimeStamps()
             ->setTitle('Szabadság igények')
             ->addRowActions(function ($model) {
                 return FormDropDownFieldHelper::to('action')

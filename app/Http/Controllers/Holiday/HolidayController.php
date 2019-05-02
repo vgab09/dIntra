@@ -45,12 +45,12 @@ class HolidayController extends BREADController
 
     protected function getFormHelperToUpdate($model)
     {
-        return parent::getFormHelperToUpdate($model)->setTitle('Plusz munkanapok szerkesztése');
+        return parent::getFormHelperToUpdate($model)->setTitle('Munkaszüneti nap szerkesztése');
     }
 
     protected function getFormHelperToInsert()
     {
-        return parent::getFormHelperToInsert()->setTitle('Új munkanap hozzáadása');
+        return parent::getFormHelperToInsert()->setTitle('Új munkaszüneti nap hozzáadása');
     }
 
 

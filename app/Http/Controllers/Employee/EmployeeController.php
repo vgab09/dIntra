@@ -43,7 +43,6 @@ class EmployeeController extends BREADController
         return FormHelper::to('employee',$model,[
             FormInputFieldHelper::toText('name','Név')->setRequired(),
             FormInputFieldHelper::toEmail('email','Email')->setRequired(),
-            //FormInputFieldHelper::toPassword('password','Jelszó')->setRequired()->setDescription('Minimum 6 karakter, kis - nagy betű, szám és speciális karakter')->setValue(''),
             FormInputFieldHelper::toDate('date_of_birth','Születési dátum'),
             FormSelectFieldHelper::to('id_designation','Beosztás',
                 Designation::getActiveDesignationOptions()
@@ -82,12 +81,16 @@ class EmployeeController extends BREADController
 
     protected function getFormHelperToUpdate($model)
     {
-        return parent::getFormHelperToUpdate($model)->setTitle('Plusz munkanapok szerkesztése');
+        return parent::getFormHelperToUpdate($model)->setTitle('Munkatárs szerkesztése');
     }
 
     protected function getFormHelperToInsert()
     {
-        return parent::getFormHelperToInsert()->setTitle('Új munkanap hozzáadása');
+        $helper = parent::getFormHelperToInsert()->setTitle('Új munkatárs hozzáadása');
+        $helper->addField(
+        FormInputFieldHelper::toPassword('password','Jelszó')->setRequired()->setDescription('Minimum 6 karakter, kis - nagy betű, szám és speciális karakter')->setValue('')
+        );
+        return $helper;
     }
 
 
@@ -114,7 +117,7 @@ class EmployeeController extends BREADController
                         ->pluck('name','name')
                         ->prepend('-','')
                 ),
-            ListFieldHelper::to('employmentForm.name','EmploymentForm')
+            ListFieldHelper::to('employmentForm.name','Munkarend')
             ->setSearchTypeSelect(
                 EmploymentForm::getEmploymentFormOptions()
                 ->pluck('name','name')
