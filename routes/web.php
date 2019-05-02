@@ -152,7 +152,7 @@ Route::group(['middleware' => 'auth'], function () {
         $this->get('/', 'LeaveRequestController@index')->middleware('permission:list_leave_request')->name('indexLeaveRequest');
         $this->get('/pending', 'LeaveRequestController@indexPending')->middleware('permission:list_leave_request')->name('indexPendingLeaveRequest');
         $this->get('/new', 'LeaveRequestController@new')->middleware('permission:create_leave_request')->name('newLeaveRequest');
-        $this->post('/new', 'LeaveRequestController@insert')->middleware('permission:create_leave_request');
+        $this->post('/new', 'LeaveRequestController@insert')->middleware('permission:create_leave_request|withdraw_leave_request');
 
         $this->get('/edit/{id_leave_request}', 'LeaveRequestController@edit')->middleware('permission:update_leave_request')->name('editLeaveRequest');
         $this->post('/edit/{id_leave_request}', 'LeaveRequestController@update')->middleware('permission:update_leave_request');
