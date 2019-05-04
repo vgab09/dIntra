@@ -79,9 +79,4 @@ class WorkdayController extends BREADController
                 ToolbarLinks::make()->addLinkIfCan('create_workday',route('newWorkday'),'<i class="fas fa-plus-circle"></i> Új hozzáadása')
             );
     }
-
-    protected function collectListData()
-    {
-        return Workday::query();
-    }
 }

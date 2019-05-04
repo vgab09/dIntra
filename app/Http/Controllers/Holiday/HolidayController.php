@@ -80,9 +80,4 @@ class HolidayController extends BREADController
                 ToolbarLinks::make()->addLinkIfCan('create_holiday',route('newHoliday'),'<i class="fas fa-plus-circle"></i> Új hozzáadása')
             );
     }
-
-    protected function collectListData()
-    {
-        return Holiday::query();
-    }
 }
