@@ -12,7 +12,7 @@ namespace App\Http\Controllers\LeaveRequest;
 use App\Http\Components\Calendar\Event;
 use App\Http\Controllers\Controller;
 use App\Persistence\Models\Employee;
-use App\Persistence\Services\LeaveCalendarService;
+use App\Persistence\Repositories\LeaveCalendarRepository;
 use App\Persistence\Services\LeaveRequestService;
 use App\Traits\AlertMessage;
 use Carbon\Carbon;
@@ -23,9 +23,9 @@ class WithdrawLeaveRequestController extends Controller
     use AlertMessage;
 
     /**
-     * @var LeaveCalendarService $LeaveCalendarService
+     * @var LeaveCalendarRepository $leaveCalendarRepository
      */
-    private $LeaveCalendarService;
+    private $leaveCalendarRepository;
 
     /**
      * @var LeaveRequestService $LeaveRequestService
@@ -34,7 +34,7 @@ class WithdrawLeaveRequestController extends Controller
 
     public function __construct()
     {
-        $this->LeaveCalendarService = new LeaveCalendarService();
+        $this->leaveCalendarRepository = new LeaveCalendarRepository();
         $this->LeaveRequestService = new LeaveRequestService();
     }
 
@@ -54,9 +54,9 @@ class WithdrawLeaveRequestController extends Controller
         $start_at = $leaveTypes->min('start_at');
         $end_at = $leaveTypes->max('end_at');
 
-        $holidays = $this->LeaveCalendarService->getHolidays($start_at, $end_at)->mapInto(Event::class);
-        $workdays = $this->LeaveCalendarService->getWorkDays($start_at, $end_at)->mapInto(Event::class);
-        $leaveRequests = $this->LeaveCalendarService->getLeaveRequests($start_at, $end_at, $user)->mapInto(Event::class);
+        $holidays = $this->leaveCalendarRepository->getHolidays($start_at, $end_at)->mapInto(Event::class);
+        $workdays = $this->leaveCalendarRepository->getWorkDays($start_at, $end_at)->mapInto(Event::class);
+        $leaveRequests = $this->leaveCalendarRepository->getLeaveRequests($start_at, $end_at, $user)->mapInto(Event::class);
 
         return view('leaves.withdraw',
             [

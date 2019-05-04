@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Persistence\Services;
+namespace App\Persistence\Repositories;
 
 use App\Http\Components\Calendar\Event;
 use App\Persistence\Models\Employee;
@@ -10,7 +10,7 @@ use App\Persistence\Models\LeaveType;
 use App\Persistence\Models\Workday;
 use Carbon\Carbon;
 
-class LeaveCalendarService
+class LeaveCalendarRepository
 {
 
     /**

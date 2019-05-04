@@ -7,14 +7,14 @@ use App\Http\Components\Calendar\Event;
 use App\Persistence\Models\Holiday;
 use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\Workday;
-use App\Persistence\Services\LeaveCalendarService;
+use App\Persistence\Repositories\LeaveCalendarRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class FullCalendarProvider implements ProviderInterface
 {
     private $events;
-    protected $leaveCalendarService;
+    protected $leaveCalendarRepository;
 
     /**
      * @var Carbon $start
@@ -33,7 +33,7 @@ class FullCalendarProvider implements ProviderInterface
      */
     public function __construct($start,$end)
     {
-        $this->leaveCalendarService = new LeaveCalendarService();
+        $this->leaveCalendarRepository = new LeaveCalendarRepository();
         $this->setStart($start);
         $this->setEnd($end);
     }
@@ -79,7 +79,7 @@ class FullCalendarProvider implements ProviderInterface
      */
     public function getHolidays()
     {
-        return $this->leaveCalendarService->getHolidays($this->getStart(),$this->getEnd());
+        return $this->leaveCalendarRepository->getHolidays($this->getStart(),$this->getEnd());
     }
 
     /**
@@ -87,14 +87,14 @@ class FullCalendarProvider implements ProviderInterface
      */
     public function getWorkDays()
     {
-        return $this->leaveCalendarService->getWorkDays($this->getStart(),$this->getEnd());
+        return $this->leaveCalendarRepository->getWorkDays($this->getStart(),$this->getEnd());
     }
 
     /**
      * @return LeaveRequest[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
      */
     public function getLeaveRequests(){
-        return $this->leaveCalendarService->getLeaveRequests($this->getStart(),$this->getEnd());
+        return $this->leaveCalendarRepository->getLeaveRequests($this->getStart(),$this->getEnd());
     }
 
     /**
