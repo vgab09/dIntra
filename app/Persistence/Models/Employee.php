@@ -135,10 +135,6 @@ class Employee extends Authenticatable implements ValidatableModelInterface
                     ->where('leave_policies.active', '=', 1);
             }]);
 
-            return $leaveType;
-        });
-
-        $this->leaveTypes->map(function (LeaveType $leaveType) {
             $leaveType->assigned = $leaveType->leavePolicies->sum('days');
             return $leaveType;
         });
