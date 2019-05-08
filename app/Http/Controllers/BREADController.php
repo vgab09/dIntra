@@ -95,7 +95,7 @@ abstract class BREADController extends Controller
         if (!$form->validateAndSave()) {
             return $form->render();
         }
-        return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Sikeres modósítás');
+        return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Sikeres módosítás');
     }
 
     /**

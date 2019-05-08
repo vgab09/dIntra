@@ -161,7 +161,7 @@ class EmployeeController extends BREADController
             return $form->render();
         }
 
-        return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Sikeres modósítás');
+        return $this->redirectSuccess($this->getSuccessRedirectUrl(), 'Sikeres módosítás');
     }
 
     public function insert()
