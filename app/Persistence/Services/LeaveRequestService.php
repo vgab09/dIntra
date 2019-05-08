@@ -7,10 +7,10 @@ use App\Events\LeaveRequestAccepted;
 use App\Events\LeaveRequestDenied;
 use App\Events\NewLeaveRequest;
 use App\Persistence\Models\Employee;
-use App\Persistence\Models\LeavePolicy;
 use App\Persistence\Models\LeaveRequest;
 use App\Persistence\Models\LeaveRequestHistory;
 use App\Persistence\Models\LeaveType;
+use App\Persistence\Repositories\LeaveCalendarRepository;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -74,7 +74,7 @@ class LeaveRequestService
 
     protected function calculateDaysCount(Carbon $startAt, Carbon $endAt){
 
-        $service = new LeaveCalendarService();
+        $service = new LeaveCalendarRepository();
 
         $holidays = $service->getHolidays($startAt,$endAt);
         $workdays = $service->getWorkDays($startAt,$endAt);
